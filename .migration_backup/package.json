@@ -1,10 +1,7 @@
 {
   "name": "rail-coffee-mobile",
   "nativescript": {
-    "id": "org.nativescript.railcoffeemobile",
-    "tns-android": {
-      "version": "6.0.0"
-    }
+    "id": "org.nativescript.railcoffeemobile"
   },
   "version": "0.0.0",
   "scripts": {
@@ -22,27 +19,27 @@
   "private": true,
   "dependencies": {
     "@angular-devkit/build-ng-packagr": "^0.13.8",
-    "@angular/animations": "8.0.0",
-    "@angular/common": "8.0.0",
-    "@angular/compiler": "8.0.0",
-    "@angular/core": "8.0.0",
-    "@angular/forms": "8.0.0",
-    "@angular/http": "8.0.0-beta.10",
-    "@angular/platform-browser": "8.0.0",
-    "@angular/platform-browser-dynamic": "8.0.0",
-    "@angular/router": "8.0.0",
+    "@angular/animations": "~7.2.0",
+    "@angular/common": "~7.2.0",
+    "@angular/compiler": "~7.2.0",
+    "@angular/core": "~7.2.0",
+    "@angular/forms": "~7.2.0",
+    "@angular/http": "~7.2.0",
+    "@angular/platform-browser": "~7.2.0",
+    "@angular/platform-browser-dynamic": "~7.2.0",
+    "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
-    "nativescript-angular": "8.0.2",
+    "nativescript-angular": "~7.2.0",
     "nativescript-theme-core": "~1.0.4",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.3.3",
-    "tns-core-modules": "6.0.1",
-    "zone.js": "0.9.1"
+    "tns-core-modules": "~5.2.0",
+    "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "0.800.3",
+    "@angular-devkit/build-angular": "^0.13.8",
     "@angular/cli": "^7.2.0",
-    "@angular/compiler-cli": "8.0.0",
+    "@angular/compiler-cli": "~7.2.0",
     "@nativescript/schematics": "~0.4.0",
     "@types/jasmine": "2.8.6",
     "@types/jasminewd2": "~2.0.3",
@@ -55,10 +52,11 @@
     "karma-coverage-istanbul-reporter": "~2.0.0",
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "nativescript-dev-webpack": "1.0.1",
+    "nativescript-dev-typescript": "~0.8.0",
+    "nativescript-dev-webpack": "^0.20.0",
     "protractor": "~5.3.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
-    "typescript": "3.4.5"
+    "typescript": "~3.1.1"
   }
 }
