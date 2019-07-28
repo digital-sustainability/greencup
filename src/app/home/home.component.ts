@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationService } from '../shared/services/navigation.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   title = 'rail-coffee-mobile';
+  actionBarTitle = 'SBB Rail Coffee';
 
-  constructor() { }
+  constructor(
+    private _navigationService: NavigationService,
+  ) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  onGoToScanner(): void {
+    this._navigationService.navigateTo('scanner');
   }
 }

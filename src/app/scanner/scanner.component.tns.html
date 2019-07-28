@@ -1,0 +1,9 @@
+<app-action-bar [title]="actionBarTitle">
+    <!-- Injected via ng-content. Methods defined in action-bar.component -->
+    <NavigationButton
+    android.systemIcon="ic_menu_back"
+    text="Zurück"
+    (tap)="onNavigateBack()"
+    ></NavigationButton>
+</app-action-bar>
+<Button text="scanner works!" class="btn btn-primary"></Button>
