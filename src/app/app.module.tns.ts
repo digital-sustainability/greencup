@@ -1,4 +1,4 @@
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA, ValueProvider } from '@angular/core';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ActionBarComponent } from './shared/components/action-bar/action-bar.component';
 import { ScannerComponent } from './scanner/scanner.component';
+import { NavigationService } from './shared/services/navigation.service';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
 
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
@@ -25,7 +27,10 @@ import { ScannerComponent } from './scanner/scanner.component';
     NativeScriptModule,
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [
+    NavigationService,
+    BarcodeScanner
+  ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })

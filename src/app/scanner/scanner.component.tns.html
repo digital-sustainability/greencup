@@ -6,4 +6,6 @@
     (tap)="onNavigateBack()"
     ></NavigationButton>
 </app-action-bar>
-<Button text="scanner works!" class="btn btn-primary"></Button>
+<StackLayout  class="p-20">
+    <Button text="Scannen QR-Code" class="btn btn-primary" (tap)="onOpenScanner()"></Button>
+</StackLayout>
