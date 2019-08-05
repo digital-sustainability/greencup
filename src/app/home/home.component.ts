@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() { }
 
-  onGoToScanner(): void {
-    this._navigationService.navigateTo('scanner');
+  onEnter(route: string): void {
+    this._navigationService.navigateTo(route);
   }
 }

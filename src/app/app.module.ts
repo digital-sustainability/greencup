@@ -6,7 +6,9 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ActionBarComponent } from './shared/components/action-bar/action-bar.component';
 import { ScannerComponent } from './scanner/scanner.component';
-
+import { TabsComponent } from './tabs/tabs.component';
+import { OverviewComponent } from './overview/overview.component';
+import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardview/angular';
 
 @NgModule({
   declarations: [
@@ -14,6 +16,9 @@ import { ScannerComponent } from './scanner/scanner.component';
     HomeComponent,
     ActionBarComponent,
     ScannerComponent,
+    TabsComponent,
+    OverviewComponent,
+    NativeScriptMaterialCardViewModule
   ],
   imports: [
     BrowserModule,

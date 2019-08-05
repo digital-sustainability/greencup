@@ -2,11 +2,12 @@ import { Routes } from '@angular/router';
 
 import { HomeComponent } from './home/home.component';
 import { ScannerComponent } from './scanner/scanner.component';
+import { TabsComponent } from './tabs/tabs.component';
 
 export const routes: Routes = [
   {
       path: '',
-      redirectTo: '/home',
+      redirectTo: '/tabs',
       pathMatch: 'full',
   },
   {
@@ -16,5 +17,9 @@ export const routes: Routes = [
   {
       path: 'scanner',
       component: ScannerComponent
+  },
+  {
+      path: 'tabs',
+      component: TabsComponent
   },
 ];

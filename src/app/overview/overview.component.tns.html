@@ -1,0 +1,10 @@
+<GridLayout class="page">
+    <ListView [items]="items" class="list-group">
+        <ng-template let-item="item">
+            <CardView ripple="true" margin="5" class="whiteCard">
+                <Label text="Something" class="list-group-item"></Label>
+                <Label [text]="item.name" class="list-group-item"></Label>
+            </CardView>
+        </ng-template>
+    </ListView>
+</GridLayout>

@@ -1,11 +1,3 @@
-<app-action-bar [title]="actionBarTitle">
-    <!-- Injected via ng-content. Methods defined in action-bar.component -->
-    <NavigationButton
-    android.systemIcon="ic_menu_back"
-    text="Zurück"
-    (tap)="onNavigateBack()"
-    ></NavigationButton>
-</app-action-bar>
 <StackLayout  class="p-20">
     <Button text="Scannen QR-Code" class="btn btn-primary" (tap)="onOpenScanner()"></Button>
 </StackLayout>
