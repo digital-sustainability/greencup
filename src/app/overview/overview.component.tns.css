@@ -1,33 +1,37 @@
 /* Add mobile styles for the component here.  */
 
 .card {
-    background-color: #888888;
+    background-color: #fff;;
     color: #4d4d4d;
     margin: 15 15 0;
     border-radius: 5;
-    color: #999999
-}
-
-.card-layout .h1 {
-    margin-bottom: 15;
-}
-.location {
-    color: #999999
-}
-
-.cardStyle {
-    background-color: goldenrod;
-    color: rgb(43, 43, 43);
-    border-radius: 10;
 }
 
 .card-content {
+    border-radius: 10;
     padding: 20;
     font-weight: bold;
     font-size: 30;
+    background-color: #fff;
 }
 
-.whiteCard {
-    background-color: #fff;
-    border-radius: 10;
-  }
+.status-reserved {
+    background-color: #ffff4d;
+}
+
+.status-rewarded {
+    background-color: #92DB00;
+}
+
+.status-canceled {
+    background-color: #EB6A00;
+}
+
+.scan-label {
+    margin: 5 5 5 10;
+    font-weight: bold;
+}
+
+.scan-value {
+    margin: 5 5 5 10;
+}

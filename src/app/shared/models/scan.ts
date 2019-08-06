@@ -1,8 +1,13 @@
+import { User } from './user';
+import { Cup } from './cup';
+
 export interface Scan {
+    createdAt: number;
+    updatedAt: number;
     cleaned: boolean;
-    cleaned_at: number;
+    cleanedAt: number;
     rewarded: boolean;
-    rewarded_at: number;
-    cup_id: any;
-    user_id: any;
+    rewardedAt: number;
+    cup_id: number | Cup;
+    user_id: number | User;
 }

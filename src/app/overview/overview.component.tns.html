@@ -1,10 +1,27 @@
-<GridLayout class="page">
-    <ListView [items]="items" class="list-group">
+<!-- TODO: Display No-internet connection sign -->
+<StackLayout visibility="{{ loading ? 'visible' : 'collapsed' }}" verticalAlignment="center">
+    <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
+</StackLayout>
+<GridLayout *ngIf="loaded && items" class="page">
+    <ListView [items]="items">
         <ng-template let-item="item">
-            <CardView ripple="true" margin="5" class="whiteCard">
-                <Label text="Something" class="list-group-item"></Label>
-                <Label [text]="item.name" class="list-group-item"></Label>
+            <CardView ripple="true" margin="5" class="card">
+                <!-- TODO: Add click event with modal of details -->
+                <GridLayout columns="20, auto, *" rows="auto, auto, auto">
+                    <!-- TODO: ngClass with function that determines status -->
+                    <StackLayout col="0" rowspan="3" text="@" class="status-reserved"></StackLayout>
+                    <Label col="1" row="0" class="scan-label" text="Status:"></Label>
+                    <Label col="2" row="0" class="scan-value" text="Reserviert? | Überboten? | Verrechnet?"></Label>
+                    <Label col="1" row="1" class="scan-label" text="Gescannt:"></Label>
+                    <Label col="2" row="1" class="scan-value" [text]="getTime(item.updatedAt)"></Label>
+                    <Label col="1" row="2" class="scan-label" text="Becher ID:"></Label>
+                    <Label col="2" row="2" class="scan-value" [text]="item.cup_id.id"></Label>
+                </GridLayout>
             </CardView>
         </ng-template>
     </ListView>
 </GridLayout>
+<!-- TODO: grayed-out scan if no scans found  -->
+<StackLayout *ngIf="loaded && !items">
+    <Label text="No Scans found"></Label>
+</StackLayout>

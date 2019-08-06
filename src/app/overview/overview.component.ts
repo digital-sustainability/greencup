@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
+import { HttpService } from '../shared/services/http.service';
+import { Scan } from '../shared/models/scan';
 registerElement('CardView', () => CardView);
 
 @Component({
@@ -10,15 +12,27 @@ registerElement('CardView', () => CardView);
 })
 export class OverviewComponent implements OnInit {
 
-  items = [{
-    name: 'Alex'
-  },
-  {
-    name: 'Osci'
-  }]
+  loaded: boolean;
+  items: Scan[];
 
-  constructor() { }
+  constructor(
+    private _httpService: HttpService,
+  ) { }
 
-  ngOnInit() { }
- 
+  ngOnInit() {
+    this._httpService.getScans().subscribe(
+      scans => {
+        this.items = scans;
+        this.loaded = true;
+      },
+      err => {
+        // TODO: Display that scans could not be loaded
+        console.log(err);
+      }
+    );
+  }
+
+  getTime(ms: number): Date {
+    return new Date(ms);
+  }
 }

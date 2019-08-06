@@ -1,3 +1,9 @@
 <StackLayout  class="p-20">
-    <Button text="Scannen QR-Code" class="btn btn-primary" (tap)="onOpenScanner()"></Button>
+    <Button text="QR-Code Scannen" class="btn btn-primary" (tap)="onOpenScanner()"></Button>
+    <!-- <Button text="Get a scan" class="btn btn-primary" (tap)="onTestGetScan()"></Button> -->
+    <!-- <Button text="Add a scan" class="btn btn-primary" (tap)="onTestSetScan()"></Button> -->
+</StackLayout>
+<StackLayout class="p-20" orientation="horizontal">
+    <Label text="Last Test Scan: "></Label>
+    <Label [text]="lastScan"></Label>
 </StackLayout>
