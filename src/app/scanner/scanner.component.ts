@@ -14,7 +14,7 @@ import { ToasterService } from '../shared/services/toaster.service';
 })
 export class ScannerComponent implements OnInit {
 
-  actionBarTitle = 'The Scanner';
+  actionBarTitle = 'Rail Coffee ☕';
   backRoute = '/home';
   lastScan = '...';
   statusTitle: string;
@@ -56,14 +56,12 @@ export class ScannerComponent implements OnInit {
           this.lastScan = this.changeTestOutput(result.text);
           message = {
             statusType: 'SUCCESS',
-            title: 'Erfolgreicher Scan',
-            detail: result.text
+            detail: 'Code: ' + result.text
           } as Notification;
         }
         else {
           message = {
             statusType: 'ERROR',
-            title: 'Falsches Format',
             detail: 'Der gescannte Code ist kein Rail-Coffee Code!'
           } as Notification;
         }
@@ -71,7 +69,6 @@ export class ScannerComponent implements OnInit {
       } else {
         message = {
           statusType: 'ERROR',
-          title: 'Falsches Format',
           detail: 'Scan wurde nicht erkannt'
         } as Notification;
       }
@@ -79,8 +76,7 @@ export class ScannerComponent implements OnInit {
       this._toasterService.showToast(message);
     }, (errorMessage) => {
       this._toasterService.showToast({
-        statusType: 'WARNING',
-        title: 'Falsches Format',
+        statusType: 'ERROR',
         detail: errorMessage
       } as Notification);
     });
@@ -92,6 +88,13 @@ export class ScannerComponent implements OnInit {
 
   onShowSnack() {
     this._snackbarService.showSimpleSnackbar();
+  }
+
+  onShowToast() {
+    this._toasterService.showToast({
+      statusType: 'SUCCESS',
+      detail: 'Some toaster Text'
+    } as Notification);
   }
 
   private validateScan(message: string): boolean {

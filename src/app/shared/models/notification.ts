@@ -1,6 +1,5 @@
 export interface Notification {
     statusType: StatusType;
-    title: string;
     detail: string;
 }
 

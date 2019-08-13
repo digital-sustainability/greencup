@@ -12,6 +12,7 @@ registerElement('CardView', () => CardView);
 })
 export class OverviewComponent implements OnInit {
 
+  actionBarTitle = 'Rail Coffee ☕';
   loaded: boolean;
   // TODO: Dump scans after a while?
   items: Scan[];
@@ -20,7 +21,7 @@ export class OverviewComponent implements OnInit {
     private _httpService: HttpService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this._httpService.getScans().subscribe(
       scans => {
         this.items = scans;
@@ -31,6 +32,10 @@ export class OverviewComponent implements OnInit {
         console.log(err);
       }
     );
+  }
+
+  onNewScanTap(): void {
+    alert('Fabulous FAB!');
   }
 
   getTime(ms: number): Date {

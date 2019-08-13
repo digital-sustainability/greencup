@@ -35,3 +35,13 @@
 .scan-value {
     margin: 5 5 5 10;
 }
+
+.fab-button {
+    height: 58;
+    width: 58; 
+     /* required on iOS */
+    margin: 20;
+    background-color: #eb0000;
+    vertical-align: bottom;
+    horizontal-align: right;
+  }
