@@ -13,6 +13,7 @@ registerElement('CardView', () => CardView);
 export class OverviewComponent implements OnInit {
 
   loaded: boolean;
+  // TODO: Dump scans after a while?
   items: Scan[];
 
   constructor(

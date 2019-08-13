@@ -12,9 +12,9 @@ export class NavigationService {
     const config = {
       animated: true,
       transition: {
-        name: "slide",
+        name: 'slide',
         duration: 200,
-        curve: "ease"
+        curve: 'ease'
       }
     };
     this._routerExtensions.navigate([path], config);

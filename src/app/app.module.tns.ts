@@ -13,6 +13,8 @@ import { OverviewComponent } from './overview/overview.component';
 import { NavigationService } from './shared/services/navigation.service';
 import { CsrfService } from './shared/services/csrf.service';
 import { HttpInterceptorService } from './shared/services/http-intercepter.service';
+import { SnackbarService } from './shared/services/snackbar.service';
+import { ToasterService } from './shared/services/toaster.service';
 
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 
@@ -41,6 +43,8 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
     BarcodeScanner,
     CsrfService,
     HttpInterceptorService,
+    SnackbarService,
+    ToasterService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorService,
