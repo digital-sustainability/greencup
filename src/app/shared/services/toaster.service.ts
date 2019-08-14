@@ -23,8 +23,6 @@ export class ToasterService {
         // TODO: Check this: Must be the native iOS view instance (button, page, action bar, tabbar, etc.)
         // anchorView: someButton.ios,
         cornerRadius: 24,
-        displayShadow: true,
-        shadowColor: new Color('black'),
       }
     });
     this.toasty.show();

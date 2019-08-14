@@ -6,9 +6,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ActionBarComponent } from './shared/components/action-bar/action-bar.component';
-import { ScannerComponent } from './scanner/scanner.component';
-import { TabsComponent } from './tabs/tabs.component';
 import { OverviewComponent } from './overview/overview.component';
+import { TabsComponent } from './tabs/tabs.component';
+import { ScansComponent } from './scans/scans.component';
 
 import { NavigationService } from './shared/services/navigation.service';
 import { CsrfService } from './shared/services/csrf.service';
@@ -29,9 +29,9 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
     AppComponent,
     HomeComponent,
     ActionBarComponent,
-    ScannerComponent,
-    TabsComponent,
     OverviewComponent,
+    TabsComponent,
+    ScansComponent,
   ],
   imports: [
     NativeScriptModule,

@@ -1,29 +1,11 @@
-<!-- TODO: Display No-internet connection sign -->
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
-<StackLayout visibility="{{ loading ? 'visible' : 'collapsed' }}" verticalAlignment="center">
-    <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
+<StackLayout  class="p-20">
+    <Button text="QR-Code Scannen" class="btn btn-primary" (tap)="onOpenScanner()"></Button>
+    <Button text="snack" class="btn btn-primary" (tap)="onShowSnack()"></Button>
+    <Button #toastBtn text="toast" class="btn btn-primary" (tap)="onShowToast()"></Button>
+    <!-- <Button text="Add a scan" class="btn btn-primary" (tap)="onTestSetScan()"></Button> -->
 </StackLayout>
-<GridLayout *ngIf="loaded && items" class="page">
-    <ListView [items]="items">
-        <ng-template let-item="item">
-            <CardView ripple="true" margin="5" class="card">
-                <!-- TODO: Add click event with modal of details -->
-                <GridLayout columns="20, auto, *" rows="auto, auto, auto">
-                    <!-- TODO: ngClass with function that determines status -->
-                    <StackLayout col="0" rowspan="3" text="@" class="status-reserved"></StackLayout>
-                    <Label col="1" row="0" class="scan-label" text="Status:"></Label>
-                    <Label col="2" row="0" class="scan-value" text="Reserviert? | Überboten? | Verrechnet?"></Label>
-                    <Label col="1" row="1" class="scan-label" text="Gescannt:"></Label>
-                    <Label col="2" row="1" class="scan-value" [text]="getTime(item.updatedAt)"></Label>
-                    <Label col="1" row="2" class="scan-label" text="Becher ID:"></Label>
-                    <Label col="2" row="2" class="scan-value" [text]="item.cup_id.id"></Label>
-                </GridLayout>
-            </CardView>
-        </ng-template>
-    </ListView>
-    <FAB (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></FAB>
-</GridLayout>
-<!-- TODO: grayed-out scan if no scans found  -->
-<StackLayout *ngIf="loaded && !items">
-    <Label text="No Scans found"></Label>
+<StackLayout class="p-20" orientation="horizontal">
+    <Label text="Last Test Scan: "></Label>
+    <Label [text]="lastScan"></Label>
 </StackLayout>

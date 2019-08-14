@@ -8,7 +8,7 @@ import { NavigationService } from '../shared/services/navigation.service';
 })
 export class HomeComponent implements OnInit {
   title = 'rail-coffee-mobile';
-  actionBarTitle = 'SBB Rail Coffee';
+  actionBarTitle = 'SBB Rail Coffee ☕';
 
   constructor(
     private _navigationService: NavigationService,
