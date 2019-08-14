@@ -4,7 +4,7 @@
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
 <!-- <GridLayout class="page"> -->
-<GridLayout *ngIf="loaded" class="page">
+<GridLayout *ngIf="loaded && items.length > 0" class="page">
     <ListView [items]="items" id="scanListView">
         <ng-template let-item="item">
             <CardView ripple="true" margin="5" class="card">
@@ -22,10 +22,21 @@
             </CardView>
         </ng-template>
     </ListView>
+    <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
     <Fab (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>
-    <!-- <FAB #fab (tap)="animate($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></FAB> -->
 </GridLayout>
-<!-- TODO: grayed-out scan if no scans found  -->
-<StackLayout *ngIf="loaded && !items">
-    <Label text="No Scans found"></Label>
-</StackLayout>
+<!-- Show grayed-out default-scan if no scans are found  -->
+<GridLayout *ngIf="loaded && items.length === 0">
+    <ListView [items]="defaultItems" id="emptyScanListView">
+        <ng-template let-item="item">
+            <CardView ripple="true" margin="5" class="card">
+                <GridLayout columns="20, *" rows="*, *">
+                    <StackLayout col="0" rowspan="2" text="@" class="status-empty"></StackLayout>
+                    <Label col="1" row="0" class="default-scan-label" [text]="item.message"></Label>
+                    <Label col="1" row="1" class="default-scan-label" [text]="item.action" textWrap="true"></Label>
+                </GridLayout>
+            </CardView>
+        </ng-template>
+    </ListView>
+    <Fab (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>
+</GridLayout>

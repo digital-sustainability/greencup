@@ -27,9 +27,19 @@
     background-color: #EB6A00;
 }
 
+.status-empty {
+    background-color: #c0c0c0;
+}
+
 .scan-label {
     margin: 5 5 5 10;
     font-weight: bold;
+}
+
+.default-scan-label {
+    margin: 5 5 5 10;
+    color: #acacac;
+    text-align: center
 }
 
 .scan-value {

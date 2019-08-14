@@ -20,6 +20,10 @@ export class ScansComponent implements OnInit, AfterViewInit {
   actionBarTitle = 'SBB Rail Coffee ☕';
   loaded: boolean;
   items: Scan[];
+  defaultItems = [{
+    message: 'Keine Scans vorhanden...',
+    action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
+  }];
 
   constructor(
     private _httpService: HttpService,
