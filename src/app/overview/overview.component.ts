@@ -3,7 +3,6 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { HttpService } from '../shared/services/http.service';
 import { Scan } from '../shared/models/scan';
 import { Notification} from '../shared/models/notification';
-import { ScanStatus } from '../shared/models/scan-status';
 import { SnackbarService } from '../shared/services/snackbar.service';
 import { ToasterService } from '../shared/services/toaster.service';
 import { Button } from 'tns-core-modules/ui/button';
@@ -63,19 +62,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       // "QR_CODE" | "PDF_417" | "AZTEC" | "UPC_E" | "CODE_39" | "CODE_39_MOD_43" | "CODE_93" | "CODE_128" | "DATA_MATRIX"
       // "EAN_8" | "ITF" | "EAN_13" | "UPC_A" | "CODABAR" | "MAXICODE" | "RSS_14" | "INTERLEAVED_2_OF_5"
       if (result.format === 'QR_CODE' && result.text.length) {
-        if (this.validateScan(result.text)) {
-          this.lastScan = this.changeTestOutput(result.text);
-          message = {
-            statusType: 'SUCCESS',
-            detail: 'Code: ' + result.text
-          } as Notification;
-        }
-        else {
-          message = {
-            statusType: 'ERROR',
-            detail: 'Der gescannte Code ist kein Rail-Coffee Code!'
-          } as Notification;
-        }
+        this.lastScan = this.changeTestOutput(result.text);
+        message = {
+          statusType: 'SUCCESS',
+          detail: 'Code: ' + result.text
+        } as Notification;
 
       } else {
         message = {
@@ -106,11 +97,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       statusType: 'SUCCESS',
       detail: 'Some toaster Text'
     } as Notification);
-  }
-
-  private validateScan(message: string): boolean {
-    const re = new RegExp('[A-Z]{3}\-([a-zA-Z0-9]{18})\-[a-fA-f0-9]{5}');
-    return message && message.length === 28 && re.test(message);
   }
 
   // TODO: Remove – Only for testing

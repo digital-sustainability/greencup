@@ -1,0 +1,11 @@
+/* Global style rules exclusively for iOS devices */
+
+.tab-view {
+    tab-text-color: #cccccc;
+}
+
+.list-item-ios {
+    border-bottom-width: 1;
+    border-color: #D0D0D0;
+    margin-left: 15;
+}

@@ -17,6 +17,8 @@ import { SnackbarService } from './shared/services/snackbar.service';
 import { ToasterService } from './shared/services/toaster.service';
 
 import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
+
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -37,6 +39,7 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
     NativeScriptModule,
     AppRoutingModule,
     HttpClientModule,
+    NativeScriptUIListViewModule,
   ],
   providers: [
     NavigationService,

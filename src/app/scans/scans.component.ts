@@ -1,7 +1,8 @@
 import { Component, OnInit, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { HttpService } from '../shared/services/http.service';
-import { Scan } from '../shared/models/scan';
+import { Scan, StatusType } from '../shared/models/scan';
+import { Cup } from '../shared/models/cup';
 import { Notification } from '../shared/models/notification';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
@@ -9,6 +10,7 @@ import { Fab, } from '@nstudio/nativescript-floatingactionbutton';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { ToasterService } from '../shared/services/toaster.service';
 registerElement('Fab', () => require('@nstudio/nativescript-floatingactionbutton').Fab);
+import * as dayjs from 'dayjs';
 
 @Component({
   selector: 'app-scans',
@@ -19,10 +21,29 @@ export class ScansComponent implements OnInit, AfterViewInit {
 
   actionBarTitle = 'SBB Rail Coffee ☕';
   loaded: boolean;
-  items: Scan[];
+  scans: Scan[];
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
+  }];
+
+  testItems: Scan[] = [{
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    cleanedAt: undefined,
+    rewardedAt: undefined,
+    rewarded: false,
+    cleaned: false,
+    cup_id: <Cup>{
+      id: 1,
+      batch_version: 1,
+      code: 'SBB-1xxw4jzcan2n412345-e5885',
+      createdAt: new Date().getMilliseconds(),
+      updatedAt: new Date().getMilliseconds(),
+      scans: []
+    },
+    user_id: undefined,
+    scanStatus: 2
   }];
 
   constructor(
@@ -34,7 +55,9 @@ export class ScansComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this._httpService.getScans().subscribe(
     scans => {
-      this.items = scans;
+      // this.scans = scans;
+      this.scans = this.testItems; // testing
+      // this.scans = []; // testing
       this.loaded = true;
     },
     err => {
@@ -46,10 +69,11 @@ export class ScansComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() { }
 
-  getTime(ms: number): Date {
-    return new Date(ms);
+  getTime(ms: number): String {
+    return dayjs(ms).format('D.M.YY – HH:mm:ss');
   }
 
+  // TODO: Lock button for short time
   onNewScanTap(args): void {
     this._codeScanner.scan({
       formats: 'QR_CODE',
@@ -77,14 +101,40 @@ export class ScansComponent implements OnInit, AfterViewInit {
       }
 
       this._toasterService.showToast(message);
-    }, (errMsg) => {
+    }, errMsg => {
       this._toasterService.showToast({ statusType: 'ERROR', detail: errMsg } as Notification);
     });
   }
 
+  onCradTap(args): void {
+    console.log('TAP');
+  }
+
+  getStatusClass(status: StatusType): string {
+    switch (status) {
+      case StatusType.reserved:
+        return 'status-reserved';
+      case StatusType.rewarded:
+        return 'status-rewarded';
+      default:
+        return 'status-overbid';
+    }
+  }
+
+  getStatusDescription(status: StatusType): string {
+    switch (status) {
+      case StatusType.reserved:
+        return 'Reserviert';
+      case StatusType.rewarded:
+        return 'Gutgeschrieben';
+      default:
+        return 'Überboten';
+    }
+  }
+
   private validateScan(message: string): boolean {
-    const re = new RegExp('[A-Z]{3}\-([a-zA-Z0-9]{18})\-[a-fA-f0-9]{5}');
-    return message && message.length === 28 && re.test(message);
+    const re = new RegExp('[A-Z]{3}\-([a-zA-Z0-9]{14,18})\-[a-fA-f0-9]{5}');
+    return message && message.length >= 20 && message.length <= 28 && re.test(message);
   }
 
 

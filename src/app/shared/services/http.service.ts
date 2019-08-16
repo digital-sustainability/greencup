@@ -5,7 +5,6 @@ import { config } from '../config';
 import { Scan } from '../models/scan';
 import { User} from '../models/user';
 import { Cup } from '../models/cup';
-import { ScanStatus } from '../models/scan-status';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
@@ -39,9 +38,9 @@ export class HttpService {
     return this._http.get<Scan[]>(`${this._api}scan`);
   }
 
-  addScan(code: string): Observable<ScanStatus> {
+  addScan(code: string): Observable<Scan> {
     const params = new HttpParams().set('code', code);
-    return this._http.get<ScanStatus>(`${this._api}scan/bycode`, { params: params });
+    return this._http.get<Scan>(`${this._api}scan/bycode`, { params: params });
   }
 
 

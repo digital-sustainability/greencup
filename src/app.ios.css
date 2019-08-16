@@ -1,8 +1,5 @@
-/* The stylesheet to use for the ios specific mobile app */
+/* The stylesheet imports for iOS mobile app */
 
 @import '~nativescript-theme-core/css/core.light.css';
 @import './app/shared/styles/theme.tns.css';
-
-.tab-view {
-    tab-text-color: #cccccc;
-}
+@import './app/shared/styles/global.ios.css';

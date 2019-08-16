@@ -1,4 +1,5 @@
-/* The stylesheet to use for the android specific mobile app */
+/* The stylesheet imports for Android mobile app */
 
 @import '~nativescript-theme-core/css/core.light.css';
 @import './app/shared/styles/theme.tns.css';
+@import './app/shared/styles/global.android.css';
