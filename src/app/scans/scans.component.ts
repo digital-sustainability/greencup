@@ -27,23 +27,31 @@ export class ScansComponent implements OnInit, AfterViewInit {
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
   }];
 
+  // TODO: Create objects as observable stream for testing
   testItems: Scan[] = [{
     createdAt: Date.now(),
     updatedAt: Date.now(),
-    cleanedAt: undefined,
+    verifiedAt: undefined,
+    verified: false,
     rewardedAt: undefined,
     rewarded: false,
-    cleaned: false,
+    user_id: undefined,
+    status: <StatusType>'reserved',
     cup_id: <Cup>{
       id: 1,
       batch_version: 1,
       code: 'SBB-1xxw4jzcan2n412345-e5885',
-      createdAt: new Date().getMilliseconds(),
-      updatedAt: new Date().getMilliseconds(),
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
       scans: []
     },
-    user_id: undefined,
-    scanStatus: 2
+    cup_round: {
+      id: 1,
+      special_event: '-',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      cup_id: 1
+    }
   }];
 
   constructor(
@@ -110,25 +118,19 @@ export class ScansComponent implements OnInit, AfterViewInit {
     console.log('TAP');
   }
 
-  getStatusClass(status: StatusType): string {
-    switch (status) {
-      case StatusType.reserved:
-        return 'status-reserved';
-      case StatusType.rewarded:
-        return 'status-rewarded';
-      default:
-        return 'status-overbid';
+  getStatusClass(scan: Scan): string {
+    if (scan.verified) {
+      return scan.rewarded ? 'status-rewarded' : 'status-';
+    } else {
+      return scan.scanStatus === StatusType.reserved ? 'status-reserved' : 'status-overbid';
     }
   }
 
-  getStatusDescription(status: StatusType): string {
-    switch (status) {
-      case StatusType.reserved:
-        return 'Reserviert';
-      case StatusType.rewarded:
-        return 'Gutgeschrieben';
-      default:
-        return 'Überboten';
+  getStatusDescription(scan: Scan): string {
+    if (scan.verified) {
+      return scan.rewarded ? 'Ausbezahlt' : 'Gutgeschrieben';
+    } else {
+      return scan.scanStatus === StatusType.reserved ? 'Reserviert' : 'Überboten';
     }
   }
 

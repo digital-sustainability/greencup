@@ -1,20 +1,21 @@
 import { User } from './user';
 import { Cup } from './cup';
+import { CupRound } from './cup-round';
 
 export enum StatusType {
-    reserved,
-    overbid,
-    rewarded
+    reserved = 'reserved',
+    overbid = 'overbid',
 }
 
 export interface Scan {
     createdAt: number;
     updatedAt: number;
-    cleaned: boolean;
-    cleanedAt: number;
+    verified: boolean;
+    verifiedAt: number;
     rewarded: boolean;
     rewardedAt: number;
     cup_id: number | Cup;
     user_id: number | User;
-    scanStatus: StatusType;
+    status: StatusType;
+    cup_round: CupRound;
 }
