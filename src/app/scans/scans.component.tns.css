@@ -55,3 +55,9 @@
     vertical-align: bottom;
     horizontal-align: right;
   }
+
+  .sort-option {
+    margin: 5;
+    padding: 15 5 15 5;
+    text-align: center;
+}

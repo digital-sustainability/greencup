@@ -3,52 +3,40 @@
 <StackLayout visibility="{{ !loaded ? 'visible' : 'collapsed' }}" verticalAlignment="center">
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
-<!-- <GridLayout class="page"> -->
-<GridLayout *ngIf="loaded && scans.length > 0" class="page" tkExampleTitle tkToggleNavButton>
-    <!-- TODO: Add click event with modal of details -->
-    <!-- TODO: ngClass with function that determines status -->
-    <!-- <ListView [items]="items" id="scanListView">
-        <ng-template let-item="item">
-            <CardView ripple="true" margin="5" class="card">
-                <GridLayout columns="20, auto, *" rows="auto, auto, auto">
-                    <StackLayout col="0" rowspan="3" text="@" class="status-reserved"></StackLayout>
-                    <Label col="1" row="0" class="scan-label" text="Status:"></Label>
-                    <Label col="2" row="0" class="scan-value" [text]="item.scanStatus"></Label>
-                    <Label col="1" row="1" class="scan-label" text="Gescannt:"></Label>
-                    <Label col="2" row="1" class="scan-value" [text]="getTime(item.updatedAt)"></Label>
-                    <Label col="1" row="2" class="scan-label" text="Becher ID:"></Label>
-                    <Label col="2" row="2" class="scan-value" [text]="item.cup_id.id"></Label>
-                </GridLayout>
-            </CardView>
-        </ng-template>
-    </ListView> -->
-    <!-- <RadListView [items]="items" (itemTap)="onEventTap($event)"> -->
-    <RadListView id="scanListView" [items]="scans">
+<GridLayout *ngIf="loaded && scanCount > 0" class="page" tkExampleTitle tkToggleNavButton>
+    <RadListView id="scanListView" [items]="scans" (itemTap)="onScanTap($event)">
+        <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Default" itemDeleteAnimation="Default">
         <ng-template tkListItemTemplate let-scan="item">
             <StackLayout>
-                <!-- TODO: On modal click descibe the status in words -->
+                <!-- TODO: On modal click descibe the status in words and other details -->
                 <CardView class="card" ripple="true" margin="5">
                     <GridLayout columns="20, auto, *" rows="auto, auto, auto">
-                        <!-- TODO: ngClass with function that determines status -->
-                        <StackLayout col="0" rowspan="3" [ngClass]="getStatusClass(scan.scanStatus)"></StackLayout>
+                        <StackLayout col="0" rowspan="3" [ngClass]="getStatusClass(scan.status)"></StackLayout>
                         <Label col="1" row="0" class="scan-label" text="Status:"></Label>
-                        <Label col="2" row="0" class="scan-value" [text]="getStatusDescription(scan.scanStatus)"></Label>
+                        <Label col="2" row="0" class="scan-value" [text]="getStatusDescription(scan.status)"></Label>
                         <Label col="1" row="1" class="scan-label" text="Gescannt:"></Label>
-                        <Label col="2" row="1" class="scan-value" [text]="getTime(scanupdatedAt)"></Label>
+                        <Label col="2" row="1" class="scan-value" [text]="getTime(scan.updatedAt)"></Label>
                         <Label col="1" row="2" class="scan-label" text="Becher ID:"></Label>
                         <Label col="2" row="2" class="scan-value" [text]="scan.cup_id.id"></Label>
                     </GridLayout>
                 </CardView>
                 <StackLayout class="list-item-ios"></StackLayout>
-            </StackLayout>
-            <!-- <CardView class="card" ripple="true" margin="5" elevation="40" radius="10" ios:shadowRadius="3" android:elevation="6"> -->
+                </StackLayout>
+                <!-- <CardView class="card" ripple="true" margin="5" elevation="40" radius="10" ios:shadowRadius="3" android:elevation="6"> -->
+                </ng-template>
+            </ListViewLinearLayout>
+            <ng-template tkListViewHeader>
+                <GridLayout columns="*, *" rows="auto">
+                    <Label col="0" class="sort-option" text="Status"></Label>
+                    <Label col="1" class="sort-option" text="Zeitpunkt"></Label>
+                </GridLayout>
             </ng-template>
         </RadListView>
         <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
     <Fab (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>
 </GridLayout>
 <!-- Show grayed-out default-scan if no scans are found  -->
-<GridLayout *ngIf="loaded && scans.length === 0">
+<GridLayout *ngIf="loaded && scanCount === 0">
     <ListView [items]="defaultItems" id="emptyScanListView">
         <ng-template let-scan="item">
             <CardView ripple="true" margin="5" class="card">
