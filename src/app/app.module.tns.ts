@@ -13,8 +13,7 @@ import { ScansComponent } from './scans/scans.component';
 import { NavigationService } from './shared/services/navigation.service';
 import { CsrfService } from './shared/services/csrf.service';
 import { HttpInterceptorService } from './shared/services/http-intercepter.service';
-import { SnackbarService } from './shared/services/snackbar.service';
-import { ToasterService } from './shared/services/toaster.service';
+import { FeedbackService } from './shared/services/feedback.service';
 
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
@@ -46,8 +45,7 @@ import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
     BarcodeScanner,
     CsrfService,
     HttpInterceptorService,
-    SnackbarService,
-    ToasterService,
+    FeedbackService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorService,

@@ -3,13 +3,20 @@
 <StackLayout visibility="{{ !loaded ? 'visible' : 'collapsed' }}" verticalAlignment="center">
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
+<StackLayout>
+    <GridLayout columns="*, *" rows="auto">
+        <Label col="1" class="sort-option" text="Zeitpunkt"></Label>
+        <Label col="0" class="sort-option" text="Status"></Label>
+    </GridLayout>
+</StackLayout>
+<StackLayout class="separator" height="3"></StackLayout>
 <GridLayout *ngIf="loaded && scanCount > 0" class="page">
-    <RadListView id="scanListView" [items]="scans" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInit)="onPullToRefreshInit($event)">
-        <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Default" itemDeleteAnimation="Default">
+    <RadListView id="scanListView" [items]="scans" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
+        <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
         <ng-template tkListItemTemplate let-scan="item">
-            <!-- <StackLayout> -->
                 <!-- TODO: On modal click descibe the status in words and other details -->
-                <CardView class="card" ripple="true" margin="5">
+                <CardView class="card" ripple="true" margin="5" elevation="40" radius="10" ios:shadowRadius="3" android:elevation="6">
+                <!-- <CardView class="card list-item-ios" ripple="true" margin="5"> -->
                     <GridLayout columns="20, auto, *" rows="auto, auto, auto">
                         <StackLayout col="0" rowspan="3" [ngClass]="getStatusClass(scan)"></StackLayout>
                         <Label col="1" row="0" class="scan-label" text="Status:"></Label>
@@ -20,17 +27,14 @@
                         <Label col="2" row="2" class="scan-value" [text]="getCupId(scan)"></Label>
                     </GridLayout>
                 </CardView>
-                <!-- <StackLayout class="list-item-ios"></StackLayout> -->
-                <!-- </StackLayout> -->
-                <!-- <CardView class="card" ripple="true" margin="5" elevation="40" radius="10" ios:shadowRadius="3" android:elevation="6"> -->
                 </ng-template>
             </ListViewLinearLayout>
-            <ng-template tkListViewHeader>
+            <!-- <ng-template tkListViewHeader>
                 <GridLayout columns="*, *" rows="auto">
                     <Label col="0" class="sort-option" text="Status"></Label>
                     <Label col="1" class="sort-option" text="Zeitpunkt"></Label>
                 </GridLayout>
-            </ng-template>
+            </ng-template> -->
         </RadListView>
         <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
     <Fab (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>

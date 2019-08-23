@@ -2,14 +2,15 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { BarcodeScanner, ScanOptions, ScanResult } from 'nativescript-barcodescanner';
 import { HttpService } from '../shared/services/http.service';
 import { Scan } from '../shared/models/scan';
-import { Notification } from '../shared/models/notification';
-import { SnackbarService } from '../shared/services/snackbar.service';
-import { ToasterService } from '../shared/services/toaster.service';
 import { Button } from 'tns-core-modules/ui/button';
 import { fromEvent, Subscription, interval } from 'rxjs';
 import { throttle } from 'rxjs/operators';
 
 import { View } from 'tns-core-modules/ui/core/view';
+
+import { FeedbackType } from 'nativescript-feedback';
+import { FeedbackService } from '../shared/services/feedback.service';
+
 
 @Component({
   selector: 'app-overview',
@@ -47,8 +48,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   constructor(
     private _codeScanner: BarcodeScanner,
     private _httpService: HttpService,
-    private _snackbarService: SnackbarService,
-    private _toasterService: ToasterService
+    private _FeedbackService: FeedbackService,
   ) { }
 
   ngOnInit() { }
@@ -56,7 +56,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.button = this.btn.nativeElement;
     fromEvent(this.button, 'tap').pipe(throttle(val => interval(2000))).subscribe(
-      event => console.log('Rx Tap!')
+      event => {
+        console.log('Rx Tap!');
+
+      }
       // event => this.onOpenScanner()
     );
     // this.button.animate({ opacity: 0, duration: 2000 }).catch((e) => {
@@ -70,29 +73,18 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       this.throttling = true;
       this._codeScanner.scan(this.scanOptions)
         .then((result) => {
-          let message: Notification;
           // This Promise is never invoked when a 'continuousScanCallback' function is provided
           // TODO: check all these formats
           // "QR_CODE" | "PDF_417" | "AZTEC" | "UPC_E" | "CODE_39" | "CODE_39_MOD_43" | "CODE_93" | "CODE_128" | "DATA_MATRIX"
           // "EAN_8" | "ITF" | "EAN_13" | "UPC_A" | "CODABAR" | "MAXICODE" | "RSS_14" | "INTERLEAVED_2_OF_5"
           if (result.format === 'QR_CODE' && result.text.length) {
             this.lastScan = this.changeTestOutput(result.text);
-            message = {
-              statusType: 'SUCCESS',
-              detail: 'Code: ' + result.text
-            } as Notification;
+            this._FeedbackService.show(FeedbackType.Success, 'Neuer Scan', result.text, 4000);
           } else {
-            message = {
-              statusType: 'ERROR',
-              detail: 'Scan wurde nicht erkannt'
-            } as Notification;
+            this._FeedbackService.show(FeedbackType.Error, 'Scan wurde nicht erkannt');
           }
-          this._toasterService.showToast(message);
         }, (errorMessage) => {
-          this._toasterService.showToast({
-            statusType: 'ERROR',
-            detail: errorMessage
-          } as Notification);
+          this._FeedbackService.show(FeedbackType.Error, 'Scanfehler', errorMessage);
         });
     }
     // Allow next button tap
@@ -103,15 +95,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     this._httpService.getScans(1).subscribe(scan => console.log('**YES** ', scan), err => console.log('**NO** ', err));
   }
 
-  onShowSnack() {
-    this._snackbarService.showSimpleSnackbar();
-  }
-
-  onShowToast() {
-    this._toasterService.showToast({
-      statusType: 'SUCCESS',
-      detail: 'Some toaster Text'
-    } as Notification);
+  onShowFeedback() {
+    const msg = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.';
+    this._FeedbackService.show(Math.floor(((Math.random() * 4) + 1)), 'A Feedback Title', msg);
   }
 
   // TODO: Remove – Only for testing

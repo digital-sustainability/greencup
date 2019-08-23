@@ -7,13 +7,14 @@ registerElement('Fab', () => require('@nstudio/nativescript-floatingactionbutton
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 
 import { HttpService } from '../shared/services/http.service';
-import { ToasterService } from '../shared/services/toaster.service';
+import { FeedbackService } from '../shared/services/feedback.service';
+// https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { FeedbackType } from 'nativescript-feedback';
 
 import { Scan, StatusType } from '../shared/models/scan';
-import { Notification } from '../shared/models/notification';
 import { Cup } from '../shared/models/cup';
-import { TestScan } from './test-scan';
+import { TestScan } from '../shared/models/test-scan';
 
 import { interval } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -38,9 +39,9 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   private _throttle = false;
   private _throttleTime = 2000;
 
-  private _dataSource = interval(1500);
+  private _dataSource = interval(1500); // FIXME testing only
 
-  private _userId = 2; // FIXME userId testing only
+  private _userId = 2; // FIXME testing only
 
   private _scanOptions = {
     formats: 'QR_CODE',
@@ -59,7 +60,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private _httpService: HttpService,
     private _codeScanner: BarcodeScanner,
-    private _toasterService: ToasterService,
+    private _feedbackService: FeedbackService,
     private _changeDetectionRef: ChangeDetectorRef
     ) { }
 
@@ -80,37 +81,27 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   onNewScanTap(args): void {
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
-      this._codeScanner.scan(this._scanOptions).then((result) => {
-        if (result.format === 'QR_CODE' && result.text.length) {
-          if (this.validateScan(result.text)) {
-
-            this._httpService.addScan(result.text, this._userId).subscribe(
-              (scan: Scan[]) => {
-                // TODO Check received scans for errors?
-                if (scan && scan.length) {
-                  this.adjustScanList(scan[0]);
-                } else {
-                  this._toasterService.showToast({ statusType: 'ERROR', detail: 'Keine Antwort erhalten' } as Notification);
-                }
-              },
-              err => this._toasterService.showToast({ statusType: 'ERROR', detail: err.message } as Notification)
-            );
-
-
+      this._codeScanner.scan(this._scanOptions)
+        // Handle codeScanner promise.
+        .then((result) => {
+          if (result.format === 'QR_CODE' && result.text.length) {
+            if (this.validateScan(result.text)) {
+              // In case the QR-Code matches all requirements, send it to the server.
+              this.saveScan(result.text);
+            } else {
+              const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
+              this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
+            }
           } else {
-            this._toasterService.showToast({
-              statusType: 'ERROR',
-              detail: 'Der gescannte Code ist kein Rail-Coffee Code!'
-            } as Notification);
+            this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
           }
-        } else {
-          this._toasterService.showToast({
-            statusType: 'ERROR',
-            detail: 'Scan wurde nicht erkannt'
-          } as Notification);
-        }
-      }, errMsg => {
-        this._toasterService.showToast({ statusType: 'ERROR', detail: errMsg } as Notification);
+        // Handle scan errors.
+        }, errMsg => {
+          if (errMsg === 'Scan aborted') {
+            this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
+          } else {
+            this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
+          }
       });
     }
     setTimeout(() => this._throttle = false, this._throttleTime);
@@ -121,9 +112,8 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     alert('User tapped');
   }
 
-  // onPullToRefreshInit(args: ListViewEventData) {
   onPullToRefreshInit(args) {
-    const that = new WeakRef(this);
+    // const that = new WeakRef(this);
     setTimeout( () => {
       this.loadData();
       const listView = args.object;
@@ -132,23 +122,6 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // ANCHOR *** Accessor Methods ***
-
-  loadData(): void {
-    this._httpService.getScans(this._userId).subscribe(
-      (scans: Scan[]) => {
-        console.log('|===> CONNECTED TO BACKEND');
-        this._scans = new ObservableArray(scans);
-        this._loaded = true;
-        // this._scans = new ObservableArray([]); // FIXME testing only
-      },
-      err => {
-        this._toasterService.showToast({ statusType: 'ERROR', detail: err } as Notification);
-        console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
-      }
-      );
-      this._loaded = true;
-      this._dataSource.pipe(take(5)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.reserved))); // FIXME testing only
-  }
 
   getStatusClass(scan: Scan): string {
     if (scan.verified) {
@@ -188,26 +161,54 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ANCHOR *** Private Methods ***
 
+  private loadData(): void {
+    this._httpService.getScans(this._userId).subscribe(
+      (scans: Scan[]) => {
+        console.log('|===> CONNECTED TO BACKEND');
+        this._scans = new ObservableArray(scans);
+        this._loaded = true;
+        // this._scans = new ObservableArray([]); // FIXME testing only
+      },
+      err => {
+        this._feedbackService.show(FeedbackType.Error, 'Verbindungsfehler', err.message.substring(0, 60) + '...');
+        console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
+      }
+    );
+    // this._dataSource.pipe(take(5)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.reserved))); // FIXME testing only
+  }
+
+  private saveScan(code: string): void {
+    this._httpService.addScan(code, this._userId).subscribe(
+      (scan: Scan[]) => {
+        if (scan && scan.length) {
+          this.adjustScanList(scan[0]);
+        } else {
+          // TODO: Test all possible backend responses; Check from backend received scans for errors?
+          const msg = 'Der QR Code konnte nicht gespeichert werden. Bitte scannen Sie den Becher erneut';
+          this._feedbackService.show(FeedbackType.Error, 'Kein Scan erhalten', msg);
+        }
+      },
+      err => this._feedbackService.show(FeedbackType.Error, 'Ein Fehler ist aufgetreten', err.message.substring(0, 60) + '...')
+    );
+  }
+
   private validateScan(message: string): boolean {
     const re = new RegExp('[A-Z]{3}\-([a-zA-Z0-9]{14,18})\-[a-fA-f0-9]{5}');
     return message && message.length >= 20 && message.length <= 28 && re.test(message);
   }
 
   private adjustScanList(scan: Scan): void {
-    // Get array index if scan already exists and remove it.
-    console.log('|===> filter for ob: ', scan);
-    console.log('|===> found: ', this._scans.filter(e => e.id === scan.id));
+    // Check whether the newly added scan ID aleady exist in the view
     const existing = this._scans.filter(e => e.id === scan.id);
+    // If scan already exists remove it by index.
     if (existing && existing.length) {
       const idx = this._scans.indexOf(existing[0]);
       this.scans.splice(idx, 1);
     }
-    // Add the new scan.
-    this._scans.push(scan);
-    this._toasterService.showToast({
-      statusType: 'SUCCESS',
-      detail: 'Becher erfolgreich reserviert'
-    } as Notification);
+    // Add the new scan and notify the user.
+    this._scans.unshift(scan);
+    const msg = 'Nach der Reinigung des Bechers erhält die letzte Reservation die Pfandgutschrift';
+    this._feedbackService.show(FeedbackType.Success, 'Becher reserviert!', msg, 3500);
   }
 
   /**
@@ -215,6 +216,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
    * * Vorschlag um die vielen Toasts im code zu vermeiden?
    * * nativeElement Zugriff auf registrierte Elemente wie CardView oder FAB
    * * Wann soll ich input des Backends testen? E.g. if (scan && scan.length) { ...
+   * * Throttle auf Pull-to refresh nötig?
    */
 
 

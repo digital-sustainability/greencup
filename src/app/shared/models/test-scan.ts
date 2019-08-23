@@ -1,7 +1,7 @@
-import { Scan, StatusType } from '../shared/models/scan';
-import { User } from '../shared/models/user';
-import { Cup } from '../shared/models/cup';
-import { CupRound } from '../shared/models/cup-round';
+import { Scan, StatusType } from './scan';
+import { User } from './user';
+import { Cup } from './cup';
+import { CupRound } from './cup-round';
 
 
 export class TestScan implements Scan {
