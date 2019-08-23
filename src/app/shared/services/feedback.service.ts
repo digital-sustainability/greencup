@@ -4,6 +4,7 @@ import { Feedback, FeedbackType, FeedbackPosition } from 'nativescript-feedback'
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
 
+  // https://github.com/EddyVerbruggen/nativescript-feedback
   private _feedback: Feedback;
 
   constructor() {

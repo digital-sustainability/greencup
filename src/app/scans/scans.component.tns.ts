@@ -5,6 +5,7 @@ registerElement('CardView', () => CardView);
 import { Fab, } from '@nstudio/nativescript-floatingactionbutton';
 registerElement('Fab', () => require('@nstudio/nativescript-floatingactionbutton').Fab);
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
+import { connectionType, getConnectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
 
 import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
@@ -29,20 +30,16 @@ import * as dayjs from 'dayjs';
 export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   actionBarTitle = 'SBB Rail Coffee ☕';
-  private _loaded: boolean;
-  private _scans: ObservableArray<Scan>;
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
   }];
 
+  private _loaded: boolean;
+  private _scans: ObservableArray<Scan>;
   private _throttle = false;
   private _throttleTime = 2000;
-
-  private _dataSource = interval(1500); // FIXME testing only
-
-  private _userId = 2; // FIXME testing only
-
+  private _connection: boolean;
   private _scanOptions = {
     formats: 'QR_CODE',
     cancelLabel: 'Schliessen', // iOS only
@@ -56,6 +53,10 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     openSettingsIfPermissionWasPreviouslyDenied: true // iOS only, send user to settings app if access previously denied
   };
 
+  // FIXME testing only
+  private _dataSource = interval(1500);
+  private _userId = 2;
+
 
   constructor(
     private _httpService: HttpService,
@@ -67,15 +68,21 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   // ANCHOR *** Angular Lifecycle Methods ***
 
   ngOnInit(): void {
+    // Monitor the users internet connection. Change connection status if the user is offline
+    startMonitoring((newConnectionType) => {
+      this._connection = newConnectionType !== connectionType.none;
+    });
     this._changeDetectionRef.detectChanges();
     this.loadData();
   }
 
   ngAfterViewInit(): void { }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    stopMonitoring();
+  }
 
-  // ANCHOR *** User Interaction Methods ***
+  // ANCHOR *** User-Interaction Methods ***
 
   // TODO Lock button for short time
   onNewScanTap(args): void {
@@ -157,6 +164,10 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get scans(): ObservableArray<Scan> {
     return this._scans;
+  }
+
+  get connection(): boolean {
+    return this._connection;
   }
 
   // ANCHOR *** Private Methods ***

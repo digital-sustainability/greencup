@@ -65,3 +65,17 @@
 .separator {
     background-color: #eb0000
 }
+
+.connection-warning {
+    background-color: orange;
+    color: white;
+    padding: 5;
+    margin: 15;
+    border: #4d4d4d;
+    border-width: 1;
+    border-radius: 3;
+}
+
+#warning-icon {
+    margin: 10;
+}

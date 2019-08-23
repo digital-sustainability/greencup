@@ -4,10 +4,16 @@
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
 <StackLayout>
-    <GridLayout columns="*, *" rows="auto">
-        <Label col="1" class="sort-option" text="Zeitpunkt"></Label>
-        <Label col="0" class="sort-option" text="Status"></Label>
+    <GridLayout *ngIf="connection; else connectionWarning" columns="*, *" rows="auto">
+        <Label col="0" class="sort-option" text="Zeitpunkt"></Label>
+        <Label col="1" class="sort-option" text="Status"></Label>
     </GridLayout>
+    <ng-template #connectionWarning>
+        <GridLayout class="connection-warning" columns="auto, *" rows="auto">
+            <Label col="0" id="warning-icon" text="icon"></Label>
+            <Label col="1" class="body" text="Keine Verbindung zum Internet: Neue QR-Code Scans werden nicht gespeichert!" textWrap="true"></Label>
+        </GridLayout>
+    </ng-template>
 </StackLayout>
 <StackLayout class="separator" height="3"></StackLayout>
 <GridLayout *ngIf="loaded && scanCount > 0" class="page">
@@ -29,12 +35,6 @@
                 </CardView>
                 </ng-template>
             </ListViewLinearLayout>
-            <!-- <ng-template tkListViewHeader>
-                <GridLayout columns="*, *" rows="auto">
-                    <Label col="0" class="sort-option" text="Status"></Label>
-                    <Label col="1" class="sort-option" text="Zeitpunkt"></Label>
-                </GridLayout>
-            </ng-template> -->
         </RadListView>
         <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
     <Fab (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>
