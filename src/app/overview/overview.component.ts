@@ -100,7 +100,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
 
   onTestGetScan() {
-    this._httpService.getScan(1).subscribe(scan => console.log('**YES** ', scan), err => console.log('**NO** ', err));
+    this._httpService.getScans(1).subscribe(scan => console.log('**YES** ', scan), err => console.log('**NO** ', err));
   }
 
   onShowSnack() {

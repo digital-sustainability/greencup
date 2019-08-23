@@ -5,18 +5,19 @@ import { CupRound } from '../shared/models/cup-round';
 
 
 export class TestScan implements Scan {
+  id: number;
   createdAt: number;
   updatedAt: number;
   verified: boolean;
   verifiedAt: number;
   rewarded: boolean;
   rewardedAt: number;
-  cup_id: number | Cup;
   user_id: number | User;
   status: StatusType;
-  cup_round: CupRound;
+  cup_round_id: CupRound;
 
-  constructor(cupId: number, status: StatusType) {
+  constructor(rdnId: number, status: StatusType) {
+    this.id = rdnId;
     this.status = status;
     this.createdAt = Date.now();
     this.updatedAt = Date.now();
@@ -25,21 +26,12 @@ export class TestScan implements Scan {
     this.rewardedAt = undefined;
     this.rewarded = false;
     this.user_id = undefined;
-    this.cup_id = <Cup>{
-      id: cupId,
-      batch_version: 1,
-      // code: 'SBB-1xxw4jzcan2n412345-e5885',
-      code: `SBB-${cupId}xxw4jzcan2n412345-e5885`,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      scans: []
-    };
-    this.cup_round = {
+    this.cup_round_id = <CupRound>{
       id: 1,
       special_event: '-',
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      cup_id: 1
+      cup_id: rdnId
     };
   }
 
