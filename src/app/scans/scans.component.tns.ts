@@ -1,11 +1,12 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
 import { Fab, } from '@nstudio/nativescript-floatingactionbutton';
 registerElement('Fab', () => require('@nstudio/nativescript-floatingactionbutton').Fab);
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { connectionType, getConnectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
+import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
+import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 
 import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
@@ -19,7 +20,7 @@ import { TestScan } from '../shared/models/test-scan';
 
 import { interval } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { has, findIndex } from 'lodash';
+import { has } from 'lodash';
 import * as dayjs from 'dayjs';
 
 @Component({
@@ -29,11 +30,21 @@ import * as dayjs from 'dayjs';
 })
 export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
   actionBarTitle = 'SBB Rail Coffee ☕';
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
   }];
+
+  sortUp = String.fromCharCode(0xf106);
+  sortDown = String.fromCharCode(0xf107);
+
+  // Initial ASC sort by time of scan
+  timeSortIcon = this.sortDown;
+  statusSortIcon = '';
+  private _sortTimeASC = true;
+  private _sortStatusASC = true;
 
   private _loaded: boolean;
   private _scans: ObservableArray<Scan>;
@@ -128,11 +139,43 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 1000);
   }
 
+  onSortByTime(): void {
+    this.statusSortIcon = ' ';
+    if (this._scans) {
+      if (this._sortTimeASC) {
+        this.timeSortIcon = this.sortDown;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
+      } else {
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => b.updatedAt - a.updatedAt;
+        this.timeSortIcon = this.sortUp;
+      }
+    }
+    this._sortTimeASC = !this._sortTimeASC;
+  }
+
+  onSortByStatus(): void {
+    this.timeSortIcon = ' ';
+    if (this._scans) {
+      if (this._sortStatusASC) {
+        this.statusSortIcon = this.sortDown;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
+          return this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
+        };
+      } else {
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
+          return this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
+        };
+        this.statusSortIcon = this.sortUp;
+      }
+    }
+    this._sortStatusASC = !this._sortStatusASC;
+  }
+
   // ANCHOR *** Accessor Methods ***
 
   getStatusClass(scan: Scan): string {
     if (scan.verified) {
-      return scan.rewarded ? 'status-rewarded' : 'status-';
+      return scan.rewarded ? 'status-rewarded' : 'status-verified';
     } else {
       return scan.status === StatusType.reserved ? 'status-reserved' : 'status-overbid';
     }
@@ -178,6 +221,8 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('|===> CONNECTED TO BACKEND');
         this._scans = new ObservableArray(scans);
         this._loaded = true;
+        // Initally sort list ASC by scan time
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan , b: Scan) => a.updatedAt - b.updatedAt;
         // this._scans = new ObservableArray([]); // FIXME testing only
       },
       err => {
@@ -185,7 +230,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
       }
     );
-    // this._dataSource.pipe(take(5)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.reserved))); // FIXME testing only
+    this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
   private saveScan(code: string): void {
@@ -229,6 +274,5 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
    * * Wann soll ich input des Backends testen? E.g. if (scan && scan.length) { ...
    * * Throttle auf Pull-to refresh nötig?
    */
-
 
 }

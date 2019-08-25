@@ -9,3 +9,8 @@
     border-color: #D0D0D0;
     margin-left: 15;
 }
+
+.fa {
+    font-family: Font Awesome 5 Free, fa-solid-900;
+    font-weight: 900;
+}
