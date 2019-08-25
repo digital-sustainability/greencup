@@ -2,7 +2,8 @@
     <!-- Injected via ng-content. Methods defined in action-bar.component -->
     <NavigationButton android.systemIcon="ic_menu_back" text="Zurück" (tap)="onNavigateBack()"></NavigationButton>
 </app-action-bar>
-<TabView #tabview class="tab-view" tabTextFontSize="14" selectedIndex="1" androidTabsPosition="bottom">
+<TabView #tabview class="tab-view" tabTextFontSize="14" selectedIndex="0" androidTabsPosition="bottom">
+<!-- <TabView #tabview class="tab-view" tabTextFontSize="14" selectedIndex="1" androidTabsPosition="bottom"> -->
     <StackLayout *tabItem="{ title: 'Übersicht' }" textWrap="true">
         <app-overview></app-overview>
     </StackLayout>

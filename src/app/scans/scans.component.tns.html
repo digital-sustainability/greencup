@@ -29,7 +29,7 @@
 <GridLayout *ngIf="loaded && scanCount > 0" class="page">
     <RadListView #scanListView [items]="scans" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
         <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
-        <ng-template tkListItemTemplate let-scan="item">
+            <ng-template tkListItemTemplate let-scan="item">
                 <!-- TODO: On modal click descibe the status in words and other details -->
                 <CardView class="card" ripple="true" margin="5" elevation="40" radius="10" ios:shadowRadius="3" android:elevation="6">
                 <!-- <CardView class="card list-item-ios" ripple="true" margin="5"> -->
@@ -43,10 +43,10 @@
                         <Label col="2" row="2" class="scan-value" [text]="getCupId(scan)"></Label>
                     </GridLayout>
                 </CardView>
-                </ng-template>
-            </ListViewLinearLayout>
-        </RadListView>
-        <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
+            </ng-template>
+        </ListViewLinearLayout>
+    </RadListView>
+    <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
     <Fab (tap)="onNewScanTap($event)" icon="~/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>
 </GridLayout>
 <!-- Show grayed-out default-scan if no scans are found  -->

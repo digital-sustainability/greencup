@@ -34,7 +34,6 @@ export class FeedbackService {
     if (onTap) {
       opts['onTap'] = onTap;
     }
-    // TODO: Add icon depending on `FeedbackType`; Eventually use the same colors as on the cards.
     this._feedback.show(opts);
   }
 }

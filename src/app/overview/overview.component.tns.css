@@ -1,1 +1,16 @@
 /* Add mobile styles for the component here.  */
+.ic-overview {
+    color: #a2a2a2;
+    margin: 15 15 15 0;
+    font-size: 28;
+}
+
+.overview-label {
+    margin: 5   ;
+    font-weight: bold;
+}
+
+.email {
+    color: blue;
+    text-decoration: underline blue;
+}

@@ -13,7 +13,7 @@ export class TabsComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
-  // TODO: triger data load on tab switch
+  // TODO: triger data load on tab switch https://docs.nativescript.org/angular/ui/ng-ui-widgets/tab-view
 
   onNavigateBack(): void {
     this._navigationService.navigateBack();

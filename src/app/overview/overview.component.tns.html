@@ -1,11 +1,40 @@
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
-<StackLayout  class="p-20">
-    <Button text="QR-Code Scannen" class="btn btn-primary" (tap)="onOpenScanner()"></Button>
-    <Button text="Feedback" class="btn btn-primary" (tap)="onShowFeedback()"></Button>
-    <Button #rxBtn text="Rx" class="btn btn-primary"></Button>
-    <!-- <Button text="Add a scan" class="btn btn-primary" (tap)="onTestSetScan()"></Button> -->
-</StackLayout>
-<StackLayout class="p-20" orientation="horizontal">
-    <Label text="Last Test Scan: "></Label>
-    <Label [text]="lastScan"></Label>
-</StackLayout>
+
+<ScrollView>
+    <StackLayout class="p-20">
+        <GridLayout columns="auto, *" rows="auto">
+            <Label class="fa ic-overview" text="&#xf029;"></Label>
+            <StackLayout col="1" class="hr-light"></StackLayout>
+        </GridLayout>
+        <GridLayout columns="auto, *" rows="auto">
+            <Label class="fa ic-overview" text="&#xf05a;"></Label>
+            <StackLayout col="1" class="hr-light"></StackLayout>
+        </GridLayout>
+        <GridLayout columns="auto, *" rows="auto">
+            <Label class="fa ic-overview" text="&#xf406;"></Label>
+            <StackLayout col="1" class="hr-light"></StackLayout>
+        </GridLayout>
+        <StackLayout class="m-x-10">
+            <GridLayout columns="auto, *" rows="*, *">
+                <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
+                <Label col="1" row="0" class="email" text="bob.sanchez@gmail.com" textWrap="true"></Label>
+                <Label col="0" row="1" class="overview-label" text="Registriert:"></Label>
+                <Label col="1" row="1" text="01.11.2019"></Label>
+            </GridLayout>
+            <StackLayout class="m-t-20">
+                <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
+                <Button text="Logout" class="btn btn-primary" (tap)="onLogout()"></Button>
+            </StackLayout>
+        </StackLayout>
+
+        <!-- FIXME testing only -->
+        <StackLayout class="m-t-30">
+            <Button text="QR-Code Scannen" class="btn" (tap)="onOpenScanner()"></Button>
+            <Button text="Feedback" class="btn" (tap)="onShowFeedback()"></Button>
+            <Button #rxBtn text="Rx" class="btn"></Button>
+            <!-- <Button text="Add a scan" class="btn btn-primary" (tap)="onTestSetScan()"></Button> -->
+            <Label text="Last Test Scan: "></Label>
+            <Label [text]="lastScan"></Label>
+        </StackLayout>
+    </StackLayout>
+</ScrollView>

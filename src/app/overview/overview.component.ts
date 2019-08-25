@@ -100,6 +100,15 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     this._FeedbackService.show(Math.floor(((Math.random() * 4) + 1)), 'A Feedback Title', msg);
   }
 
+  onLogout(): void {
+    // TODO: Confirm logout
+    console.log('|===> Logout');
+  }
+
+  onChangePassword(): void {
+    console.log('|===> Change Password');
+  }
+
   // TODO: Remove – Only for testing
   private changeTestOutput(message: string): string {
     return message.length <= 30 ? message : message.substring(0, 30) + '...';
