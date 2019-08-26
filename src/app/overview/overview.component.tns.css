@@ -12,5 +12,46 @@
 
 .email {
     color: blue;
-    text-decoration: underline blue;
+}
+
+.scan-matrix {
+    margin-top: 15;
+    margin-bottom: 20;
+    padding: 15;
+    text-align: center;
+    background-color: lightgray;
+    border-radius: 10;
+    font-weight: bold;
+}
+
+.scan-sum {
+    margin-top: 5;
+    font-size: 26;
+}
+
+.status-reserved {
+    color: #ffff4d;
+}
+
+.status-verified {
+    color: #C8EC85;
+}
+
+.status-rewarded {
+    color: #92DB00;
+}
+
+.status-overbid {
+    color: #EB6A00;
+}
+
+.status-empty {
+    color: #c0c0c0;
+}
+
+.section-container {
+    margin-bottom: 0 15 25 15;
+}
+
+.section-separatror {
 }

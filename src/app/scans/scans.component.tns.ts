@@ -40,9 +40,10 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   sortUp = String.fromCharCode(0xf106);
   sortDown = String.fromCharCode(0xf107);
 
-  // Initial ASC sort by time of scan
+  // Initial ASC sort by time of scan.
   timeSortIcon = this.sortDown;
   statusSortIcon = '';
+  // Boolean values to toggle the sorting direction.
   private _sortTimeASC = true;
   private _sortStatusASC = true;
 
@@ -95,7 +96,6 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ANCHOR *** User-Interaction Methods ***
 
-  // TODO Lock button for short time
   onNewScanTap(args): void {
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
@@ -142,11 +142,12 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   onSortByTime(): void {
     this.statusSortIcon = ' ';
     if (this._scans) {
+      let sortFncRef = this.scanListViewComponent.listView.sortingFunction;
       if (this._sortTimeASC) {
         this.timeSortIcon = this.sortDown;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
+        sortFncRef = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
       } else {
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => b.updatedAt - a.updatedAt;
+        sortFncRef = (a: Scan, b: Scan) => b.updatedAt - a.updatedAt;
         this.timeSortIcon = this.sortUp;
       }
     }
@@ -156,15 +157,12 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   onSortByStatus(): void {
     this.timeSortIcon = ' ';
     if (this._scans) {
+      let sortFncRef = this.scanListViewComponent.listView.sortingFunction;
       if (this._sortStatusASC) {
         this.statusSortIcon = this.sortDown;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
-          return this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
-        };
+        sortFncRef = (a: Scan, b: Scan) => this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
       } else {
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
-          return this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
-        };
+        sortFncRef = (a: Scan, b: Scan) => this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
         this.statusSortIcon = this.sortUp;
       }
     }
@@ -230,7 +228,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
       }
     );
-    this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
+    // this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
   private saveScan(code: string): void {

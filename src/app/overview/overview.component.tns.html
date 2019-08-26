@@ -1,40 +1,68 @@
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
-
-<ScrollView>
-    <StackLayout class="p-20">
-        <GridLayout columns="auto, *" rows="auto">
-            <Label class="fa ic-overview" text="&#xf029;"></Label>
-            <StackLayout col="1" class="hr-light"></StackLayout>
-        </GridLayout>
-        <GridLayout columns="auto, *" rows="auto">
-            <Label class="fa ic-overview" text="&#xf05a;"></Label>
-            <StackLayout col="1" class="hr-light"></StackLayout>
-        </GridLayout>
-        <GridLayout columns="auto, *" rows="auto">
-            <Label class="fa ic-overview" text="&#xf406;"></Label>
-            <StackLayout col="1" class="hr-light"></StackLayout>
-        </GridLayout>
-        <StackLayout class="m-x-10">
-            <GridLayout columns="auto, *" rows="*, *">
-                <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
-                <Label col="1" row="0" class="email" text="bob.sanchez@gmail.com" textWrap="true"></Label>
-                <Label col="0" row="1" class="overview-label" text="Registriert:"></Label>
-                <Label col="1" row="1" text="01.11.2019"></Label>
+<StackLayout visibility="{{ !loaded ? 'visible' : 'collapsed' }}" verticalAlignment="center">
+    <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
+</StackLayout>
+<StackLayout *ngIf="loaded">
+    <ScrollView>
+        <StackLayout class="p-20">
+            <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                <Label class="fa ic-overview" text="&#xf029;"></Label>
+                <StackLayout col="1" class="hr-light"></StackLayout>
             </GridLayout>
-            <StackLayout class="m-t-20">
-                <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
-                <Button text="Logout" class="btn btn-primary" (tap)="onLogout()"></Button>
+            <StackLayout class="section-container">
+            <Label class="h3 section-sub-head" text="Scan Zusammenfassung"></Label>
+                <GridLayout columns="*, *" rows="auto, *, auto, *" class="scan-matrix">
+                    <Label col="0" row="0" class="" text="Überboten" ></Label>
+                    <Label col="0" row="1" class="scan-sum status-overbid" [text]="getStatusSum(scans, 'overbid')"></Label>
+                    <Label col="1" row="0" class="" text="Reserviert"></Label>
+                    <Label col="1" row="1" class="scan-sum status-reserved" [text]="getStatusSum(scans, 'reserved')"></Label>
+                    <Label col="0" row="2" class="" text="Gutgeschrieben"></Label>
+                    <Label col="0" row="3" class="scan-sum status-verified" [text]="getSuccessSum(scans, 'verified')"></Label>
+                    <Label col="1" row="2" class="" text="Ausbezahlt"></Label>
+                    <Label col="1" row="3" class="scan-sum status-rewarded" [text]="getSuccessSum(scans, 'rewarded')"></Label>
+                </GridLayout>
+                <GridLayout columns="auto, *" rows="auto, auto, auto, auto">
+                    <Label col="0" row="0" class="overview-label" text="Gescannt:"></Label>
+                    <Label col="1" row="0" class="" [text]="scans.length + ' Becher'"></Label>
+                    <Label col="0" row="1" class="overview-label" text="Gutschrift:" ></Label>
+                    <Label col="1" row="1" class="" [text]="getDepositValue(scans, 'verified')"></Label>
+                    <Label col="0" row="2" class="overview-label" text="Ausbezahlt:"></Label>
+                    <Label col="1" row="2" class="" [text]="getDepositValue(scans, 'rewarded')"></Label>
+                </GridLayout>
+            </StackLayout>
+            <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                <Label class="fa ic-overview" text="&#xf05a;"></Label>
+                <StackLayout col="1" class="hr-light"></StackLayout>
+            </GridLayout>
+            <StackLayout class="section-container">
+
+            </StackLayout>
+            <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                <Label class="fa ic-overview" text="&#xf406;"></Label>
+                <StackLayout col="1" class="hr-light"></StackLayout>
+            </GridLayout>
+            <StackLayout class="section container">
+                <GridLayout columns="auto, *" rows="auto, auto">
+                    <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
+                    <Label col="1" row="0" class="email" text="bob.sanchez@gmail.com" textWrap="true"></Label>
+                    <Label col="0" row="1" class="overview-label" text="Registriert:"></Label>
+                    <Label col="1" row="1" text="01.11.2019"></Label>
+                </GridLayout>
+                <StackLayout class="m-t-20">
+                    <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
+                    <Button text="Logout" class="btn btn-primary" (tap)="onLogout()"></Button>
+                </StackLayout>
+            </StackLayout>
+
+            <!-- FIXME testing only -->
+            <StackLayout class="m-t-30">
+                <Button text="QR-Code Scannen" class="btn" (tap)="onOpenScanner()"></Button>
+                <Button text="Feedback" class="btn" (tap)="onShowFeedback()"></Button>
+                <Button #rxBtn text="Rx" class="btn"></Button>
+                <!-- <Button text="Add a scan" class="btn btn-primary" (tap)="onTestSetScan()"></Button> -->
+                <Label text="Last Test Scan: "></Label>
+                <Label [text]="lastScan"></Label>
             </StackLayout>
         </StackLayout>
-
-        <!-- FIXME testing only -->
-        <StackLayout class="m-t-30">
-            <Button text="QR-Code Scannen" class="btn" (tap)="onOpenScanner()"></Button>
-            <Button text="Feedback" class="btn" (tap)="onShowFeedback()"></Button>
-            <Button #rxBtn text="Rx" class="btn"></Button>
-            <!-- <Button text="Add a scan" class="btn btn-primary" (tap)="onTestSetScan()"></Button> -->
-            <Label text="Last Test Scan: "></Label>
-            <Label [text]="lastScan"></Label>
-        </StackLayout>
-    </StackLayout>
-</ScrollView>
+    </ScrollView>
+</StackLayout>
