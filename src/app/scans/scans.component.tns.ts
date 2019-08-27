@@ -83,9 +83,11 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     // Monitor the users internet connection. Change connection status if the user is offline
     startMonitoring((newConnectionType) => {
       this._connection = newConnectionType !== connectionType.none;
+      if (this._connection) {
+        this.loadData();
+      }
     });
     this._changeDetectionRef.detectChanges();
-    this.loadData();
   }
 
   ngAfterViewInit(): void { }
@@ -131,24 +133,19 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onPullToRefreshInit(args) {
-    // const that = new WeakRef(this);
-    setTimeout( () => {
-      this.loadData();
-      const listView = args.object;
-      listView.notifyPullToRefreshFinished();
-    }, 1000);
+    this.loadData(args);
+    // setTimeout(() => this.loadData(args), 800);
   }
 
   onSortByTime(): void {
     this.statusSortIcon = ' ';
     if (this._scans) {
-      let sortFncRef = this.scanListViewComponent.listView.sortingFunction;
       if (this._sortTimeASC) {
         this.timeSortIcon = this.sortDown;
-        sortFncRef = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
       } else {
-        sortFncRef = (a: Scan, b: Scan) => b.updatedAt - a.updatedAt;
         this.timeSortIcon = this.sortUp;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => b.updatedAt - a.updatedAt;
       }
     }
     this._sortTimeASC = !this._sortTimeASC;
@@ -157,13 +154,16 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   onSortByStatus(): void {
     this.timeSortIcon = ' ';
     if (this._scans) {
-      let sortFncRef = this.scanListViewComponent.listView.sortingFunction;
       if (this._sortStatusASC) {
         this.statusSortIcon = this.sortDown;
-        sortFncRef = (a: Scan, b: Scan) => this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
+          return this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
+        };
       } else {
-        sortFncRef = (a: Scan, b: Scan) => this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
         this.statusSortIcon = this.sortUp;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
+          return this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
+        };
       }
     }
     this._sortStatusASC = !this._sortStatusASC;
@@ -213,22 +213,29 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ANCHOR *** Private Methods ***
 
-  private loadData(): void {
+  private loadData(pullToRefreshArgs?): void {
     this._httpService.getScans(this._userId).subscribe(
       (scans: Scan[]) => {
         console.log('|===> CONNECTED TO BACKEND');
-        this._scans = new ObservableArray(scans);
-        this._loaded = true;
         // Initally sort list ASC by scan time
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan , b: Scan) => a.updatedAt - b.updatedAt;
+        this._scans = new ObservableArray(scans.sort((a: Scan, b: Scan) => a.updatedAt - b.updatedAt));
+        this._loaded = true;
         // this._scans = new ObservableArray([]); // FIXME testing only
+        if (pullToRefreshArgs) {
+          const listView = pullToRefreshArgs.object;
+          listView.notifyPullToRefreshFinished();
+        }
       },
       err => {
         this._feedbackService.show(FeedbackType.Error, 'Verbindungsfehler', err.message.substring(0, 60) + '...');
         console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
+        if (pullToRefreshArgs) {
+          const listView = pullToRefreshArgs.object;
+          listView.notifyPullToRefreshFinished();
+        }
       }
     );
-    // this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
+    // this._dataSource.pipe(take(5)).subscribe(val => this._scans.push(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
   private saveScan(code: string): void {
@@ -236,6 +243,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
       (scan: Scan[]) => {
         if (scan && scan.length) {
           this.adjustScanList(scan[0]);
+          console.log(scan);
         } else {
           // TODO: Test all possible backend responses; Check from backend received scans for errors?
           const msg = 'Der QR Code konnte nicht gespeichert werden. Bitte scannen Sie den Becher erneut';

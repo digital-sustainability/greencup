@@ -1,10 +1,11 @@
 <!-- TODO: Display No-internet connection sign -->
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
-<StackLayout visibility="{{ !loaded ? 'visible' : 'collapsed' }}" verticalAlignment="center">
-    <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
-</StackLayout>
+<GridLayout *ngIf="!connection"  columns="auto, *" rows="auto" class="connection-warning fa">
+    <Label col="0" id="warning-icon" text="&#xf071;"></Label>
+    <Label col="1" class="body" text="Keine Verbindung zum Internet: Neue QR-Codes werden nicht gespeichert!" textWrap="true"></Label>
+</GridLayout>
 <StackLayout>
-    <GridLayout *ngIf="connection; else connectionWarning" columns="*, *" rows="auto">
+    <GridLayout columns="*, *" rows="auto">
         <Label col="0" class="sort-option" (tap)="onSortByTime()">
             <FormattedString>
                 <Span text="Zeitraum&nbsp;&nbsp;"></Span>
@@ -18,14 +19,11 @@
             </FormattedString>
         </Label>
     </GridLayout>
-    <ng-template #connectionWarning>
-        <GridLayout class="connection-warning fa" columns="auto, *" rows="auto">
-            <Label col="0" id="warning-icon" text="&#xf071;"></Label>
-            <Label col="1" class="body" text="Keine Verbindung zum Internet: Neue QR-Codes werden nicht gespeichert!" textWrap="true"></Label>
-        </GridLayout>
-    </ng-template>
 </StackLayout>
 <StackLayout class="separator" height="3"></StackLayout>
+<StackLayout visibility="{{ !loaded ? 'visible' : 'collapsed' }}" verticalAlignment="center">
+    <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
+</StackLayout>
 <GridLayout *ngIf="loaded && scanCount > 0" class="page">
     <RadListView #scanListView [items]="scans" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
         <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
