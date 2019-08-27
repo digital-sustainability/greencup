@@ -24,7 +24,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private _userId = 2; // FIXME testing only
   private _scans: ObservableArray<Scan>;
   private _loaded = false;
-  private _depositChfValue = 4;
+  private _depositChfValue = 1;
 
   actionBarTitle = 'SBB Rail Coffee ☕';
   backRoute = '/home';
@@ -34,8 +34,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   throttling = false;
   throttleTime = 2000;
 
-  @ViewChild('rxBtn', { static: false }) btn: ElementRef;
-  button: Button;
+  // @ViewChild('rxBtn', { static: false }) btn: ElementRef;
+  // button: Button;
 
   scanOptions = {
     formats: 'QR_CODE',
@@ -71,7 +71,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     //     console.log('Rx Tap!');
 
     //   }
-      // event => this.onOpenScanner()
+    //   event => this.onOpenScanner()
     // );
     // this.button.animate({ opacity: 0, duration: 2000 }).catch((e) => {
     //   console.log(e.message);

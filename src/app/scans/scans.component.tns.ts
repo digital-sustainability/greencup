@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
-import { Fab, } from '@nstudio/nativescript-floatingactionbutton';
+import { Fab } from '@nstudio/nativescript-floatingactionbutton';
 registerElement('Fab', () => require('@nstudio/nativescript-floatingactionbutton').Fab);
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
@@ -36,6 +36,8 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
   }];
+  // @ViewChild('fab', { static: false }) btn: Fab;
+  // button: Fab;
 
   sortUp = String.fromCharCode(0xf106);
   sortDown = String.fromCharCode(0xf107);
@@ -90,7 +92,9 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     this._changeDetectionRef.detectChanges();
   }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {
+    // this.button = this.btn.nativeView;
+  }
 
   ngOnDestroy(): void {
     stopMonitoring();
@@ -98,7 +102,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ANCHOR *** User-Interaction Methods ***
 
-  onNewScanTap(args): void {
+  onNewScanTap(): void {
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
       this._codeScanner.scan(this._scanOptions)
@@ -134,12 +138,11 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onPullToRefreshInit(args) {
     this.loadData(args);
-    // setTimeout(() => this.loadData(args), 800);
   }
 
   onSortByTime(): void {
     this.statusSortIcon = ' ';
-    if (this._scans) {
+    if (this._scans && this._scans.length) {
       if (this._sortTimeASC) {
         this.timeSortIcon = this.sortDown;
         this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
@@ -153,7 +156,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSortByStatus(): void {
     this.timeSortIcon = ' ';
-    if (this._scans) {
+    if (this._scans && this._scans.length) {
       if (this._sortStatusASC) {
         this.statusSortIcon = this.sortDown;
         this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
@@ -240,10 +243,9 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private saveScan(code: string): void {
     this._httpService.addScan(code, this._userId).subscribe(
-      (scan: Scan[]) => {
-        if (scan && scan.length) {
-          this.adjustScanList(scan[0]);
-          console.log(scan);
+      (scan: Scan) => {
+        if (scan) {
+          this.adjustScanList(scan);
         } else {
           // TODO: Test all possible backend responses; Check from backend received scans for errors?
           const msg = 'Der QR Code konnte nicht gespeichert werden. Bitte scannen Sie den Becher erneut';
@@ -270,15 +272,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     // Add the new scan and notify the user.
     this._scans.unshift(scan);
     const msg = 'Nach der Reinigung des Bechers erhält die letzte Reservation die Pfandgutschrift';
-    this._feedbackService.show(FeedbackType.Success, 'Becher reserviert!', msg, 3500);
+    this._feedbackService.show(FeedbackType.Success, 'Becher reserviert!', msg, 4500);
   }
-
-  /**
-   * NOTE Fragen an Osci
-   * * Vorschlag um die vielen Toasts im code zu vermeiden?
-   * * nativeElement Zugriff auf registrierte Elemente wie CardView oder FAB
-   * * Wann soll ich input des Backends testen? E.g. if (scan && scan.length) { ...
-   * * Throttle auf Pull-to refresh nötig?
-   */
 
 }
