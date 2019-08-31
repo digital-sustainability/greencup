@@ -59,44 +59,41 @@ export class LoginComponent {
     }
     this.processing = true;
 
-    const token = this._authService.getStorageItem('usertoken');
-    if (token) {
-      this._feedbackService.show(FeedbackType.Success, 'Login mit existierendem Token', '', 4000);
-      this.processing = false;
-      this._navigationService.navigateTo('tabs');
-    } else {
-      const loginDetails = {
-        email: this.enteredEmail,
-        password: this.enteredPassword
-      };
-      this._authService.createNewToken(loginDetails).subscribe(
-        tokenObj => {
-          const savedEmail = this._authService.setStorageItem('email', this.enteredEmail);
-          const savedToken = this._authService.setStorageItem('usertoken', tokenObj.token);
-          if (savedEmail && savedToken) {
-            this._feedbackService.show(FeedbackType.Success, 'Neuen Token erhalten', '', 4000);
-            this._authService.tokenLogin({
-              email: this.enteredEmail,
-              token: tokenObj.token
-            }).subscribe(
-              user => console.log(user),
-              err => console.log(err)
-            );
-          } else {
-            // TODO: React to empty token
-            console.log('|===> Problem occured');
-            this._feedbackService.show(FeedbackType.Warning, 'Login Fehler', '', 4000);
-          }
-          this.processing = false;
-        },
-        err => {
-          // TODO: Better Error handling, depending on Backend response
-          console.log('|===> Err ', err);
-          this.processing = false;
-          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
+    const loginDetails = {
+      email: this.enteredEmail,
+      password: this.enteredPassword
+    };
+    this._authService.createNewToken(loginDetails).subscribe(
+      tokenObj => {
+        const savedEmail = this._authService.setStorageItem('email', this.enteredEmail);
+        const savedToken = this._authService.setStorageItem('usertoken', tokenObj.token);
+        if (savedEmail && savedToken) {
+          this._feedbackService.show(FeedbackType.Success, 'Neuen Token erhalten', '', 4000);
+          this._authService.tokenLogin({
+            email: this.enteredEmail,
+            token: tokenObj.token
+          }).subscribe(
+            user => {
+              console.log(user);
+              this._feedbackService.show(FeedbackType.Success, `Welcome ${user.first_name}`);
+              this._navigationService.navigateTo('tabs');
+            },
+            err => console.log(err)
+          );
+        } else {
+          // TODO: React saving error
+          console.log('|===> Problem occured');
+          this._feedbackService.show(FeedbackType.Warning, 'Token Saving Error', '', 4000);
         }
-      );
-    }
+        this.processing = false;
+      },
+      err => {
+        // TODO: Better Error handling, depending on Backend response
+        console.log('|===> Err ', err);
+        this.processing = false;
+        this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
+      }
+    );
   }
 
   register() {
