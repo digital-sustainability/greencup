@@ -11,7 +11,7 @@ export class FeedbackService {
     this._feedback = new Feedback();
   }
 
-  show(type: FeedbackType, title: string, message?: string, duration = 3000, onTap?: () => void): void {
+  show(type: FeedbackType, title?: string, message?: string, duration = 3000, onTap?: () => void): void {
     const opts = {
       type: type,
       title: title,
@@ -24,8 +24,10 @@ export class FeedbackService {
       // onShow: function(animating) { console.log(animating ? 'showCustomIcon animating' : 'showCustomIcon shown'); },
       // onHide: function() { console.log('showCustomIcon hidden'); }
     };
-
-    // Add the optional message if defined
+    // Add the optional title/message if defined. If title/message needs to be omitted, enter an empty string
+    if (title.length) {
+      opts['title'] = title;
+    }
     if (message.length) {
       opts['message'] = message;
     }

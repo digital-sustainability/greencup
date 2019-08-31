@@ -7,8 +7,6 @@ export interface User {
     email: string;
     confirmed: boolean;
     confirm_token: string;
-    phone: any;
-    street: string;
-    city: string;
-    zip_code: number;
 }
+
+

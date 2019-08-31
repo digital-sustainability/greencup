@@ -2,6 +2,7 @@ import { NgModule, NO_ERRORS_SCHEMA, ValueProvider } from '@angular/core';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {NativeScriptFormsModule} from 'nativescript-angular/forms';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -14,9 +15,11 @@ import { NavigationService } from './shared/services/navigation.service';
 import { CsrfService } from './shared/services/csrf.service';
 import { HttpInterceptorService } from './shared/services/http-intercepter.service';
 import { FeedbackService } from './shared/services/feedback.service';
+import { AuthService } from './shared/services/auth.service';
 
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
+import { LoginComponent } from './login/login.component';
 
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
@@ -33,12 +36,14 @@ import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
     OverviewComponent,
     TabsComponent,
     ScansComponent,
+    LoginComponent,
   ],
   imports: [
     NativeScriptModule,
     AppRoutingModule,
     HttpClientModule,
     NativeScriptUIListViewModule,
+    NativeScriptFormsModule,
   ],
   providers: [
     NavigationService,
@@ -46,6 +51,7 @@ import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
     CsrfService,
     HttpInterceptorService,
     FeedbackService,
+    AuthService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorService,

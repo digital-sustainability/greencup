@@ -9,6 +9,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { ScansComponent } from './scans/scans.component';
 import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardview/angular';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardvi
     OverviewComponent,
     TabsComponent,
     ScansComponent,
-    NativeScriptMaterialCardViewModule
+    NativeScriptMaterialCardViewModule,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
