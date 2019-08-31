@@ -46,37 +46,46 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.isLoggingIn) {
-      this.login();
+      this.loginWithNewToken();
     } else {
       this.register();
     }
   }
 
-  login(): void {
+  loginWithNewToken(): void {
     if (!this.enteredEmail || !this.enteredPassword || this.validateEmail(this.enteredPassword)) {
       this._feedbackService.show(FeedbackType.Warning, '', 'Bitte Email und Password angeben', 4000);
       return;
     }
     this.processing = true;
 
-    const token = this._authService.getUserToken('usertoken');
+    const token = this._authService.getStorageItem('usertoken');
     if (token) {
       this._feedbackService.show(FeedbackType.Success, 'Login mit existierendem Token', '', 4000);
       this.processing = false;
+      this._navigationService.navigateTo('tabs');
     } else {
       const loginDetails = {
         email: this.enteredEmail,
         password: this.enteredPassword
       };
-      this._authService.login(loginDetails).subscribe(
+      this._authService.createNewToken(loginDetails).subscribe(
         tokenObj => {
-          const createdToken = this._authService.setUserToken('usertoken', tokenObj.token);
-          if (createdToken) {
-            // TODO: Token auth
-            this._feedbackService.show(FeedbackType.Success, 'Login mit neuem token', '', 4000);
+          const savedEmail = this._authService.setStorageItem('email', this.enteredEmail);
+          const savedToken = this._authService.setStorageItem('usertoken', tokenObj.token);
+          if (savedEmail && savedToken) {
+            this._feedbackService.show(FeedbackType.Success, 'Neuen Token erhalten', '', 4000);
+            this._authService.tokenLogin({
+              email: this.enteredEmail,
+              token: tokenObj.token
+            }).subscribe(
+              user => console.log(user),
+              err => console.log(err)
+            );
           } else {
             // TODO: React to empty token
             console.log('|===> Problem occured');
+            this._feedbackService.show(FeedbackType.Warning, 'Login Fehler', '', 4000);
           }
           this.processing = false;
         },
@@ -85,19 +94,9 @@ export class LoginComponent {
           console.log('|===> Err ', err);
           this.processing = false;
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
-          // this._feedbackService.show(FeedbackType.Warning, '', 'Keinen Benutzer mit dieser Email gefunden', 4000);
         }
       );
     }
-
-    // this._authService.login(this.user)
-    //   .then(() => {
-    //     this.processing = false;
-    //     this._routerExtensions.navigate(['/tabs'], { clearHistory: true });
-    //   })
-    //   .catch(() => {
-    //     this.processing = false;
-    //   });
   }
 
   register() {
@@ -140,7 +139,9 @@ export class LoginComponent {
     } as RegisteringUser;
     this._authService.register(userDetail).subscribe(
       user => {
-        console.log('|===> User ', user);
+        // TODO: navigate user to login- or confirm-email screen
+        // TODO: Save email and received token to store
+        console.log('|===> Answer ', user);
         this._feedbackService.show(FeedbackType.Success, 'Registrierung erfolgreich', '', 4000);
         this.processing = false;
       },
@@ -151,18 +152,9 @@ export class LoginComponent {
         this.processing = false;
       }
     );
-    // this._authService.register(this.user)
-    //   .then(() => {
-    //     this.processing = false;
-    //     this._feedbackService.show(FeedbackType.Success, '', 'Login erfolgreich', 4000);
-    //     this.isLoggingIn = true;
-    //   })
-    //   .catch(() => {
-    //     this.processing = false;
-    //     this._feedbackService.show(FeedbackType.Error, 'Ein Fehler ist aufgetreten', 'Account konnte nicht erstellt werden', 4000);
-    //   });
   }
 
+  // TODO: Implement forgot password functionallity. Replace the default below
   forgotPassword() {
     prompt({
       title: 'Forgot Password',
@@ -174,12 +166,6 @@ export class LoginComponent {
     }).then((data) => {
       if (data.result) {
         console.log('|===> Reset Password');
-        // this._authService.resetPassword(data.text.trim())
-        //   .then(() => {
-        //     this._feedbackService.show(FeedbackType.Success, '', 'Passwort wurde zurückgesetzt, Wir haben Ihnen ein Email gesendet', 4000);
-        //   }).catch(() => {
-        //     this._feedbackService.show(FeedbackType.Error, 'Ein Fehler ist aufgetreten', 'Passwort konnte nicht zurückgesetzt werden', 4000);
-        //   });
       }
     });
   }
@@ -202,20 +188,12 @@ export class LoginComponent {
     }
   }
 
-  // alert(message: string) {
-  //   return alert({
-  //     title: 'APP NAME',
-  //     okButtonText: 'OK',
-  //     message: message
-  //   });
-  // }
-
   onEnter(route: string): void {
     this._navigationService.navigateTo(route);
   }
 
   private getUserToken() {
-    const v = this._authService.getUserToken();
+    const v = this._authService.getStorageItem('usertoken');
     console.log(v + ' reloaded');
   }
 

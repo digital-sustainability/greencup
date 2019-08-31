@@ -5,7 +5,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {NativeScriptFormsModule} from 'nativescript-angular/forms';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
 import { ActionBarComponent } from './shared/components/action-bar/action-bar.component';
 import { OverviewComponent } from './overview/overview.component';
 import { TabsComponent } from './tabs/tabs.component';
@@ -20,6 +19,8 @@ import { AuthService } from './shared/services/auth.service';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
+import { LoginSplashComponent } from './login-splash/login-splash.component';
 
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
@@ -31,12 +32,13 @@ import { LoginComponent } from './login/login.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     ActionBarComponent,
     OverviewComponent,
     TabsComponent,
     ScansComponent,
     LoginComponent,
+    AdminComponent,
+    LoginSplashComponent,
   ],
   imports: [
     NativeScriptModule,

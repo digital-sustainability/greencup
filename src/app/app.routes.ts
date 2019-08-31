@@ -1,14 +1,15 @@
 import { Routes } from '@angular/router';
 
-import { HomeComponent } from './home/home.component';
 import { ScansComponent } from './scans/scans.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
+import { LoginSplashComponent } from './login-splash/login-splash.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo: '/login-splash',
     pathMatch: 'full',
   },
   {
@@ -16,8 +17,8 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: 'home',
-    component: HomeComponent,
+    path: 'admin',
+    component: AdminComponent,
   },
   {
     path: 'scans',
@@ -26,5 +27,9 @@ export const routes: Routes = [
   {
     path: 'tabs',
     component: TabsComponent
+  },
+  {
+    path: 'login-splash',
+    component: LoginSplashComponent
   },
 ];
