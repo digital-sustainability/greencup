@@ -75,10 +75,12 @@ export class LoginComponent {
           }).subscribe(
             user => {
               console.log(user);
-              this._feedbackService.show(FeedbackType.Success, `Welcome ${user.first_name}`);
+              this._feedbackService.show(FeedbackType.Success, `Welcome ${user.first_name}`, '', 4000);
               this._navigationService.navigateTo('tabs');
             },
-            err => console.log(err)
+            err => {
+              console.log(err)
+            }
           );
         } else {
           // TODO: React saving error
@@ -88,10 +90,15 @@ export class LoginComponent {
         this.processing = false;
       },
       err => {
-        // TODO: Better Error handling, depending on Backend response
         console.log('|===> Err ', err);
+        if(err.status === 404) {
+          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Email Adresse nicht korrekt', 4000);
+        } else if(err.status === 401) {
+          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Passwort ist ungültig', 4000);
+        } else {
+          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
+        }
         this.processing = false;
-        this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
       }
     );
   }

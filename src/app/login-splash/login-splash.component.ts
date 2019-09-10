@@ -25,7 +25,7 @@ export class LoginSplashComponent implements OnInit {
       this._authService.tokenLogin({ email: email, token: token }).subscribe(
         user => {
           console.log('|===> User', user);
-          this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`);
+          this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '', 4000);
           this._navigationService.navigateTo('tabs');
         },
         err => {
