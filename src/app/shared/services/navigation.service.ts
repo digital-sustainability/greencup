@@ -8,14 +8,15 @@ export class NavigationService {
     private _routerExtensions: RouterExtensions,
   ) { }
 
-  navigateTo(path: string): void {
+  navigateTo(path: string, clearHistory?: boolean): void {
     const config = {
       animated: true,
       transition: {
         name: 'slide',
         duration: 200,
         curve: 'ease'
-      }
+      },
+      clearHistory: clearHistory || false
     };
     this._routerExtensions.navigate([path], config);
   }

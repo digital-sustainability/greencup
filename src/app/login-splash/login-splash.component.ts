@@ -26,11 +26,17 @@ export class LoginSplashComponent implements OnInit {
         user => {
           console.log('|===> User', user);
           this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '', 4000);
-          this._navigationService.navigateTo('tabs');
+          this._navigationService.navigateTo('tabs', true);
         },
         err => {
           console.log('|===> Error', err);
-          this._feedbackService.show(FeedbackType.Error, 'Login error');
+          if (err.status === 400) {
+            this._feedbackService.show(FeedbackType.Error, 'Login error',
+            'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.', 4000);
+          } else {
+            this._feedbackService.show(FeedbackType.Error, 'Login error', 'Melde dich bitte erneut an', 4000);
+            this._navigationService.navigateTo('login', true);
+          }
           /**
            * TODO:
            * * Send user to confirm Email screen if that was the error received from backend
@@ -40,7 +46,7 @@ export class LoginSplashComponent implements OnInit {
         }
       );
     } else {
-      this._navigationService.navigateTo('login');
+      this._navigationService.navigateTo('login', true);
     }
   }
 
