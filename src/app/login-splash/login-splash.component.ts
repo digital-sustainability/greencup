@@ -26,7 +26,12 @@ export class LoginSplashComponent implements OnInit {
         user => {
           console.log('|===> User', user);
           this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '', 4000);
-          this._navigationService.navigateTo('tabs', true);
+          if (user.cleaner) {
+            this._navigationService.navigateTo('admin', true);
+          }
+          else {
+            this._navigationService.navigateTo('tabs', true);
+          }
         },
         err => {
           console.log('|===> Error', err);
