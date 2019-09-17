@@ -31,7 +31,11 @@ export class AuthService {
   }
 
   tokenLogin(loginDetails: { email: string, token: string }): Observable<User> {
-    return this._http.post<User>(this._api + 'token-auth/login', loginDetails);
+    return this._http.post<User>(this._api + 'token-auth/login', loginDetails)
+    .pipe(map((user) => {
+      this._authenticatedUser = user;
+      return user;
+    }));
   }
 
   // TODO: Has not been checked yet
@@ -63,5 +67,9 @@ export class AuthService {
   // TODO: Delete token on logout
   delteStorageItem(key: string): boolean {
     return this._secureStorage.removeSync({ key: key });
+  }
+
+  getAuthenticatedUserId() {
+    return this._authenticatedUser.id;
   }
 }
