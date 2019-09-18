@@ -3,6 +3,7 @@ import { NavigationService } from '../shared/services/navigation.service';
 import { AuthService } from '../shared/services/auth.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
+import { Page } from 'tns-core-modules/ui/page/page';
 
 @Component({
   selector: 'app-login-splash',
@@ -15,7 +16,10 @@ export class LoginSplashComponent implements OnInit {
     private _navigationService: NavigationService,
     private _authService: AuthService,
     private _feedbackService: FeedbackService,
-  ) { }
+    private _page: Page
+  ) {
+    this._page.actionBarHidden = true;
+  }
 
   ngOnInit() {
     // TODO: Init some kind of loading screen

@@ -78,9 +78,9 @@ export class LoginComponent {
       },
       err => {
         console.log('|===> Err ', err);
-        if(err.status === 404) {
+        if (err.status === 404) {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Email Adresse nicht korrekt', 4000);
-        } else if(err.status === 401) {
+        } else if (err.status === 401) {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Passwort ist ungültig', 4000);
         } else {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
@@ -95,10 +95,10 @@ export class LoginComponent {
     // TODO: Refactor validation to seperate method
 
     if (!this.enteredFirstname
-        || !this.enteredFirstname
-        || !this.enteredEmail
-        || !this.enteredPassword
-        || !this.enteredConfirmPassword) {
+      || !this.enteredFirstname
+      || !this.enteredEmail
+      || !this.enteredPassword
+      || !this.enteredConfirmPassword) {
       this._feedbackService.show(FeedbackType.Warning, 'Unvollständig', 'Bitte füllen Sie alle Felder aus', 4000);
       return;
     }
@@ -146,7 +146,7 @@ export class LoginComponent {
         else {
           this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Account konnte nicht erstellt werden.', 4000);
         }
-        
+
         this.processing = false;
       }
     );
@@ -163,9 +163,30 @@ export class LoginComponent {
       cancelButtonText: 'Cancel'
     }).then((data) => {
       if (data.result) {
-        console.log('|===> Reset Password');
+        this.requestNewPassword(data.text);
       }
     });
+  }
+
+  requestNewPassword(email: string) {
+    this.processing = true;
+    this._authService.requestNewPassword(email).subscribe(
+      () => {
+        this._navigationService.navigateTo('/password-reset');
+        this._feedbackService.show(FeedbackType.Success,
+          'Passwort zurücksetzen',
+          'Gib die Nutzer-Id und den Code ein, die du per Mail erhalten hast und setze dein neues Passwort.', 10000);
+      },
+      err => {
+        console.log('|===> Err ', err);
+        if (err.status === 404) {
+          this._feedbackService.show(FeedbackType.Warning, 'Email inkorrekt', 'Die Email Adresse existiert nicht.', 4000);
+        } else {
+          this._feedbackService.show(FeedbackType.Warning, 'Error', 'Passwort kann nicht zurückgesetzt werden. Versuche es erneut.', 4000);
+        }
+        this.processing = false;
+      }
+    );
   }
 
   focusPassword() {

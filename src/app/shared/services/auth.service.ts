@@ -79,4 +79,20 @@ export class AuthService {
       token
     });
   }
+
+  requestNewPassword(email: string) {
+    return this._http.post<any>(this._api + 'token-auth/request-new-password', {
+      email
+    });
+  }
+
+  passwordReset(user_id: number, token: string, password: string, password_confirm: string) {
+    return this._http.post<any>(this._api + 'token-auth/password-reset', {
+      user_id,
+      token,
+      password,
+      password_confirm
+    });
+  }
+
 }

@@ -11,6 +11,7 @@ import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardvi
 import { LoginComponent } from './login/login.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
 import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
     NativeScriptMaterialCardViewModule,
     LoginComponent,
     LoginSplashComponent,
-    EmailConfirmComponent
+    EmailConfirmComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,
