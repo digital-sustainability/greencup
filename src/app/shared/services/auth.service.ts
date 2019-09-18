@@ -31,13 +31,17 @@ export class AuthService {
   }
 
   tokenLogin(loginDetails: { email: string, token: string }): Observable<User> {
-    return this._http.post<User>(this._api + 'token-auth/login', loginDetails);
+    return this._http.post<User>(this._api + 'token-auth/login', loginDetails)
+    .pipe(map((user) => {
+      this._authenticatedUser = user;
+       return user;
+     }));
   }
 
   // TODO: Has not been checked yet
   logout(): Observable<any> {
-    this.delteStorageItem('usertoken');
-    return this._http.post<any>(this._api + 'api/logout', {})
+    this.deleteStorageItem('usertoken');
+    return this._http.post<any>(this._api + 'logout', {})
       .pipe(map(() => {
         this._authenticatedUser = null;
         return null;
@@ -61,7 +65,18 @@ export class AuthService {
   }
 
   // TODO: Delete token on logout
-  delteStorageItem(key: string): boolean {
+  deleteStorageItem(key: string): boolean {
     return this._secureStorage.removeSync({ key: key });
+  }
+
+  getAuthenticatedUser() {
+    return this._authenticatedUser;
+  }
+
+  confirmEmail(userId: number, token: string) {
+    return this._http.post<any>(this._api + 'register/confirm', {
+      user_id: userId,
+      token
+    });
   }
 }

@@ -10,6 +10,7 @@ import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 
 import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
+import { AuthService } from '../shared/services/auth.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { FeedbackType } from 'nativescript-feedback';
@@ -69,14 +70,14 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // FIXME testing only
   private _dataSource = interval(1500);
-  private _userId = 2;
 
 
   constructor(
     private _httpService: HttpService,
     private _codeScanner: BarcodeScanner,
     private _feedbackService: FeedbackService,
-    private _changeDetectionRef: ChangeDetectorRef
+    private _changeDetectionRef: ChangeDetectorRef,
+    private _authService: AuthService
     ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -217,7 +218,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   // ANCHOR *** Private Methods ***
 
   private loadData(pullToRefreshArgs?): void {
-    this._httpService.getScans(this._userId).subscribe(
+    this._httpService.getScans(this._authService.getAuthenticatedUser().id).subscribe(
       (scans: Scan[]) => {
         console.log('|===> CONNECTED TO BACKEND');
         // Initally sort list ASC by scan time
@@ -242,7 +243,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private saveScan(code: string): void {
-    this._httpService.addScan(code, this._userId).subscribe(
+    this._httpService.addScan(code).subscribe(
       (scan: Scan) => {
         if (scan) {
           this.adjustScanList(scan);

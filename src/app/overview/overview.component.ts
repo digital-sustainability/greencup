@@ -12,6 +12,7 @@ import { Scan, StatusType } from '../shared/models/scan';
 
 import { fromEvent, Subscription, interval } from 'rxjs';
 import { throttle } from 'rxjs/operators';
+import { AuthService } from '../shared/services/auth.service';
 
 
 @Component({
@@ -21,7 +22,6 @@ import { throttle } from 'rxjs/operators';
 })
 export class OverviewComponent implements OnInit, AfterViewInit {
 
-  private _userId = 2; // FIXME testing only
   private _scans: ObservableArray<Scan>;
   private _loaded = false;
   private _depositChfValue = 1;
@@ -56,6 +56,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private _codeScanner: BarcodeScanner,
     private _httpService: HttpService,
     private _feedbackService: FeedbackService,
+    private _authService: AuthService
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -120,7 +121,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   // ANCHOR *** Private Methods ***
 
   private loadData(): void {
-    this._httpService.getScans(this._userId).subscribe(
+    this._httpService.getScans(this._authService.getAuthenticatedUser().id).subscribe(
       (scans: Scan[]) => {
         console.log('|===> CONNECTED TO BACKEND');
         this._scans = new ObservableArray(scans);

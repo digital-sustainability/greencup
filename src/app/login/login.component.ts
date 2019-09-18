@@ -68,24 +68,11 @@ export class LoginComponent {
         const savedEmail = this._authService.setStorageItem('email', this.enteredEmail);
         const savedToken = this._authService.setStorageItem('usertoken', tokenObj.token);
         if (savedEmail && savedToken) {
-          this._feedbackService.show(FeedbackType.Success, 'Neuen Token erhalten', '', 4000);
-          this._authService.tokenLogin({
-            email: this.enteredEmail,
-            token: tokenObj.token
-          }).subscribe(
-            user => {
-              console.log(user);
-              this._feedbackService.show(FeedbackType.Success, `Welcome ${user.first_name}`, '', 4000);
-              this._navigationService.navigateTo('tabs');
-            },
-            err => {
-              console.log(err)
-            }
-          );
+          this._navigationService.navigateTo('/', true);
         } else {
           // TODO: React saving error
           console.log('|===> Problem occured');
-          this._feedbackService.show(FeedbackType.Warning, 'Token Saving Error', '', 4000);
+          this._feedbackService.show(FeedbackType.Warning, 'Error', 'Token konnte nicht auf Gerät gespeichert werden. Versuche es nochmals.', 4000);
         }
         this.processing = false;
       },
@@ -146,13 +133,20 @@ export class LoginComponent {
         // TODO: navigate user to login- or confirm-email screen
         // TODO: Save email and received token to store
         console.log('|===> Answer ', user);
-        this._feedbackService.show(FeedbackType.Success, 'Registrierung erfolgreich', '', 4000);
+        this._navigationService.navigateTo('/email-confirm', true);
+        this._feedbackService.show(FeedbackType.Success, 'Registrierung erfolgreich', 'Bestätige deine Email Adresse über das Email das du erhalten hast.', 4000);
         this.processing = false;
       },
       err => {
         // TODO: Better Error handling, depending on Backend response
         console.log('|===> Err ', err);
-        this._feedbackService.show(FeedbackType.Error, 'Ein Fehler ist aufgetreten', 'Account konnte nicht erstellt werden', 4000);
+        if (err.status === 409) {
+          this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Email wird bereits verwendet.', 4000);
+        }
+        else {
+          this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Account konnte nicht erstellt werden.', 4000);
+        }
+        
         this.processing = false;
       }
     );
@@ -161,8 +155,8 @@ export class LoginComponent {
   // TODO: Implement forgot password functionallity. Replace the default below
   forgotPassword() {
     prompt({
-      title: 'Forgot Password',
-      message: 'Enter the email address you used to register for APP NAME to reset your password.',
+      title: 'Passwort vergessen',
+      message: 'Gib deine Email-Adresse an, um dein Passwort zurückzusetzen.',
       inputType: 'email',
       defaultText: '',
       okButtonText: 'Ok',

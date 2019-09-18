@@ -21,10 +21,9 @@ export class HttpService {
   }
 
   // Updates existing scans if existing or create new ones.
-  addScan(code: string, userId: number): Observable<Scan> {
+  addScan(code: string): Observable<Scan> {
     const scanDetails = {
-      code: code,
-      user_id: userId
+      code: code
     };
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json', })

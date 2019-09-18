@@ -24,14 +24,13 @@ export class LoginSplashComponent implements OnInit {
     if (email && token) {
       this._authService.tokenLogin({ email: email, token: token }).subscribe(
         user => {
-          console.log('|===> User', user);
-          this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '', 4000);
           if (user.cleaner) {
             this._navigationService.navigateTo('admin', true);
           }
           else {
             this._navigationService.navigateTo('tabs', true);
           }
+          this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '', 4000);
         },
         err => {
           console.log('|===> Error', err);
@@ -39,8 +38,8 @@ export class LoginSplashComponent implements OnInit {
             this._feedbackService.show(FeedbackType.Error, 'Login error',
             'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.', 4000);
           } else {
-            this._feedbackService.show(FeedbackType.Error, 'Login error', 'Melde dich bitte erneut an', 4000);
             this._navigationService.navigateTo('login', true);
+            this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
           }
           /**
            * TODO:

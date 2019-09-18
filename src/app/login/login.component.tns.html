@@ -46,6 +46,7 @@
         <Button [text]="isLoggingIn ? 'Einloggen' : 'Registrieren'" [isEnabled]="!processing" (tap)="onSubmit()"
             class="btn btn-primary m-t-20"></Button>
         <Label *ngIf="isLoggingIn" text="Passwort vergessen?" class="login-label" (tap)="forgotPassword()"></Label>
+        <Label *ngIf="isLoggingIn" text="Email bestätigen" class="login-label" (tap)="onEnter('/email-confirm')"></Label>
     </StackLayout>
 
     <Label class="login-label sign-up-label" (tap)="toggleForm()">
