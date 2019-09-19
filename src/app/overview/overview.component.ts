@@ -137,6 +137,17 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
 
   // FIXME *** Methods for Testing only ***
+  onConfirmPayout(): void {
+    this._httpService.payout().subscribe(
+      msg => {
+        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', 'Die Auszahlung wurde bestätigt', 4000);
+      },
+      (errorMessage) => {
+        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', errorMessage, 4000);
+      }
+    );
+  }
+
   onOpenScanner(): void {
     if (!this.throttling) {
       this.throttling = true;

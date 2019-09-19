@@ -52,6 +52,14 @@ export class HttpService {
     return this._http.post(`${this._api}cup-round/close`, scanDetails, httpOptions);
   }
 
+  // sends a payout request to set all verified scans of the user to rewarded
+  payout(): Observable<any> {
+    const scanDetails = {};
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', })
+    };
+    return this._http.post(`${this._api}scan/payout`, scanDetails, httpOptions);
+  }
 
 }
 
