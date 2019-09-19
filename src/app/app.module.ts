@@ -10,6 +10,8 @@ import { ScansComponent } from './scans/scans.component';
 import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardview/angular';
 import { LoginComponent } from './login/login.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
+import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { LoginSplashComponent } from './login-splash/login-splash.component';
     ScansComponent,
     NativeScriptMaterialCardViewModule,
     LoginComponent,
-    LoginSplashComponent
+    LoginSplashComponent,
+    EmailConfirmComponent,
+    PasswordResetComponent
   ],
   imports: [
     BrowserModule,

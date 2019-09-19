@@ -7,6 +7,8 @@ export interface User {
     email: string;
     confirmed: boolean;
     confirm_token: string;
+    cleaner: boolean;
+    admin: boolean;
 }
 
 

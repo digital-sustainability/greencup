@@ -19,4 +19,14 @@ export class ActionBarComponent implements OnInit {
   // get android(): boolean {
   //   return isAndroid;
   // }
+
+  navigateBack() {
+    this._routerExtensions.back();
+  }
+  
+  canGoBack() {
+    return this._routerExtensions.canGoBack();
+  }
+
+
 }

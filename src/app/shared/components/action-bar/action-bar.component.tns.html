@@ -1,4 +1,8 @@
 <ActionBar [title]="title" class="action-bar">
     <!-- Inject back button etc. -->
+    <NavigationButton *ngIf="canGoBack()"
+    android.systemIcon="ic_menu_back"
+    text="Zurück"
+    (tap)="navigateBack()"></NavigationButton>
     <ng-content></ng-content>
 </ActionBar>

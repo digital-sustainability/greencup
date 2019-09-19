@@ -21,7 +21,8 @@ import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
-
+import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -39,6 +40,8 @@ import { LoginSplashComponent } from './login-splash/login-splash.component';
     LoginComponent,
     AdminComponent,
     LoginSplashComponent,
+    EmailConfirmComponent,
+    PasswordResetComponent,
   ],
   imports: [
     NativeScriptModule,
