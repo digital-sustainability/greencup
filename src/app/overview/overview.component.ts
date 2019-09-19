@@ -4,6 +4,8 @@ import { Button } from 'tns-core-modules/ui/button';
 import { View } from 'tns-core-modules/ui/core/view';
 import { FeedbackType } from 'nativescript-feedback';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
+import { PanGestureEventData } from 'tns-core-modules/ui/gestures';
+import { confirm } from "tns-core-modules/ui/dialogs";
 
 import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
@@ -25,6 +27,9 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private _scans: ObservableArray<Scan>;
   private _loaded = false;
   private _depositChfValue = 1;
+  private _isConfirmPayoutDialogOpen = false;
+
+  backgroundColorPanButton = 'rgba(255, 0, 0, 0)';
 
   actionBarTitle = 'SBB Rail Coffee ☕';
   backRoute = '/home';
@@ -135,8 +140,32 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
+  private isPannedEnough(deltaX: number, deltaY: number, buttonWidth: number): boolean {
+    if (deltaX >= 0.5 * buttonWidth && deltaY <= 0.25 * buttonWidth) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   // FIXME *** Methods for Testing only ***
+  onPan(args: PanGestureEventData): void {
+    if (this.isPannedEnough(args.deltaX, args.deltaY, 300) && !this._isConfirmPayoutDialogOpen) {
+      this._isConfirmPayoutDialogOpen = true;
+      const options = {
+          title: 'Auszahlung bestätigen',
+          message: 'Dieser Schritt kann nicht rückgängig gemacht werden.',
+          okButtonText: 'Ja',
+          cancelButtonText: 'Nein',
+          neutralButtonText: 'Abbrechen'
+      };
+      confirm(options).then((result: boolean) => {
+          console.log(result);
+          this._isConfirmPayoutDialogOpen = false;
+      });
+    }
+  }
   onConfirmPayout(): void {
     this._httpService.payout().subscribe(
       msg => {
