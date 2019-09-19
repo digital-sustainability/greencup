@@ -126,7 +126,7 @@ export class AdminComponent implements OnInit {
 
   // ANCHOR *** Private Methods ***
   private loadData(pullToRefreshArgs?): void {
-    this._httpService.getCupRounds(this._authService.getAuthenticatedUserId()).subscribe(
+    this._httpService.getCupRounds(this._authService.getAuthenticatedUser().id).subscribe(
       (cupRounds: CupRound[]) => {
         // Initally sort list ASC by closed time
         this._cupRounds = new ObservableArray(cupRounds.sort((a: CupRound, b: CupRound) => b.closed_at - a.closed_at));
