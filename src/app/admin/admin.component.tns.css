@@ -1,1 +1,38 @@
-/* Add mobile styles for the component here.  */
+.fab-button {
+  height: 58;
+  width: 58; 
+    /* required on iOS */
+  margin: 20;
+  background-color: #eb0000;
+  vertical-align: bottom;
+  horizontal-align: right;
+  }
+.card {
+  background-color: #fff;;
+  color: #4d4d4d;
+  margin: 15 15 0;
+  border-radius: 5;
+}
+
+.card-content {
+  border-radius: 10;
+  padding: 20;
+  font-weight: bold;
+  font-size: 30;
+  background-color: #fff;
+}
+
+.scan-label {
+  margin: 5 5 5 10;
+  font-weight: bold;
+}
+
+.default-scan-label {
+  margin: 5 5 5 10;
+  color: #acacac;
+  text-align: center
+}
+
+.scan-value {
+  margin: 5 5 5 10;
+}

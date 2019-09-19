@@ -1,1 +1,26 @@
-<Button text="admin works!" class="btn btn-primary"></Button>
+<app-action-bar [title]="actionBarTitle"></app-action-bar>
+
+
+<GridLayout *ngIf="loaded" class="page">
+  <RadListView #cupRoundListView [items]="cupRounds" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
+    <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
+        <ng-template tkListItemTemplate let-cupRound="item">
+            <!-- TODO: On modal click descibe the status in words and other details -->
+            <CardView class="card" ripple="true" margin="5" elevation="40" radius="10" ios:shadowRadius="3" android:elevation="6">
+              <GridLayout columns="20, auto, *" rows="auto, auto, auto">
+                <!--<StackLayout col="0" rowspan="3" [ngClass]="getStatusClass(scan)"></StackLayout>-->
+                <Label col="1" row="0" class="scan-label" text="Runde geschlossen:"></Label>
+                <Label col="2" row="0" class="scan-value" [text]="getClosedAtTime(cupRound)"></Label>
+                <Label col="1" row="1" class="scan-label" text="Becher-ID:"></Label>
+                <Label col="2" row="1" class="scan-value" [text]="getCupId(cupRound)"></Label>
+                <Label col="1" row="2" class="scan-label" text="Runden-ID:"></Label>
+                <Label col="2" row="2" class="scan-value" [text]="getCupRoundId(cupRound)"></Label>
+              </GridLayout>
+            </CardView>
+        </ng-template>
+    </ListViewLinearLayout>
+  </RadListView>
+
+  <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
+  <Fab (tap)="onNewScanTap($event)" icon="~/assets/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab> 
+</GridLayout>
