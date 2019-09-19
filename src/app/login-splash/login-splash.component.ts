@@ -39,11 +39,9 @@ export class LoginSplashComponent implements OnInit {
         err => {
           console.log('|===> Error', err);
           if (err.status === 400) {
+            this._navigationService.navigateTo('email-confirm', true);
             this._feedbackService.show(FeedbackType.Error, 'Login error',
             'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.', 4000);
-          } else {
-            this._navigationService.navigateTo('login', true);
-            this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
           }
           /**
            * TODO:

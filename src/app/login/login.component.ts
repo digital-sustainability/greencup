@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -16,7 +16,7 @@ import { FeedbackService } from '../shared/services/feedback.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   isLoggingIn = true;
   enteredFirstname: string;
@@ -38,6 +38,10 @@ export class LoginComponent {
     private _feedbackService: FeedbackService, // TODO: Leave on the page for longer Feedbacks until next user action occurs
   ) {
     this._page.actionBarHidden = true;
+  }
+
+  ngOnInit() {
+    this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
   }
 
   toggleForm() {
