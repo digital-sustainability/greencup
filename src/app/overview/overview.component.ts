@@ -36,7 +36,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private _touchCoordinates = {x: 0, y: 0};
   private _sliding = false;
 
-  backgroundColorPanButton = 'rgba(255, 0, 0, 0)';
 
   actionBarTitle = 'SBB Rail Coffee ☕';
   backRoute = '/home';
@@ -156,14 +155,27 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       return false;
     }
   }
+
   // enables/disables scrolling of the specified ScrollView
   private isScrollEnabled(enabled: boolean) {
     const scrollView = <ScrollView>this._page.getViewById('scrollView');
     scrollView.isScrollEnabled = enabled;
   }
 
+  // uses httpService to send a request confirming the payout and displays feedback to the user
+  private confirmPayout() {
+    this._httpService.payout().subscribe(
+      msg => {
+        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', 'Die Auszahlung wurde bestätigt', 4000);
+      },
+      (errorMessage) => {
+        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', errorMessage, 4000);
+      }
+    );
+  }
+
   // FIXME *** Methods for Testing only ***
-  onTouch(args: TouchGestureEventData) {
+  onSlideButtonTouch(args: TouchGestureEventData) {
     // finger on screen
     if (args.action === 'down') {
       // only accept starting points on the left side of the button
@@ -199,8 +211,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             neutralButtonText: 'Abbrechen'
         };
         confirm(options).then((result: boolean) => {
-            // console.log(result);
             this._isConfirmPayoutDialogOpen = false;
+
+            if (result) {
+              this.confirmPayout();
+            }
         });
       }
     }
@@ -215,16 +230,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onConfirmPayout(): void {
-    this._httpService.payout().subscribe(
-      msg => {
-        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', 'Die Auszahlung wurde bestätigt', 4000);
-      },
-      (errorMessage) => {
-        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', errorMessage, 4000);
-      }
-    );
-  }
 
   onOpenScanner(): void {
     if (!this.throttling) {
