@@ -275,6 +275,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     const msg = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.';
     this._feedbackService.show(Math.floor(((Math.random() * 4) + 1)), 'A Feedback Title', msg);
   }
+
+  getAuthenticatedUser() {
+    return this._authService.getAuthenticatedUser();
+  }
 }
 
 
