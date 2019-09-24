@@ -3,7 +3,7 @@
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
 <StackLayout *ngIf="loaded">
-    <ScrollView>
+    <ScrollView id="scrollView">
         <StackLayout class="p-20">
             <GridLayout columns="auto, *" rows="auto" class="section-separator">
                 <Label class="fa ic-overview" text="&#xf029;"></Label>
@@ -57,7 +57,7 @@
             <!-- FIXME testing only -->
             <StackLayout class="m-t-30">
                 <Button text="Auszahlung bestätigen" class="btn" (tap)="onConfirmPayout()"></Button>
-                <Button text="Pan-Test" id="panButton" (pan)="onPan($event)" [style.background-color]="backgroundColorPanButton"></Button>
+                <Button text="Slide um Auszuzahlen >" id="panButton" (touch)="onTouch($event)" [style.background-color]="backgroundColorPanButton"></Button>
                 <Button text="QR-Code Scannen" class="btn" (tap)="onOpenScanner()"></Button>
                 <Button text="Feedback" class="btn" (tap)="onShowFeedback()"></Button>
                 <Button #rxBtn text="Rx" class="btn"></Button>

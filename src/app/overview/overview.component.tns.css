@@ -57,5 +57,7 @@
 }
 
 #panButton {
-    
+    background-image: url('~/assets/images/red.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
 }
