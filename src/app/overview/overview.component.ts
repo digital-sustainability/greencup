@@ -2,8 +2,13 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angula
 import { BarcodeScanner, ScanOptions, ScanResult } from 'nativescript-barcodescanner';
 import { Button } from 'tns-core-modules/ui/button';
 import { View } from 'tns-core-modules/ui/core/view';
+import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { FeedbackType } from 'nativescript-feedback';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
+import { PanGestureEventData, TouchGestureEventData } from 'tns-core-modules/ui/gestures';
+import { confirm } from 'tns-core-modules/ui/dialogs';
+import { layout } from 'tns-core-modules/utils/utils';
+import { Page } from 'tns-core-modules/ui/page';
 
 import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
@@ -13,6 +18,7 @@ import { Scan, StatusType } from '../shared/models/scan';
 import { fromEvent, Subscription, interval } from 'rxjs';
 import { throttle } from 'rxjs/operators';
 import { AuthService } from '../shared/services/auth.service';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -25,6 +31,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private _scans: ObservableArray<Scan>;
   private _loaded = false;
   private _depositChfValue = 1;
+  private _isConfirmPayoutDialogOpen = false;
+  private _touchStartCoordinates = {x: 0, y: 0};
+  private _touchCoordinates = {x: 0, y: 0};
+  private _sliding = false;
+
 
   actionBarTitle = 'SBB Rail Coffee ☕';
   backRoute = '/home';
@@ -56,7 +67,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private _codeScanner: BarcodeScanner,
     private _httpService: HttpService,
     private _feedbackService: FeedbackService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _page: Page
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -135,8 +147,90 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
+  // checks if the user panned enough
+  private isPannedEnough(deltaX: number, deltaY: number, buttonWidth: number): boolean {
+    if (deltaX >= 0.5 * buttonWidth && deltaY <= 0.25 * buttonWidth) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // enables/disables scrolling of the specified ScrollView
+  private isScrollEnabled(enabled: boolean) {
+    const scrollView = <ScrollView>this._page.getViewById('scrollView');
+    scrollView.isScrollEnabled = enabled;
+  }
+
+  // uses httpService to send a request confirming the payout and displays feedback to the user
+  private confirmPayout() {
+    this._httpService.payout().subscribe(
+      msg => {
+        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', 'Die Auszahlung wurde bestätigt', 4000);
+      },
+      (errorMessage) => {
+        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', errorMessage, 4000);
+      }
+    );
+  }
 
   // FIXME *** Methods for Testing only ***
+  onSlideButtonTouch(args: TouchGestureEventData) {
+    // finger on screen
+    if (args.action === 'down') {
+      // only accept starting points on the left side of the button
+      if (args.getX() < 0.5 * layout.toDeviceIndependentPixels(args.view.getMeasuredWidth())) {
+        this._touchStartCoordinates.x = args.getX();
+        this._touchStartCoordinates.y = args.getY();
+
+        this._sliding = true;
+        this.isScrollEnabled(false);
+      }
+    }
+
+    // finger moved on screen
+    if (args.action === 'move' && this._sliding) {
+
+      this._touchCoordinates.x = args.getX();
+      this._touchCoordinates.y = args.getY();
+
+      // update the red slide progress indicator
+      args.view.style.backgroundSize = layout.toDevicePixels(this._touchCoordinates.x) + ' ' + args.view.getMeasuredHeight();
+
+      const deltaX = this._touchCoordinates.x - this._touchStartCoordinates.x;
+      const deltaY = this._touchCoordinates.y - this._touchStartCoordinates.y;
+      if (this.isPannedEnough(deltaX, deltaY, layout.toDeviceIndependentPixels(args.view.getMeasuredWidth()))
+        && !this._isConfirmPayoutDialogOpen) {
+        // the user panned enough, show the confirm dialog
+        this._isConfirmPayoutDialogOpen = true;
+        const options = {
+            title: 'Auszahlung bestätigen',
+            message: 'Dieser Schritt kann nicht rückgängig gemacht werden.',
+            okButtonText: 'Ja',
+            cancelButtonText: 'Nein',
+            neutralButtonText: 'Abbrechen'
+        };
+        confirm(options).then((result: boolean) => {
+            this._isConfirmPayoutDialogOpen = false;
+
+            if (result) {
+              this.confirmPayout();
+            }
+        });
+      }
+    }
+
+    // finger removed from screen
+    if (args.action === 'up') {
+      // reset the slide progress indicator
+      args.view.style.backgroundSize = '0 0';
+
+      this._sliding = false;
+      this.isScrollEnabled(true);
+    }
+  }
+
+
   onOpenScanner(): void {
     if (!this.throttling) {
       this.throttling = true;
@@ -180,6 +274,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   onShowFeedback() {
     const msg = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.';
     this._feedbackService.show(Math.floor(((Math.random() * 4) + 1)), 'A Feedback Title', msg);
+  }
+
+  getAuthenticatedUser() {
+    return this._authService.getAuthenticatedUser();
   }
 }
 
