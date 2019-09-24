@@ -195,7 +195,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       this._touchCoordinates.y = args.getY();
 
       // update the red slide progress indicator
-      args.view.style.backgroundSize = layout.toDevicePixels(this._touchCoordinates.x) + ' ' + args.view.getMeasuredHeight();
+      // TODO check for android
+      args.view.style.backgroundSize = this._touchCoordinates.x + ' ' + layout.toDeviceIndependentPixels(args.view.getMeasuredHeight());
 
       const deltaX = this._touchCoordinates.x - this._touchStartCoordinates.x;
       const deltaY = this._touchCoordinates.y - this._touchStartCoordinates.y;
@@ -210,6 +211,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
             cancelButtonText: 'Nein',
             neutralButtonText: 'Abbrechen'
         };
+
         confirm(options).then((result: boolean) => {
             this._isConfirmPayoutDialogOpen = false;
 
@@ -217,9 +219,14 @@ export class OverviewComponent implements OnInit, AfterViewInit {
               this.confirmPayout();
             }
         });
+
+        // reset slide progress indicator (for iOS)
+        args.view.style.backgroundSize = '0 0';
+
+        this._sliding = false;
+        this.isScrollEnabled(true);
       }
     }
-
     // finger removed from screen
     if (args.action === 'up') {
       // reset the slide progress indicator
