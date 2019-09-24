@@ -8,6 +8,7 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { PanGestureEventData, TouchGestureEventData } from 'tns-core-modules/ui/gestures';
 import { confirm } from 'tns-core-modules/ui/dialogs';
 import { layout } from 'tns-core-modules/utils/utils';
+import { isAndroid } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 
 import { HttpService } from '../shared/services/http.service';
@@ -195,8 +196,11 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       this._touchCoordinates.y = args.getY();
 
       // update the red slide progress indicator
-      // TODO check for android
-      args.view.style.backgroundSize = this._touchCoordinates.x + ' ' + layout.toDeviceIndependentPixels(args.view.getMeasuredHeight());
+      if (isAndroid) {
+        args.view.style.backgroundSize = layout.toDevicePixels(this._touchCoordinates.x) + ' ' + args.view.getMeasuredHeight();
+      } else {
+        args.view.style.backgroundSize = this._touchCoordinates.x + ' ' + args.view.getMeasuredHeight();
+      }
 
       const deltaX = this._touchCoordinates.x - this._touchStartCoordinates.x;
       const deltaY = this._touchCoordinates.y - this._touchStartCoordinates.y;

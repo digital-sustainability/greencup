@@ -14,6 +14,10 @@
     color: blue;
 }
 
+.card {
+    background-color: white;
+}
+
 .card-title {
     margin: 5 0;
     font-weight: bold;
