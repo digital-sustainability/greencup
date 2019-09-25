@@ -17,4 +17,5 @@ export interface Scan {
   user_id: number | User;
   status: StatusType;
   cup_round_id: CupRound;
+  scanned_at: number;
 }

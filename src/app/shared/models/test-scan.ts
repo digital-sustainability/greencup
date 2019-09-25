@@ -15,6 +15,7 @@ export class TestScan implements Scan {
   user_id: number | User;
   status: StatusType;
   cup_round_id: CupRound;
+  scanned_at: number;
 
   constructor(rdnId: number, status: StatusType) {
     this.id = rdnId;
@@ -26,6 +27,7 @@ export class TestScan implements Scan {
     this.rewardedAt = undefined;
     this.rewarded = false;
     this.user_id = undefined;
+    this.scanned_at = Date.now();
     this.cup_round_id = <CupRound>{
       id: 1,
       special_event: '-',

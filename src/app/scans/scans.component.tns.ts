@@ -40,11 +40,11 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   // @ViewChild('fab', { static: false }) btn: Fab;
   // button: Fab;
 
-  sortUp = String.fromCharCode(0xf106);
-  sortDown = String.fromCharCode(0xf107);
+  sortASC = String.fromCharCode(0xf106);
+  sortDESC = String.fromCharCode(0xf107);
 
   // Initial ASC sort by time of scan.
-  timeSortIcon = this.sortDown;
+  timeSortIcon = this.sortDESC;
   statusSortIcon = '';
   // Boolean values to toggle the sorting direction.
   private _sortTimeASC = true;
@@ -145,11 +145,11 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     this.statusSortIcon = ' ';
     if (this._scans && this._scans.length) {
       if (this._sortTimeASC) {
-        this.timeSortIcon = this.sortDown;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => a.updatedAt - b.updatedAt;
+        this.timeSortIcon = this.sortASC;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) =>  a.scanned_at > b.scanned_at ? -1 : 1;
       } else {
-        this.timeSortIcon = this.sortUp;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => b.updatedAt - a.updatedAt;
+        this.timeSortIcon = this.sortDESC;
+        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => b.scanned_at > a.scanned_at ? -1 : 1;
       }
     }
     this._sortTimeASC = !this._sortTimeASC;
@@ -159,12 +159,12 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     this.timeSortIcon = ' ';
     if (this._scans && this._scans.length) {
       if (this._sortStatusASC) {
-        this.statusSortIcon = this.sortDown;
+        this.statusSortIcon = this.sortASC;
         this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
           return this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
         };
       } else {
-        this.statusSortIcon = this.sortUp;
+        this.statusSortIcon = this.sortDESC;
         this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
           return this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
         };
@@ -196,7 +196,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getScannedTime(scan: Scan): string {
-    return scan.updatedAt ? dayjs(scan.updatedAt).format('D.M.YY – HH:mm:ss') : 'Unbekannt';
+    return scan.scanned_at ? dayjs(scan.scanned_at).format('D.M.YY – HH:mm:ss') : 'Unbekannt';
   }
 
   get scanCount(): number {
@@ -222,7 +222,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
       (scans: Scan[]) => {
         console.log('|===> CONNECTED TO BACKEND');
         // Initally sort list ASC by scan time
-        this._scans = new ObservableArray(scans.sort((a: Scan, b: Scan) => a.updatedAt - b.updatedAt));
+        this._scans = new ObservableArray(scans.sort((a: Scan, b: Scan) => b.scanned_at - a.scanned_at));
         this._loaded = true;
         // this._scans = new ObservableArray([]); // FIXME testing only
         if (pullToRefreshArgs) {
