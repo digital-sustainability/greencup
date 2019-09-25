@@ -104,32 +104,28 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   // ANCHOR *** User-Interaction Methods ***
 
   onNewScanTap(): void {
-    if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
-      this._throttle = true;
-      this._codeScanner.scan(this._scanOptions)
-        // Handle codeScanner promise.
-        .then((result) => {
-          if (result.format === 'QR_CODE' && result.text.length) {
-            if (this.validateScan(result.text)) {
-              // In case the QR-Code matches all requirements, send it to the server.
-              this.saveScan(result.text);
-            } else {
-              const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
-              this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
-            }
+    this._codeScanner.scan(this._scanOptions)
+      // Handle codeScanner promise.
+      .then((result) => {
+        if (result.format === 'QR_CODE' && result.text.length) {
+          if (this.validateScan(result.text)) {
+            // In case the QR-Code matches all requirements, send it to the server.
+            this.saveScan(result.text);
           } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
+            const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
+            this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
           }
-        // Handle scan errors.
-        }, errMsg => {
-          if (errMsg === 'Scan aborted') {
-            this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
-          } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
-          }
-      });
-    }
-    setTimeout(() => this._throttle = false, this._throttleTime);
+        } else {
+          this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
+        }
+      // Handle scan errors.
+      }, errMsg => {
+        if (errMsg === 'Scan aborted') {
+          this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
+        } else {
+          this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
+        }
+    });
   }
 
   onScanTap(args): void {
