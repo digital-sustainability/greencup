@@ -6,13 +6,13 @@
 </GridLayout>
 <StackLayout>
     <GridLayout columns="*, *" rows="auto">
-        <Label col="0" class="sort-option" (tap)="onSortByTime()">
+        <Label col="0" class="sort-option" (tap)="onSort('time')">
             <FormattedString>
                 <Span text="Zeitraum&nbsp;&nbsp;"></Span>
                 <Span class="fa ic-sort" [text]="timeSortIcon"></Span>
             </FormattedString>
         </Label>
-        <Label col="1" class="sort-option" (tap)="onSortByStatus()">
+        <Label col="1" class="sort-option" (tap)="onSort('status')">
             <FormattedString  >
                 <Span text="Status&nbsp;&nbsp;"></Span>
                 <Span class="fa ic-sort" [text]="statusSortIcon"></Span>

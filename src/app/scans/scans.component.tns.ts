@@ -23,6 +23,8 @@ import { interval } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { has } from 'lodash';
 import * as dayjs from 'dayjs';
+import { RadListView } from 'nativescript-ui-listview';
+import { topmost } from 'tns-core-modules/ui/frame/frame';
 
 @Component({
   selector: 'app-scans',
@@ -44,11 +46,13 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   sortDESC = String.fromCharCode(0xf107);
 
   // Initial ASC sort by time of scan.
+  sortConfig = {
+    attr: 'time',
+    direction: 'DESC'
+  };
+
+  statusSortIcon: string;
   timeSortIcon = this.sortDESC;
-  statusSortIcon = '';
-  // Boolean values to toggle the sorting direction.
-  private _sortTimeASC = true;
-  private _sortStatusASC = true;
 
   private _loaded: boolean;
   private _scans: ObservableArray<Scan>;
@@ -78,7 +82,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     private _feedbackService: FeedbackService,
     private _changeDetectionRef: ChangeDetectorRef,
     private _authService: AuthService
-    ) { }
+  ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
 
@@ -118,14 +122,14 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
         }
-      // Handle scan errors.
+        // Handle scan errors.
       }, errMsg => {
         if (errMsg === 'Scan aborted') {
           this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
         } else {
           this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
         }
-    });
+      });
   }
 
   onScanTap(args): void {
@@ -137,36 +141,42 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadData(args);
   }
 
-  onSortByTime(): void {
-    this.statusSortIcon = ' ';
-    if (this._scans && this._scans.length) {
-      if (this._sortTimeASC) {
-        this.timeSortIcon = this.sortASC;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) =>  a.scanned_at > b.scanned_at ? -1 : 1;
-      } else {
-        this.timeSortIcon = this.sortDESC;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => b.scanned_at > a.scanned_at ? -1 : 1;
-      }
+  onSort(attr: string) {
+    if (attr === this.sortConfig.attr) {
+      this.sortConfig.direction = this.sortConfig.direction === 'DESC' ? 'ASC' : 'DESC';
     }
-    this._sortTimeASC = !this._sortTimeASC;
+    else {
+      this.sortConfig = {
+        attr: attr,
+        direction: 'DESC'
+      };
+    }
+
+    if (attr === 'status') {
+      this.statusSortIcon = this.sortConfig.direction === 'DESC' ? this.sortDESC : this.sortASC;
+      this.timeSortIcon = ' ';
+    }
+    else {
+      this.timeSortIcon = this.sortConfig.direction === 'DESC' ? this.sortDESC : this.sortASC;
+      this.statusSortIcon = ' ';
+    }
+
+    this.scanListViewComponent.listView.sortingFunction = this.compareScans(this.sortConfig.attr, this.sortConfig.direction);
   }
 
-  onSortByStatus(): void {
-    this.timeSortIcon = ' ';
-    if (this._scans && this._scans.length) {
-      if (this._sortStatusASC) {
-        this.statusSortIcon = this.sortASC;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
-          return this.getStatusDescription(b).localeCompare(this.getStatusDescription(a));
-        };
-      } else {
-        this.statusSortIcon = this.sortDESC;
-        this.scanListViewComponent.listView.sortingFunction = (a: Scan, b: Scan) => {
-          return this.getStatusDescription(a).localeCompare(this.getStatusDescription(b));
-        };
-      }
+  compareScans(attr: string, direction: string) {
+    switch (attr) {
+      case 'time':
+        if (direction === 'DESC') {
+          return (a: Scan, b: Scan) => b.scanned_at > a.scanned_at ? -1 : 1;
+        }
+        return (a: Scan, b: Scan) => a.scanned_at > b.scanned_at ? -1 : 1;
+      case 'status':
+        if (direction === 'DESC') {
+          return (a: Scan, b: Scan) => this.getStatusDescriptionIdx(a).localeCompare(this.getStatusDescriptionIdx(b));
+        }
+        return (a: Scan, b: Scan) => this.getStatusDescriptionIdx(b).localeCompare(this.getStatusDescriptionIdx(a));
     }
-    this._sortStatusASC = !this._sortStatusASC;
   }
 
   // ANCHOR *** Accessor Methods ***
@@ -184,6 +194,19 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
       return scan.rewarded ? 'Ausbezahlt' : 'Gutgeschrieben';
     } else {
       return scan.status === StatusType.reserved ? 'Reserviert' : 'Überboten';
+    }
+  }
+
+  getStatusDescriptionIdx(scan: Scan): string {
+    switch (this.getStatusDescription(scan)) {
+      case 'Überboten':
+        return 'a';
+      case 'Ausbezahlt':
+        return 'b';
+      case 'Gutgeschrieben':
+        return 'c';
+      case 'Reserviert':
+        return 'd';
     }
   }
 
@@ -266,8 +289,15 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
       const idx = this._scans.indexOf(existing[0]);
       this.scans.splice(idx, 1);
     }
+    // const listView: RadListView = <RadListView>(topmost().currentPage.getViewById('listView'));
     // Add the new scan and notify the user.
-    this._scans.unshift(scan);
+    if (this.sortConfig.direction === 'DESC') {
+      this.scans.unshift(scan);
+      this.scanListViewComponent.listView.scrollToIndex(0);
+    } else {
+      const length = this.scans.push(scan);
+      this.scanListViewComponent.listView.scrollWithAmount(1000 * length, false);
+    }
     const msg = 'Nach der Reinigung des Bechers erhält die letzte Reservation die Pfandgutschrift';
     this._feedbackService.show(FeedbackType.Success, 'Becher reserviert!', msg, 4500);
   }
