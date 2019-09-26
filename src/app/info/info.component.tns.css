@@ -1,1 +1,32 @@
 /* Add mobile styles for the component here.  */
+.status-reserved {
+    background-color: #ffff4d;
+}
+
+.status-verified {
+    background-color: #C8EC85;
+}
+
+.status-rewarded {
+    background-color: #92DB00;
+}
+
+.status-overbid {
+    background-color: #EB6A00;
+}
+
+.card {
+    background-color: #fff;;
+    color: #4d4d4d;
+    margin: 15 15 0;
+    border-radius: 5;
+}
+
+.scan-label {
+    margin: 5 5 5 10;
+    font-weight: bold;
+}
+
+.scan-value {
+    margin: 5 5 5 10;
+}

@@ -1,2 +1,39 @@
 <app-action-bar title="Wie funktioniert es?"></app-action-bar>
-<Button text="info works!" class="btn btn-primary"></Button>
+<GridLayout columns="*" rows="*, auto">
+    <ScrollView col="0" row="0">
+        <StackLayout class="p-20">
+            <Label text="Lorem ipsum"></Label>
+            <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                <GridLayout columns="20, auto, *" rows="auto">
+                    <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
+                    <Label col="1" row="0" class="scan-label" text="Reserviert:"></Label>
+                    <Label col="2" row="0" class="scan-value" text="Sie haben den Becher zuletzt gescannt. Bei einer Rückgabe wird Ihnen das Depot gutgeschrieben." textWrap="true"></Label>
+                </GridLayout>
+            </CardView>
+            <CardView class="card" ripple="false" margin="5" elevation="10"radius="10" ios:shadowRadius="3" android:elevation="6">
+                <GridLayout columns="20, auto, *" rows="auto">
+                    <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
+                    <Label col="1" row="0" class="scan-label" text="Überboten:"></Label>
+                    <Label col="2" row="0" class="scan-value" text="Der Becher, den Sie gescannt haben, wurde von einer anderen Person gescannt und abgegeben." textWrap="true"></Label>
+                </GridLayout>
+            </CardView>
+            <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                <GridLayout columns="20, auto, *" rows="auto">
+                    <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
+                    <Label col="1" row="0" class="scan-label" text="Gutgeschrieben:"></Label>
+                    <Label col="2" row="0" class="scan-value" text="Die Rückgabestelle hat Ihren Becher zur Reinigung angenommen. Das Depot wird zu Ihrem Guthaben hinzugefügt." textWrap="true"></Label>
+                </GridLayout>
+            </CardView>
+            <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                <GridLayout columns="20, auto, *" rows="auto">
+                    <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
+                    <Label col="1" row="0" class="scan-label" text="Ausbezahlt:"></Label>
+                    <Label col="2" row="0" class="scan-value" text="Das Depot dieses Bechers wurde bereits ausbezahlt." textWrap="true"></Label>
+                </GridLayout>
+            </CardView>
+        </StackLayout>
+    </ScrollView>
+    <StackLayout col="0" row="1" *ngIf="isFirstRun">
+        <Button text="Alles klar" class="btn btn-primary" (tap)="onNavigateToLogin()"></Button>
+    </StackLayout>
+</GridLayout>
