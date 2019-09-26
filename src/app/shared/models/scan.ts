@@ -11,9 +11,9 @@ export interface Scan {
   createdAt: number;
   updatedAt: number;
   verified: boolean;
-  verifiedAt: number;
+  verified_at: number;
   rewarded: boolean;
-  rewardedAt: number;
+  rewarded_at: number;
   user_id: number | User;
   status: StatusType;
   cup_round_id: CupRound;

@@ -33,8 +33,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private _loaded = false;
   private _depositChfValue = 1;
   private _isConfirmPayoutDialogOpen = false;
-  private _touchStartCoordinates = {x: 0, y: 0};
-  private _touchCoordinates = {x: 0, y: 0};
   private _sliding = false;
 
 
@@ -93,6 +91,74 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
 
   // ANCHOR *** User-Interaction Methods ***
+  onSlideButtonTouch(args: TouchGestureEventData) {
+    // finger on screen
+    if (args.action === 'down') {
+      // only accept starting points on the left side of the button
+      if (args.getX() < 0.5 * layout.toDeviceIndependentPixels(args.view.getMeasuredWidth())) {
+        this._sliding = true;
+        this.isScrollEnabled(false);
+      }
+    }
+
+    // finger moved on screen
+    if (args.action === 'move' && this._sliding) {
+
+      const x = args.getX();
+      const y = args.getY();
+
+      // update the red slide progress indicator
+      if (isAndroid) {
+        args.view.style.backgroundSize = layout.toDevicePixels(x) + ' ' + args.view.getMeasuredHeight();
+      } else {
+        args.view.style.backgroundSize = x + ' ' + args.view.getMeasuredHeight();
+      }
+
+      if (this.hasPannedEnough(x, layout.toDeviceIndependentPixels(args.view.getMeasuredWidth()))
+        && !this._isConfirmPayoutDialogOpen) {
+        // the user panned enough, show the confirm dialog
+        this._isConfirmPayoutDialogOpen = true;
+        const options = {
+            title: 'Auszahlung bestätigen',
+            message: 'Dieser Schritt kann nicht rückgängig gemacht werden.',
+            okButtonText: 'Ja',
+            cancelButtonText: 'Nein',
+            neutralButtonText: 'Abbrechen'
+        };
+
+        confirm(options).then((result: boolean) => {
+            this._isConfirmPayoutDialogOpen = false;
+
+            if (result) {
+              this.confirmPayout();
+            }
+        });
+
+        // reset slide progress indicator (for iOS)
+        args.view.style.backgroundSize = '0 0';
+
+        this._sliding = false;
+        this.isScrollEnabled(true);
+      }
+
+      if (this.isFarAwayFromButton(y, layout.toDeviceIndependentPixels(args.view.getMeasuredHeight()))) {
+        // reset the slide progress indicator and cancel sliding
+        args.view.style.backgroundSize = '0 0';
+
+        this._sliding = false;
+        this.isScrollEnabled(true);
+      }
+    }
+
+    // finger removed from screen
+    if (args.action === 'up') {
+      // reset the slide progress indicator
+      args.view.style.backgroundSize = '0 0';
+
+      this._sliding = false;
+      this.isScrollEnabled(true);
+    }
+  }
 
   onLogout(): void {
     // TODO: Confirm logout
@@ -148,9 +214,18 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     // this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
-  // checks if the user panned enough
-  private isPannedEnough(deltaX: number, deltaY: number, buttonWidth: number): boolean {
-    if (deltaX >= 0.5 * buttonWidth && deltaY <= 0.25 * buttonWidth) {
+  // checks if the user panned enough - only in x-direction
+  private hasPannedEnough(x: number, buttonWidth: number): boolean {
+    if (x >= buttonWidth) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // checks if the user moved too far away from the button - in y-direction (to prevent unintentional slides only by scrolling)
+  private isFarAwayFromButton(y: number, buttonHeight: number): boolean {
+    if (Math.abs(y - (buttonHeight / 2)) >= 2 * buttonHeight) {
       return true;
     } else {
       return false;
@@ -176,70 +251,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   }
 
   // FIXME *** Methods for Testing only ***
-  onSlideButtonTouch(args: TouchGestureEventData) {
-    // finger on screen
-    if (args.action === 'down') {
-      // only accept starting points on the left side of the button
-      if (args.getX() < 0.5 * layout.toDeviceIndependentPixels(args.view.getMeasuredWidth())) {
-        this._touchStartCoordinates.x = args.getX();
-        this._touchStartCoordinates.y = args.getY();
-
-        this._sliding = true;
-        this.isScrollEnabled(false);
-      }
-    }
-
-    // finger moved on screen
-    if (args.action === 'move' && this._sliding) {
-
-      this._touchCoordinates.x = args.getX();
-      this._touchCoordinates.y = args.getY();
-
-      // update the red slide progress indicator
-      if (isAndroid) {
-        args.view.style.backgroundSize = layout.toDevicePixels(this._touchCoordinates.x) + ' ' + args.view.getMeasuredHeight();
-      } else {
-        args.view.style.backgroundSize = this._touchCoordinates.x + ' ' + args.view.getMeasuredHeight();
-      }
-
-      const deltaX = this._touchCoordinates.x - this._touchStartCoordinates.x;
-      const deltaY = this._touchCoordinates.y - this._touchStartCoordinates.y;
-      if (this.isPannedEnough(deltaX, deltaY, layout.toDeviceIndependentPixels(args.view.getMeasuredWidth()))
-        && !this._isConfirmPayoutDialogOpen) {
-        // the user panned enough, show the confirm dialog
-        this._isConfirmPayoutDialogOpen = true;
-        const options = {
-            title: 'Auszahlung bestätigen',
-            message: 'Dieser Schritt kann nicht rückgängig gemacht werden.',
-            okButtonText: 'Ja',
-            cancelButtonText: 'Nein',
-            neutralButtonText: 'Abbrechen'
-        };
-
-        confirm(options).then((result: boolean) => {
-            this._isConfirmPayoutDialogOpen = false;
-
-            if (result) {
-              this.confirmPayout();
-            }
-        });
-
-        // reset slide progress indicator (for iOS)
-        args.view.style.backgroundSize = '0 0';
-
-        this._sliding = false;
-        this.isScrollEnabled(true);
-      }
-    }
-    // finger removed from screen
-    if (args.action === 'up') {
-      // reset the slide progress indicator
-      args.view.style.backgroundSize = '0 0';
-
-      this._sliding = false;
-      this.isScrollEnabled(true);
-    }
-  }
 
 
   onOpenScanner(): void {

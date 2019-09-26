@@ -9,9 +9,9 @@ export class TestScan implements Scan {
   createdAt: number;
   updatedAt: number;
   verified: boolean;
-  verifiedAt: number;
+  verified_at: number;
   rewarded: boolean;
-  rewardedAt: number;
+  rewarded_at: number;
   user_id: number | User;
   status: StatusType;
   cup_round_id: CupRound;
@@ -22,9 +22,9 @@ export class TestScan implements Scan {
     this.status = status;
     this.createdAt = Date.now();
     this.updatedAt = Date.now();
-    this.verifiedAt = undefined;
+    this.verified_at = undefined;
     this.verified = false;
-    this.rewardedAt = undefined;
+    this.rewarded_at = undefined;
     this.rewarded = false;
     this.user_id = undefined;
     this.scanned_at = Date.now();

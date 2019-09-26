@@ -1,0 +1,18 @@
+<StackLayout class="modal-view-style scan-modal">
+    <Label class="h3" text="Details"></Label>
+    <GridLayout columns="*, *" rows="auto, auto, auto, auto, auto, auto">
+        <Label col="0" row="0" class="scan-label" text="Status:"></Label>
+        <Label col="1" row="0" class="scan-value" [text]="getStatusDescription(scan)"></Label>
+        <Label col="0" row="1" class="scan-label" text="Gescannt:"></Label>
+        <Label col="1" row="1" class="scan-value" [text]="getScannedTime(scan)"></Label>
+        <Label *ngIf="scan.verified" col="0" row="2" class="scan-label" text="Verifiziert:"></Label>
+        <Label *ngIf="scan.verified" col="1" row="2" class="scan-value" [text]="getVerifiedTime(scan)"></Label>
+        <Label *ngIf="scan.rewarded" col="0" row="3" class="scan-label" text="Gutgeschrieben:"></Label>
+        <Label *ngIf="scan.rewarded" col="1" row="3" class="scan-value" [text]="getRewardedTime(scan)"></Label>
+        <Label col="0" row="4" class="scan-label" text="Becher-ID:"></Label>
+        <Label col="1" row="4" class="scan-value" [text]="getCupId(scan)"></Label>
+        <Label col="0" row="5" class="scan-label" text="User-ID:"></Label>
+        <Label col="1" row="5" class="scan-value" [text]="getUserId(scan)"></Label>
+    </GridLayout>
+    <Button text="Schliessen" class="btn flat" (tap)="onClose()"></Button>
+</StackLayout>
