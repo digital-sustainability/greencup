@@ -12,6 +12,7 @@ import { LoginComponent } from './login/login.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
 import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ScanModalComponent } from './scan-modal/scan-modal.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     LoginComponent,
     LoginSplashComponent,
     EmailConfirmComponent,
-    PasswordResetComponent
+    PasswordResetComponent,
+    ScanModalComponent,
   ],
   imports: [
     BrowserModule,

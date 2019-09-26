@@ -23,6 +23,8 @@ import { AdminComponent } from './admin/admin.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
 import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ScanModalComponent } from './scan-modal/scan-modal.component';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -42,6 +44,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     LoginSplashComponent,
     EmailConfirmComponent,
     PasswordResetComponent,
+    ScanModalComponent,
   ],
   imports: [
     NativeScriptModule,
@@ -49,6 +52,9 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     HttpClientModule,
     NativeScriptUIListViewModule,
     NativeScriptFormsModule,
+  ],
+  entryComponents: [
+    ScanModalComponent
   ],
   providers: [
     NavigationService,

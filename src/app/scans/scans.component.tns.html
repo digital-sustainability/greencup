@@ -25,11 +25,11 @@
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
 <GridLayout *ngIf="loaded && scanCount > 0" class="page">
-    <RadListView #scanListView [items]="scans" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
+    <RadListView #scanListView [items]="scans" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
         <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
             <ng-template tkListItemTemplate let-scan="item">
                 <!-- TODO: On modal click descibe the status in words and other details -->
-                <CardView class="card" ripple="true" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                <CardView class="card" ripple="true" margin="5" elevation="10" (tap)="onScanTap(scan)" radius="10" ios:shadowRadius="3" android:elevation="6">
                 <!-- <CardView class="card list-item-ios" ripple="true" margin="5"> -->
                     <GridLayout columns="20, auto, *" rows="auto, auto, auto">
                         <StackLayout col="0" rowspan="3" [ngClass]="getStatusClass(scan)"></StackLayout>
@@ -49,10 +49,10 @@
 </GridLayout>
 <!-- Show grayed-out default-scan if no scans are found  -->
 <GridLayout *ngIf="loaded && scanCount === 0">
-    <RadListView id="emptyScanListView" [items]="defaultItems" (itemTap)="onScanTap($event)">
+    <RadListView id="emptyScanListView" [items]="defaultItems">
         <ng-template let-scan="item" tkListItemTemplate>
             <!-- <Label text="some text" height="50" backgroundcolor="yellow"></Label> -->
-            <CardView ripple="true" margin="5" class="card">
+            <CardView ripple="true" margin="5" class="card"  (tap)="onScanTap(scan)">
                 <GridLayout columns="20, *" rows="*, *">
                     <StackLayout col="0" rowspan="2" class="status-empty"></StackLayout>
                     <Label col="1" row="0" class="default-scan-label" [text]="scan.message"></Label>

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
@@ -14,6 +14,7 @@ import { AuthService } from '../shared/services/auth.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { FeedbackType } from 'nativescript-feedback';
+import { ScanModalComponent } from '../scan-modal/scan-modal.component';
 
 import { Scan, StatusType } from '../shared/models/scan';
 import { Cup } from '../shared/models/cup';
@@ -25,6 +26,7 @@ import { has } from 'lodash';
 import * as dayjs from 'dayjs';
 import { RadListView } from 'nativescript-ui-listview';
 import { topmost } from 'tns-core-modules/ui/frame/frame';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 
 @Component({
   selector: 'app-scans',
@@ -81,7 +83,9 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
     private _codeScanner: BarcodeScanner,
     private _feedbackService: FeedbackService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _modalService: ModalDialogService,
+    private _viewContainerRef: ViewContainerRef
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -132,9 +136,16 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  onScanTap(args): void {
-    console.log('|===> TAP');
-    alert('User tapped');
+  onScanTap(scan: Scan): void {
+    const options = {
+      viewContainerRef: this._viewContainerRef,
+      context: {scan: scan},
+      fullscreen: false
+    };
+
+    this._modalService.showModal(ScanModalComponent, options).then(result => {
+        console.log(result);
+    });
   }
 
   onPullToRefreshInit(args) {
