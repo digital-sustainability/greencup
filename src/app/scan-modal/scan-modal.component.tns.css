@@ -1,0 +1,16 @@
+/* Add mobile styles for the component here.  */
+.scan-modal {
+    padding: 10;
+}
+.h3 {
+    margin: 5;
+}
+
+.scan-label {
+    margin: 5;
+    font-weight: bold;
+}
+
+.scan-value {
+    margin: 5;
+}
