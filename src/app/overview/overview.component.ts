@@ -15,9 +15,10 @@ import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 
 import { Scan, StatusType } from '../shared/models/scan';
+import { registerElement } from 'nativescript-angular/element-registry';
+registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
 
-import { fromEvent, Subscription, interval } from 'rxjs';
-import { throttle } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../shared/services/auth.service';
 import { ThrowStmt } from '@angular/compiler';
 
@@ -76,18 +77,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     this.loadData();
   }
 
-  ngAfterViewInit(): void {
-    // this.button = this.btn.nativeElement;
-    // fromEvent(this.button, 'tap').pipe(throttle(val => interval(2000))).subscribe(
-    //   event => {
-    //     console.log('Rx Tap!');
+  ngAfterViewInit(): void { }
 
-    //   }
-    //   event => this.onOpenScanner()
-    // );
-    // this.button.animate({ opacity: 0, duration: 2000 }).catch((e) => {
-    //   console.log(e.message);
-    // });
+  onPullToRefreshInit(args) {
+    const pullRefresh = args.object;
+    this.loadData();
+    pullRefresh.refreshing = false;
   }
 
   // ANCHOR *** User-Interaction Methods ***
