@@ -81,6 +81,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
 
   onPullToRefreshInit(args) {
     const pullRefresh = args.object;
+    this._loaded = false;
     this.loadData();
     pullRefresh.refreshing = false;
   }
