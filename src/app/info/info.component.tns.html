@@ -2,7 +2,14 @@
 <GridLayout columns="*" rows="*, auto">
     <ScrollView col="0" row="0">
         <StackLayout class="p-20">
-            <Label text="Lorem ipsum"></Label>
+            <Label textWrap="true" class="info-label">
+                <FormattedString>
+                    <Span text="SBB Mehrwegbecher mit der App scannen und an einer beliebigen Rückgabestelle zurückbringen. "></Span>
+                    <Span text="Das Depot wird in der App gutgeschrieben und kann gesammelt an einer Kasse ausbezahlt werden. "></Span>
+                    <Span text="Becher können von verschiedenen Personen gescannt werden, "></Span>
+                    <Span text="das Guthaben wird jeweils dem User des letzten Scans gutgeschrieben."></Span>
+                </FormattedString>
+            </Label>
             <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
                 <GridLayout columns="20, auto, *" rows="auto">
                     <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
