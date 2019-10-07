@@ -157,12 +157,16 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     return this._authService.getAuthenticatedUser();
   }
 
-  getStatusSum(scans: ObservableArray<Scan>, filterCritera: string): number {
-    return scans ? scans.filter(e => e.status === filterCritera).length : 0;
+  getReservedOrOverbidCount(scans: ObservableArray<Scan>, filterCritera: string): number {
+    return scans ? scans.filter(e => e.status === filterCritera && !e.verified && !e.rewarded).length : 0;
   }
 
-  getSuccessSum(scans: ObservableArray<Scan>, filterProperty: string): number {
-    return scans ? scans.filter(e => e[filterProperty]).length : 0;
+  getVerifiedCount(scans: ObservableArray<Scan>): number {
+    return scans ? scans.filter(e => e.status === 'reserved' && e.verified && !e.rewarded).length : 0;
+  }
+
+  getRewardedCount(scans: ObservableArray<Scan>): number {
+    return scans ? scans.filter(e => e.status === 'reserved' && e.verified && e.rewarded).length : 0;
   }
 
   getDepositValue(scans: ObservableArray<Scan>, filterProperty: string): string {
