@@ -52,7 +52,7 @@
     <RadListView id="emptyScanListView" [items]="defaultItems">
         <ng-template let-scan="item" tkListItemTemplate>
             <!-- <Label text="some text" height="50" backgroundcolor="yellow"></Label> -->
-            <CardView ripple="true" margin="5" class="card"  (tap)="onScanTap(scan)">
+            <CardView ripple="true" margin="5" class="card">
                 <GridLayout columns="20, *" rows="*, *">
                     <StackLayout col="0" rowspan="2" class="status-empty"></StackLayout>
                     <Label col="1" row="0" class="default-scan-label" [text]="scan.message"></Label>
@@ -61,5 +61,5 @@
             </CardView>
         </ng-template>
     </RadListView>
-    <Fab #fab (tap)="onNewScanTap($event)" icon="~/assets/images/scan01_white(2).png" rippleColor="#f1f1f1" class="fab-button"></Fab>
+    <Fab #fab (tap)="onNewScanTap($event)" icon="~/assets/images/scan01_white.png" rippleColor="#f1f1f1" class="fab-button"></Fab>
 </GridLayout>
