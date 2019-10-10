@@ -38,6 +38,16 @@ export class ScanModalComponent implements OnInit {
     }
   }
 
+  getScannedLabelText(scan: Scan): string {
+    if (!scan.verified && scan.status !== StatusType.reserved) {
+      // overbid
+      return 'Ursprünglich gescannt:';
+    } else {
+      // normal
+      return 'Gescannt:';
+    }
+  }
+
   getStatusDescription(scan: Scan): string {
     if (scan.verified) {
       return scan.rewarded ? 'Ausbezahlt' : 'Gutgeschrieben';
