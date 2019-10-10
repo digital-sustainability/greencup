@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthService } from '../shared/services/auth.service';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
+import { registerElement } from 'nativescript-angular';
+
+registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
+
 
 @Component({
   selector: 'app-password-reset',
@@ -16,6 +20,9 @@ export class PasswordResetComponent implements OnInit {
   enteredPassword: string;
   enteredPasswordConfirm: string;
   processing: boolean;
+  @ViewChild('token', { static: false }) token: ElementRef;
+  @ViewChild('password', { static: false }) password: ElementRef;
+  @ViewChild('passwordConfirm', { static: false }) passwordConfirm: ElementRef;
 
   constructor(private _authService: AuthService,
     private _navigationService: NavigationService,
@@ -51,6 +58,17 @@ export class PasswordResetComponent implements OnInit {
         }
         this.processing = false;
       });
+  }
+  focusToken() {
+    this.token.nativeElement.focus();
+  }
+
+  focusPassword() {
+    this.password.nativeElement.focus();
+  }
+
+  focusPasswordConfirm() {
+    this.passwordConfirm.nativeElement.focus();
   }
 
 }

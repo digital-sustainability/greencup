@@ -36,7 +36,7 @@
 
                     <StackLayout row="4" *ngIf="!isLoggingIn" class="input-field">
                         <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen"
-                            secure="true" [(ngModel)]="enteredConfirmPassword" returnKeyType="done"></TextField>
+                            secure="true" [(ngModel)]="enteredConfirmPassword" returnKeyType="done" (returnPress)="onSubmit()"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>
 
