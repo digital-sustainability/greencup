@@ -3,75 +3,76 @@
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
 <StackLayout *ngIf="loaded">
-    <ScrollView id="scrollView" height="100%">
-        <StackLayout class="p-20">
-            <GridLayout columns="auto, *" rows="auto" class="section-separator">
-                <Label class="fa ic-overview" text="&#xf029;"></Label>
-                <StackLayout col="1" class="hr-light"></StackLayout>
-            </GridLayout>
-            <StackLayout class="section-container">
-                <Label class="h3 section-sub-head" text="Scan Zusammenfassung"></Label>
-                <GridLayout class="scan-matrix" columns="*, *" rows="auto, auto">
-                        <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
-                            <GridLayout columns="20, *" rows="auto, auto">
-                                <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
-                                <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Reserviert"></Label>
-                                <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getStatusSum(scans, 'reserved')"></Label>
-                            </GridLayout>
-                        </CardView>
-                        <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
-                            <GridLayout columns="20, *" rows="auto, auto">
-                                <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
-                                <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überboten"></Label>
-                                <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getStatusSum(scans, 'overbid')"></Label>
-                            </GridLayout>
-                        </CardView>
-                        <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
-                            <GridLayout columns="20, *" rows="auto, auto">
-                                <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
-                                <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gutgeschrieben"></Label>
-                                <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getSuccessSum(scans, 'verified')"></Label>
-                            </GridLayout>
-                        </CardView>
-                        <CardView col="1" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
-                            <GridLayout columns="20, *" rows="auto, auto">
-                                <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
-                                <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Ausbezahlt"></Label>
-                                <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getSuccessSum(scans, 'rewarded')"></Label>
-                            </GridLayout>
-                        </CardView>
+    <PullToRefresh (refresh)="onPullToRefreshInit($event)">
+        <ScrollView id="scrollView" height="100%">
+            <StackLayout class="p-20">
+                <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                    <Label class="fa ic-overview" text="&#xf029;"></Label>
+                    <StackLayout col="1" class="hr-light"></StackLayout>
                 </GridLayout>
-                <GridLayout columns="auto, *" rows="auto, auto, auto, auto">
-                    <Label col="0" row="0" class="overview-label" text="Gescannt:"></Label>
-                    <Label col="1" row="0" class="" [text]="scans.length + ' Becher'"></Label>
-                    <Label col="0" row="1" class="overview-label" text="Gutschrift:" ></Label>
-                    <Label col="1" row="1" class="" [text]="getDepositValue(scans, 'verified')"></Label>
-                    <Label col="0" row="2" class="overview-label" text="Ausbezahlt:"></Label>
-                    <Label col="1" row="2" class="" [text]="getDepositValue(scans, 'rewarded')"></Label>
-                </GridLayout>
-                <StackLayout class="m-t-30">
-                    <Button text="Slide um Auszuzahlen >" class="btn flat" id="slideButton" (touch)="onSlideButtonTouch($event)"></Button>
+                <StackLayout class="section-container">
+                    <Label class="h3 section-sub-head" text="Scan Zusammenfassung"></Label>
+                    <GridLayout class="scan-matrix" columns="*, *" rows="auto, auto">
+                            <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                                <GridLayout columns="20, *" rows="auto, auto">
+                                    <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Reserviert"></Label>
+                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'reserved')"></Label>
+                                </GridLayout>
+                            </CardView>
+                            <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                                <GridLayout columns="20, *" rows="auto, auto">
+                                    <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überboten"></Label>
+                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'overbid')"></Label>
+                                </GridLayout>
+                            </CardView>
+                            <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                                <GridLayout columns="20, *" rows="auto, auto">
+                                    <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gutgeschrieben"></Label>
+                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getVerifiedCount(scans)"></Label>
+                                </GridLayout>
+                            </CardView>
+                            <CardView col="1" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                                <GridLayout columns="20, *" rows="auto, auto">
+                                    <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Ausbezahlt"></Label>
+                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getRewardedCount(scans)"></Label>
+                                </GridLayout>
+                            </CardView>
+                    </GridLayout>
+                    <GridLayout columns="auto, *" rows="auto, auto, auto, auto">
+                        <Label col="0" row="0" class="overview-label" text="Gescannt:"></Label>
+                        <Label col="1" row="0" class="" [text]="scans.length + ' Becher'"></Label>
+                        <Label col="0" row="1" class="overview-label" text="Gutschrift:" ></Label>
+                        <Label col="1" row="1" class="" [text]="getDepositValue(scans, 'verified')"></Label>
+                        <Label col="0" row="2" class="overview-label" text="Ausbezahlt:"></Label>
+                        <Label col="1" row="2" class="" [text]="getDepositValue(scans, 'rewarded')"></Label>
+                    </GridLayout>
+                    <StackLayout class="m-t-30">
+                        <Button text="Slide um Auszuzahlen >" class="btn flat" id="slideButton" (touch)="onSlideButtonTouch($event)"></Button>
+                    </StackLayout>
                 </StackLayout>
-            </StackLayout>
-        
-            <GridLayout columns="auto, *" rows="auto" class="section-separator">
-                <Label class="fa ic-overview" text="&#xf406;"></Label>
-                <StackLayout col="1" class="hr-light"></StackLayout>
-            </GridLayout>
-            <StackLayout class="section-container">
-                <GridLayout columns="auto, *" rows="auto, auto, auto">
-                    <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
-                    <Label col="1" row="0" class="email" [text]="getAuthenticatedUser().email" textWrap="true"></Label>
-                    <Label col="0" row="1" class="overview-label" text="Vorname: "></Label>
-                    <Label col="1" row="1" [text]="getAuthenticatedUser().first_name"></Label>
-                    <Label col="0" row="2" class="overview-label" text="Nachname: "></Label>
-                    <Label col="1" row="2" [text]="getAuthenticatedUser().last_name"></Label>
+            
+                <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                    <Label class="fa ic-overview" text="&#xf406;"></Label>
+                    <StackLayout col="1" class="hr-light"></StackLayout>
                 </GridLayout>
-                <!-- <StackLayout class="m-t-20">
-                    <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
-                    <Button text="Logout" class="btn btn-primary" (tap)="onLogout()"></Button>
-                </StackLayout> -->
-            </StackLayout>
+                <StackLayout class="section-container">
+                    <GridLayout columns="auto, *" rows="auto, auto, auto">
+                        <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
+                        <Label col="1" row="0" class="email" [text]="getAuthenticatedUser().email" textWrap="true"></Label>
+                        <Label col="0" row="1" class="overview-label" text="Vorname: "></Label>
+                        <Label col="1" row="1" [text]="getAuthenticatedUser().first_name"></Label>
+                        <Label col="0" row="2" class="overview-label" text="Nachname: "></Label>
+                        <Label col="1" row="2" [text]="getAuthenticatedUser().last_name"></Label>
+                    </GridLayout>
+                    <!-- <StackLayout class="m-t-20">
+                        <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
+                        <Button text="Logout" class="btn btn-primary" (tap)="onLogout()"></Button>
+                    </StackLayout> -->
+                </StackLayout>
 
             <GridLayout columns="auto, *" rows="auto" class="section-separator">
                 <Label class="fa ic-overview" text="&#xf05a;"></Label>
@@ -91,6 +92,6 @@
                 </Label>
                 <Button text="Info" class="btn flat" (tap)="onNavigateToInfo()"></Button>
             </StackLayout>
-        </StackLayout>
-    </ScrollView>
+        </ScrollView>
+    </PullToRefresh>
 </StackLayout>

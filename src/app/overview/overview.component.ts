@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { BarcodeScanner, ScanOptions, ScanResult } from 'nativescript-barcodescanner';
 import { Button } from 'tns-core-modules/ui/button';
 import { View } from 'tns-core-modules/ui/core/view';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
@@ -15,9 +14,10 @@ import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 
 import { Scan, StatusType } from '../shared/models/scan';
+import { registerElement } from 'nativescript-angular/element-registry';
+registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
 
-import { fromEvent, Subscription, interval } from 'rxjs';
-import { throttle } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../shared/services/auth.service';
 import { ThrowStmt } from '@angular/compiler';
 import { NavigationService } from '../shared/services/navigation.service';
@@ -42,29 +42,8 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   lastScan = '...';
   obs: any;
   sub: Subscription;
-  throttling = false;
-  throttleTime = 2000;
-
-  // @ViewChild('rxBtn', { static: false }) btn: ElementRef;
-  // button: Button;
-
-  scanOptions = {
-    formats: 'QR_CODE',
-    cancelLabel: 'Schliessen', // iOS only
-    cancelLabelBackgroundColor: '#999999', // iOS only
-    message: 'Use the volume buttons for extra light', // Android only
-    showFlipCameraButton: false,
-    preferFrontCamera: false,
-    showTorchButton: true,
-    beepOnScan: true, // Play or Suppress beep on scan
-    torchOn: false, // launch with the flashlight on
-    // closeCallback: () => (console.log('I WAS CLOSED')),
-    resultDisplayDuration: 0, // Android only, default 1500 (ms), set to 0 to disable echoing the scanned text
-    openSettingsIfPermissionWasPreviouslyDenied: true // On iOS you can send the user to the settings app if access was previously denied
-  };
 
   constructor(
-    private _codeScanner: BarcodeScanner,
     private _httpService: HttpService,
     private _feedbackService: FeedbackService,
     private _authService: AuthService,
@@ -78,21 +57,17 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     this.loadData();
   }
 
-  ngAfterViewInit(): void {
-    // this.button = this.btn.nativeElement;
-    // fromEvent(this.button, 'tap').pipe(throttle(val => interval(2000))).subscribe(
-    //   event => {
-    //     console.log('Rx Tap!');
-
-    //   }
-    //   event => this.onOpenScanner()
-    // );
-    // this.button.animate({ opacity: 0, duration: 2000 }).catch((e) => {
-    //   console.log(e.message);
-    // });
-  }
+  ngAfterViewInit(): void { }
 
   // ANCHOR *** User-Interaction Methods ***
+
+  onPullToRefreshInit(args) {
+    const pullRefresh = args.object;
+    this._loaded = false;
+    this.loadData();
+    pullRefresh.refreshing = false;
+  }
+
   onSlideButtonTouch(args: TouchGestureEventData) {
     // finger on screen
     if (args.action === 'down') {
@@ -185,12 +160,20 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     return this._scans;
   }
 
-  getStatusSum(scans: ObservableArray<Scan>, filterCritera: string): number {
-    return scans ? scans.filter(e => e.status === filterCritera).length : 0;
+  getAuthenticatedUser() {
+    return this._authService.getAuthenticatedUser();
   }
 
-  getSuccessSum(scans: ObservableArray<Scan>, filterProperty: string): number {
-    return scans ? scans.filter(e => e[filterProperty]).length : 0;
+  getReservedOrOverbidCount(scans: ObservableArray<Scan>, filterCritera: string): number {
+    return scans ? scans.filter(e => e.status === filterCritera && !e.verified && !e.rewarded).length : 0;
+  }
+
+  getVerifiedCount(scans: ObservableArray<Scan>): number {
+    return scans ? scans.filter(e => e.status === 'reserved' && e.verified && !e.rewarded).length : 0;
+  }
+
+  getRewardedCount(scans: ObservableArray<Scan>): number {
+    return scans ? scans.filter(e => e.status === 'reserved' && e.verified && e.rewarded).length : 0;
   }
 
   getDepositValue(scans: ObservableArray<Scan>, filterProperty: string): string {
@@ -217,7 +200,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
       }
     );
-    // this._dataSource.pipe(take(3)).subscribe(val => this._scans.unshift(new TestScan(val, StatusType.overbid))); // FIXME testing only
   }
 
   // checks if the user panned enough - only in x-direction
@@ -256,57 +238,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     );
   }
 
-  // FIXME *** Methods for Testing only ***
-
-
-  onOpenScanner(): void {
-    if (!this.throttling) {
-      this.throttling = true;
-      this._codeScanner.scan(this.scanOptions)
-        .then((result) => {
-          // This Promise is never invoked when a 'continuousScanCallback' function is provided
-          // TODO: check all these formats
-          // "QR_CODE" | "PDF_417" | "AZTEC" | "UPC_E" | "CODE_39" | "CODE_39_MOD_43" | "CODE_93" | "CODE_128" | "DATA_MATRIX"
-          // "EAN_8" | "ITF" | "EAN_13" | "UPC_A" | "CODABAR" | "MAXICODE" | "RSS_14" | "INTERLEAVED_2_OF_5"
-          if (result.format === 'QR_CODE' && result.text.length) {
-            this.lastScan = this.changeTestOutput(result.text);
-            this._feedbackService.show(FeedbackType.Success, 'Neuer Scan', result.text, 4000);
-          } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scan wurde nicht erkannt');
-          }
-        }, (errorMessage) => {
-          this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errorMessage);
-        });
-    }
-    // Allow next button tap
-    setTimeout(() => this.throttling = false, this.throttleTime);
-  }
-
-  private changeTestOutput(message: string): string {
-    return message.length <= 30 ? message : message.substring(0, 30) + '...';
-  }
-
-  animate(target: View) {
-    const duration = 500;
-    target.animate({ opacity: 0, duration: duration })
-      .then(() => target.animate({ opacity: 1, duration: duration })
-      ).catch((e) => {
-        console.log(e.message);
-      });
-  }
-
-  onTestGetScan() {
-    this._httpService.getScans(1).subscribe(s => console.log('**YES** ', s), err => console.log('|===> NO ', err));
-  }
-
-  onShowFeedback() {
-    const msg = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.';
-    this._feedbackService.show(Math.floor(((Math.random() * 4) + 1)), 'A Feedback Title', msg);
-  }
-
-  getAuthenticatedUser() {
-    return this._authService.getAuthenticatedUser();
-  }
 }
 
 
