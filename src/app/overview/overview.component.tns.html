@@ -74,23 +74,24 @@
                     </StackLayout> -->
                 </StackLayout>
 
-            <GridLayout columns="auto, *" rows="auto" class="section-separator">
-                <Label class="fa ic-overview" text="&#xf05a;"></Label>
-                <StackLayout col="1" class="hr-light"></StackLayout>
-            </GridLayout>
-            <StackLayout class="section-container">
-                <Label textWrap="true" class="body">
-                    <FormattedString>
-                        <Span text="SBB Rail Coffee" class="bold"></Span>
-                        <Span text=" ist eine mobile NativeScript Applikation, welche als Proof of Concept von der"></Span>
-                        <Span text=" Forschungsstelle Digitale Nachhaltigkeit" class="bold"></Span>
-                        <Span text=" der Universität Bern für die"></Span>
-                        <Span text=" SBB" class="bold"></Span>
-                        <Span text=" entwickelt wurde. Das Ziel des Proof of Concept besteht darin, dass Nutzer wiederverwendbare Kaffee-Becher über einen"></Span>
-                        <Span text=" angebrachten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
-                    </FormattedString>
-                </Label>
-                <Button text="Info" class="btn flat" (tap)="onNavigateToInfo()"></Button>
+                <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                    <Label class="fa ic-overview" text="&#xf05a;"></Label>
+                    <StackLayout col="1" class="hr-light"></StackLayout>
+                </GridLayout>
+                <StackLayout class="section-container">
+                    <Label textWrap="true" class="body">
+                        <FormattedString>
+                            <Span text="SBB Rail Coffee" class="bold"></Span>
+                            <Span text=" ist eine mobile NativeScript Applikation, welche als Proof of Concept von der"></Span>
+                            <Span text=" Forschungsstelle Digitale Nachhaltigkeit" class="bold"></Span>
+                            <Span text=" der Universität Bern für die"></Span>
+                            <Span text=" SBB" class="bold"></Span>
+                            <Span text=" entwickelt wurde. Das Ziel des Proof of Concept besteht darin, dass Nutzer wiederverwendbare Kaffee-Becher über einen"></Span>
+                            <Span text=" angebrachten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
+                        </FormattedString>
+                    </Label>
+                    <Button text="Info" class="btn flat" (tap)="onNavigateToInfo()"></Button>
+                </StackLayout>
             </StackLayout>
         </ScrollView>
     </PullToRefresh>
