@@ -177,6 +177,7 @@
 }
     
 .input {
+    color: black;
     font-size: 14;
 }
     
@@ -223,5 +224,4 @@
 .sidedrawer-list-item.active {
     color: #000000;
 }
-    
     

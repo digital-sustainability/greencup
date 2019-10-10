@@ -9,6 +9,9 @@ import { FeedbackType } from 'nativescript-feedback';
 import { AuthService } from '../shared/services/auth.service';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
+import { registerElement } from 'nativescript-angular';
+
+registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
 
 @Component({
   selector: 'app-login',
@@ -41,7 +44,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
+    if (this._navigationService.getPreviousUrl().includes('info')) {
+      this._feedbackService.show(FeedbackType.Success, 'Login', 'Melde dich bitte an', 4000);
+    } else {
+      this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
+    }
   }
 
   toggleForm() {
@@ -176,6 +183,7 @@ export class LoginComponent implements OnInit {
     this.processing = true;
     this._authService.requestNewPassword(email).subscribe(
       () => {
+        this.processing = false;
         this._navigationService.navigateTo('/password-reset');
         this._feedbackService.show(FeedbackType.Success,
           'Passwort zurücksetzen',
@@ -208,6 +216,8 @@ export class LoginComponent implements OnInit {
   focusConfirmPassword() {
     if (!this.isLoggingIn) {
       this.confirmPassword.nativeElement.focus();
+    } else {
+      this.onSubmit();
     }
   }
 
