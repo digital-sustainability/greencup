@@ -41,7 +41,11 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
+    if (this._navigationService.getPreviousUrl().includes('info')) {
+      this._feedbackService.show(FeedbackType.Success, 'Login', 'Melde dich bitte an', 4000);
+    } else {
+      this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
+    }
   }
 
   toggleForm() {
