@@ -7,6 +7,7 @@ import { AdminComponent } from './admin/admin.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
 import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { InfoComponent } from './info/info.component';
 
 export const routes: Routes = [
   {
@@ -42,4 +43,8 @@ export const routes: Routes = [
     path: 'login-splash',
     component: LoginSplashComponent
   },
+  {
+    path: 'info',
+    component: InfoComponent
+  }
 ];

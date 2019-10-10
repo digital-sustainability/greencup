@@ -8,6 +8,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { ScansComponent } from './scans/scans.component';
 import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardview/angular';
+import { InfoComponent } from './info/info.component';
 import { LoginComponent } from './login/login.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
 import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
@@ -26,6 +27,7 @@ import { ScanModalComponent } from './scan-modal/scan-modal.component';
     LoginSplashComponent,
     EmailConfirmComponent,
     PasswordResetComponent,
+    InfoComponent,
     ScanModalComponent,
   ],
   imports: [

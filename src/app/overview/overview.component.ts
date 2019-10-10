@@ -19,6 +19,8 @@ registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefr
 
 import { Subscription } from 'rxjs';
 import { AuthService } from '../shared/services/auth.service';
+import { ThrowStmt } from '@angular/compiler';
+import { NavigationService } from '../shared/services/navigation.service';
 
 
 @Component({
@@ -45,6 +47,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     private _httpService: HttpService,
     private _feedbackService: FeedbackService,
     private _authService: AuthService,
+    private _navigationService: NavigationService,
     private _page: Page
   ) { }
 
@@ -132,6 +135,10 @@ export class OverviewComponent implements OnInit, AfterViewInit {
       this._sliding = false;
       this.isScrollEnabled(true);
     }
+  }
+
+  onNavigateToInfo(): void {
+    this._navigationService.navigateTo('info');
   }
 
   onLogout(): void {

@@ -26,7 +26,7 @@ export class EmailConfirmComponent implements OnInit {
     this.processing = true;
     this._authService.confirmEmail(this.enteredUserId, this.enteredToken)
       .subscribe(() => {
-        this._navigationService.navigateTo('/login', true);
+        this._navigationService.navigateTo('info', true);
         this._feedbackService.show(FeedbackType.Success, 'Email erfolgreich bestätigt', '', 4000);
       }, (err) => {
         console.log('|===> Err', err);
