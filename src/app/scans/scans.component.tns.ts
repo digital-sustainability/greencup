@@ -61,7 +61,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
   private _scans: ObservableArray<Scan>;
   private _throttle = false;
   private _throttleTime = 2000;
-  private _connection: boolean;
+  private _hasInternetConnection: boolean;
   private _scanOptions = {
     formats: 'QR_CODE',
     cancelLabel: 'Schliessen', // iOS only
@@ -94,8 +94,8 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
     startMonitoring((newConnectionType) => {
-      this._connection = newConnectionType !== connectionType.none;
-      if (this._connection) {
+      this._hasInternetConnection = newConnectionType !== connectionType.none;
+      if (this._hasInternetConnection) {
         this.loadData();
       }
     });
@@ -246,7 +246,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get connection(): boolean {
-    return this._connection;
+    return this._hasInternetConnection;
   }
 
   // ANCHOR *** Private Methods ***
