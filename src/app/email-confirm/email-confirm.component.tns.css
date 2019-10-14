@@ -2,13 +2,14 @@
 .page {
     align-items: center;
     flex-direction: column;
-  }
-  .form {
+}
+
+.form {
     margin-left: 30;
     margin-right: 30;
     flex-grow: 2;
     vertical-align: middle;
-  }
+}
   
 .header {
     horizontal-align: center;
@@ -17,12 +18,20 @@
     margin-bottom: 70;
     text-align: center;
     color: #eb0000;
-  }
+}
   
-  .input-field {
+.input-field {
     margin-bottom: 25;
-  }
-  .input {
+}
+
+.input {
     font-size: 18;
     placeholder-color: #A8A8A8;
-  }
+}
+
+.login-label {
+    horizontal-align: center;
+    color: #A8A8A8;
+    font-size: 16;
+    margin-top: 30;
+}

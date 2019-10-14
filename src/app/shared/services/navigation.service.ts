@@ -45,4 +45,8 @@ export class NavigationService {
   getPreviousUrl(): string {
     return this._previousUrl;
   }
+
+  historyAvailable(): boolean {
+    return this._routerExtensions.canGoBack();
+  }
 }

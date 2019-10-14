@@ -17,12 +17,12 @@ export class EmailConfirmComponent implements OnInit {
 
   constructor(private _authService: AuthService,
     private _navigationService: NavigationService,
-    private _feedbackService: FeedbackService) { }
+    private _feedbackService: FeedbackService
+  ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit(): void { }
 
-  onSubmit() {
+  onSubmit(): void {
     this.processing = true;
     this._authService.confirmEmail(this.enteredUserId, this.enteredToken)
       .subscribe(() => {
@@ -32,12 +32,19 @@ export class EmailConfirmComponent implements OnInit {
         console.log('|===> Err', err);
         if (err.status === 404) {
           this._feedbackService.show(FeedbackType.Warning, 'Email Bestätigung fehlgeschlagen', 'Nutzer-Id stimmt nicht', 4000);
-        }
-        else {
+        } else {
           this._feedbackService.show(FeedbackType.Warning, 'Email Bestätigung fehlgeschlagen', 'Code stimmt nicht', 4000);
         }
         this.processing = false;
       });
+  }
+
+  onNavigateToLogin(): void {
+    this._navigationService.navigateTo('login');
+  }
+
+  canGoBack(): boolean {
+    return this._navigationService.historyAvailable();
   }
 
 }

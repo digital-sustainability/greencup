@@ -14,7 +14,6 @@ import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-module
 export class LoginSplashComponent implements OnInit, OnDestroy {
 
   private _hasInternetConnection: boolean;
-  private _serverIssues = [404, 408, 500, 503, 504];
 
   constructor(
     private _navigationService: NavigationService,
@@ -53,13 +52,9 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
             this._navigationService.navigateTo('email-confirm', true);
             const msg = 'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.';
             this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
-            // Common issues with the API redirect to login
-          } else if (this._serverIssues.includes(err.status)) {
-            const msg = 'Der Rail Coffee Service ist momentan nicht erreichbar. Bitte versuche es später erneut.';
-            this._feedbackService.show(FeedbackType.Error, 'Server error', msg, 5000);
-            this._navigationService.navigateTo('login', true);
           } else {
-            this._feedbackService.show(FeedbackType.Error, 'Login error', 'Beim Login ist ein unbekannter Fehler aufgetreten', 5000);
+            const msg = 'Beim Login ist ein unbekannter Fehler aufgetreten. Bitte versuche es später erneut.';
+            this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
             this._navigationService.navigateTo('login', true);
           }
         }
