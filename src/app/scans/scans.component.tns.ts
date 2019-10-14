@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ChangeDetectorRef, ViewChild, ViewContainerRef, Input, SimpleChanges } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
@@ -33,7 +33,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
   templateUrl: './scans.component.html',
   styleUrls: ['./scans.component.css']
 })
-export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ScansComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
   actionBarTitle = 'SBB Rail Coffee ☕';
@@ -43,6 +43,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   }];
   // @ViewChild('fab', { static: false }) btn: Fab;
   // button: Fab;
+  @Input() selectedTab: number;
 
   sortASC = String.fromCharCode(0xf106);
   sortDESC = String.fromCharCode(0xf107);
@@ -60,7 +61,7 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   private _scans: ObservableArray<Scan>;
   private _throttle = false;
   private _throttleTime = 2000;
-  private _connection: boolean;
+  private _hasInternetConnection: boolean;
   private _scanOptions = {
     formats: 'QR_CODE',
     cancelLabel: 'Schliessen', // iOS only
@@ -93,16 +94,19 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
     startMonitoring((newConnectionType) => {
-      this._connection = newConnectionType !== connectionType.none;
-      if (this._connection) {
+      this._hasInternetConnection = newConnectionType !== connectionType.none;
+      if (this._hasInternetConnection) {
         this.loadData();
       }
     });
     this._changeDetectionRef.detectChanges();
   }
 
-  ngAfterViewInit(): void {
-    // this.button = this.btn.nativeView;
+  ngOnChanges(changes: SimpleChanges) {
+    // Refresh data if the user switches to this tab
+    if (this.selectedTab === 1) {
+      this.loadData();
+    }
   }
 
   ngOnDestroy(): void {
@@ -242,19 +246,24 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get connection(): boolean {
-    return this._connection;
+    return this._hasInternetConnection;
   }
 
   // ANCHOR *** Private Methods ***
 
   private loadData(pullToRefreshArgs?): void {
     this._httpService.getScans(this._authService.getAuthenticatedUser().id).subscribe(
-      (scans: Scan[]) => {
-        console.log('|===> CONNECTED TO BACKEND');
-        // Initally sort list ASC by scan time
-        this._scans = new ObservableArray(scans.sort((a: Scan, b: Scan) => b.scanned_at - a.scanned_at));
+      (data: Scan[]) => {
+        /**
+         * Initally sort list ASC by scan time and transform to an observable arry
+         * ObservableArry Documentation: https://docs.nativescript.org/ns-framework-modules/observable-array
+         */
+        const scans = new ObservableArray(data.sort((a: Scan, b: Scan) => b.scanned_at - a.scanned_at));
+        // Initiate or update UI of users scan list. This suppresses list animation when data has not changed
+        if (this.dataHasChanged(this.scans, scans)) {
+          this._scans = scans;
+        }
         this._loaded = true;
-        // this._scans = new ObservableArray([]); // FIXME testing only
         if (pullToRefreshArgs) {
           const listView = pullToRefreshArgs.object;
           listView.notifyPullToRefreshFinished();
@@ -269,7 +278,23 @@ export class ScansComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     );
-    // this._dataSource.pipe(take(5)).subscribe(val => this._scans.push(new TestScan(val, StatusType.overbid))); // FIXME testing only
+  }
+
+  // Compare two arrays of Scans that contain data for similarity
+  private dataHasChanged(prev: ObservableArray<Scan>, curr: ObservableArray<Scan>): boolean {
+    return prev && curr ? JSON.stringify(this.limitScans(prev)) !== JSON.stringify(this.limitScans(curr)) : true;
+  }
+
+  // Reduce a users array of Scans to the core differentail attributes for easier comparison with other Scan arrays
+  private limitScans(arr: ObservableArray<Scan>): { status: StatusType, scanned_at: number, verified: boolean, rewarded: boolean }[] {
+    return arr.map((e: Scan) => {
+      return {
+        status: e.status,
+        scanned_at: e.scanned_at,
+        verified: e.verified,
+        rewarded: e.rewarded
+      };
+    });
   }
 
   private saveScan(code: string): void {

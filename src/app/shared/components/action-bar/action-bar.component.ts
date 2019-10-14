@@ -23,7 +23,7 @@ export class ActionBarComponent implements OnInit {
   navigateBack() {
     this._routerExtensions.back();
   }
-  
+
   canGoBack() {
     return this._routerExtensions.canGoBack();
   }

@@ -9,9 +9,11 @@ import { FeedbackType } from 'nativescript-feedback';
 import { AuthService } from '../shared/services/auth.service';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
+import { startMonitoring, connectionType } from 'tns-core-modules/connectivity/connectivity';
 import { registerElement } from 'nativescript-angular';
 
 registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
+
 
 @Component({
   selector: 'app-login',
@@ -32,6 +34,8 @@ export class LoginComponent implements OnInit {
   @ViewChild('lastname', { static: false }) lastname: ElementRef;
   @ViewChild('password', { static: false }) password: ElementRef;
   @ViewChild('confirmPassword', { static: false }) confirmPassword: ElementRef;
+  private _hasInternetConnection: boolean;
+  noConnectionMessage = 'Anmeldung nicht möglich, da keine Verbindung zum Internet besteht';
 
   constructor(
     private _page: Page,
@@ -44,6 +48,13 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Monitor the users internet connection. Change connection status if the user is offline
+    startMonitoring((newConnectionType) => {
+      this._hasInternetConnection = newConnectionType !== connectionType.none;
+      if (!this._hasInternetConnection) {
+        this._feedbackService.show(FeedbackType.Error, 'Keine Internetverbindung', this.noConnectionMessage, 6000);
+      }
+    });
     if (this._navigationService.getPreviousUrl().includes('info')) {
       this._feedbackService.show(FeedbackType.Success, 'Login', 'Melde dich bitte an', 4000);
     } else {
@@ -83,13 +94,16 @@ export class LoginComponent implements OnInit {
         } else {
           // TODO: React saving error
           console.log('|===> Problem occured');
-          this._feedbackService.show(FeedbackType.Warning, 'Error', 'Token konnte nicht auf Gerät gespeichert werden. Versuche es nochmals.', 4000);
+          const msg = 'Token konnte nicht auf Gerät gespeichert werden. Versuche es nochmals.';
+          this._feedbackService.show(FeedbackType.Warning, 'Error', msg, 4000);
         }
         this.processing = false;
       },
       err => {
         console.log('|===> Err ', err);
-        if (err.status === 404) {
+        if (!this._hasInternetConnection) {
+          this._feedbackService.show(FeedbackType.Warning, 'Keine Internetverbindung', this.noConnectionMessage, 4000);
+        } else if (err.status === 404) {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Email Adresse nicht korrekt', 4000);
         } else if (err.status === 401) {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Passwort ist ungültig', 4000);

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Button } from 'tns-core-modules/ui/button';
 import { View } from 'tns-core-modules/ui/core/view';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
@@ -28,7 +28,7 @@ import { NavigationService } from '../shared/services/navigation.service';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.css']
 })
-export class OverviewComponent implements OnInit, AfterViewInit {
+export class OverviewComponent implements OnInit, OnChanges {
 
   private _scans: ObservableArray<Scan>;
   private _loaded = false;
@@ -36,6 +36,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private _isConfirmPayoutDialogOpen = false;
   private _sliding = false;
 
+  @Input() selectedTab: number;
 
   actionBarTitle = 'SBB Rail Coffee ☕';
   backRoute = '/home';
@@ -57,7 +58,12 @@ export class OverviewComponent implements OnInit, AfterViewInit {
     this.loadData();
   }
 
-  ngAfterViewInit(): void { }
+  ngOnChanges(changes: SimpleChanges) {
+    // Refresh data if the user switches to this tab
+    if (this.selectedTab === 0) {
+      this.loadData();
+    }
+  }
 
   // ANCHOR *** User-Interaction Methods ***
 
@@ -191,7 +197,6 @@ export class OverviewComponent implements OnInit, AfterViewInit {
   private loadData(): void {
     this._httpService.getScans(this._authService.getAuthenticatedUser().id).subscribe(
       (scans: Scan[]) => {
-        console.log('|===> CONNECTED TO BACKEND');
         this._scans = new ObservableArray(scans);
         this._loaded = true;
       },

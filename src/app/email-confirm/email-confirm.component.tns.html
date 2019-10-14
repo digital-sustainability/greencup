@@ -21,6 +21,7 @@
             </PreviousNextView>
             <ActivityIndicator rowSpan="3" [busy]="processing"></ActivityIndicator>
             <Button text="Bestätigen" [isEnabled]="!processing && userIdModel.valid && tokenModel.valid" (tap)="onSubmit()" class="btn btn-primary m-t-20"></Button>
+            <Label *ngIf="!canGoBack()" text="Mit anderem Account anmelden" class="login-label" (tap)="onNavigateToLogin()" verticalAlignment="bottom"></Label>
         </StackLayout>
     </ScrollView>
 </FlexboxLayout>
