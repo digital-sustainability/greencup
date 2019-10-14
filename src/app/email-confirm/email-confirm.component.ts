@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthService } from '../shared/services/auth.service';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
+import { registerElement } from 'nativescript-angular';
+
+registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
+
 
 @Component({
   selector: 'app-email-confirm',
@@ -14,6 +18,7 @@ export class EmailConfirmComponent implements OnInit {
   enteredUserId: number;
   enteredToken: string;
   processing: boolean;
+  @ViewChild('token', { static: false }) token: ElementRef;
 
   constructor(private _authService: AuthService,
     private _navigationService: NavigationService,
@@ -45,6 +50,9 @@ export class EmailConfirmComponent implements OnInit {
 
   canGoBack(): boolean {
     return this._navigationService.historyAvailable();
+
+  focusToken() {
+    this.token.nativeElement.focus();
   }
 
 }

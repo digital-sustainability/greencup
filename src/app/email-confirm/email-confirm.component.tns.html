@@ -1,23 +1,27 @@
 <app-action-bar title="Email bestätigen">
 </app-action-bar>
 <FlexboxLayout class="page">
-    <StackLayout class="form">
-        <Label class="header" text="Email bestätigen"></Label>
-        <GridLayout rows="auto, auto">
-            <StackLayout row="0" class="input-field">
-                <TextField #userId #userIdModel="ngModel" class="input" hint="Nutzer-Id" [isEnabled]="!processing" autocorrect="false"
-                    autocapitalizationType="none" keyboardType="number" [(ngModel)]="enteredUserId" returnKeyType="next" required>
-                </TextField>
-                <StackLayout class="hr-light"></StackLayout>
-            </StackLayout>
-            <StackLayout row="1" class="input-field">
-                <TextField #token #tokenModel="ngModel" class="input" hint="Code" [isEnabled]="!processing" autocorrect="false"
-                    autocapitalizationType="none" [(ngModel)]="enteredToken" returnKeyType="done" required></TextField>
-                <StackLayout class="hr-light"></StackLayout>
-            </StackLayout>
-        </GridLayout>
-        <ActivityIndicator rowSpan="3" [busy]="processing"></ActivityIndicator>
-        <Button text="Bestätigen" [isEnabled]="!processing && userIdModel.valid && tokenModel.valid" (tap)="onSubmit()" class="btn btn-primary m-t-20"></Button>
-        <Label *ngIf="!canGoBack()" text="Mit anderem Account anmelden" class="login-label" (tap)="onNavigateToLogin()" verticalAlignment="bottom"></Label>
-    </StackLayout>
+    <ScrollView>
+        <StackLayout class="form">
+            <Label class="header" text="Email bestätigen"></Label>
+            <PreviousNextView>
+                <GridLayout rows="auto, auto">
+                    <StackLayout row="0" class="input-field">
+                        <TextField #userId #userIdModel="ngModel" class="input" hint="Nutzer-Id" [isEnabled]="!processing" autocorrect="false"
+                            autocapitalizationType="none" keyboardType="number" [(ngModel)]="enteredUserId" returnKeyType="next" (returnPress)="focusToken()" required>
+                        </TextField>
+                        <StackLayout class="hr-light"></StackLayout>
+                    </StackLayout>
+                    <StackLayout row="1" class="input-field">
+                        <TextField #token #tokenModel="ngModel" class="input" hint="Code" [isEnabled]="!processing" autocorrect="false"
+                            autocapitalizationType="none" [(ngModel)]="enteredToken" returnKeyType="done" required (returnPress)="onSubmit()"></TextField>
+                        <StackLayout class="hr-light"></StackLayout>
+                    </StackLayout>
+                </GridLayout>
+            </PreviousNextView>
+            <ActivityIndicator rowSpan="3" [busy]="processing"></ActivityIndicator>
+            <Button text="Bestätigen" [isEnabled]="!processing && userIdModel.valid && tokenModel.valid" (tap)="onSubmit()" class="btn btn-primary m-t-20"></Button>
+            <Label *ngIf="!canGoBack()" text="Mit anderem Account anmelden" class="login-label" (tap)="onNavigateToLogin()" verticalAlignment="bottom"></Label>
+        </StackLayout>
+    </ScrollView>
 </FlexboxLayout>

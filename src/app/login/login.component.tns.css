@@ -4,8 +4,7 @@
     flex-direction: column;
   }
   .form {
-    margin-left: 30;
-    margin-right: 30;
+    margin: 30;
     flex-grow: 2;
     vertical-align: middle;
   }
