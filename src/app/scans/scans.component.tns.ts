@@ -75,10 +75,6 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
     openSettingsIfPermissionWasPreviouslyDenied: true // iOS only, send user to settings app if access previously denied
   };
 
-  // FIXME testing only
-  private _dataSource = interval(1500);
-
-
   constructor(
     private _httpService: HttpService,
     private _codeScanner: BarcodeScanner,

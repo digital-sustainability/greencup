@@ -50,6 +50,7 @@ export class EmailConfirmComponent implements OnInit {
 
   canGoBack(): boolean {
     return this._navigationService.historyAvailable();
+  }
 
   focusToken() {
     this.token.nativeElement.focus();

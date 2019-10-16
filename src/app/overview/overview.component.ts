@@ -148,8 +148,13 @@ export class OverviewComponent implements OnInit, OnChanges {
   }
 
   onLogout(): void {
-    // TODO: Confirm logout
-    console.log('|===> Logout');
+    this._authService.logout().subscribe(
+      logout => {
+        this._feedbackService.show(FeedbackType.Info, 'Tschüss, bis bald!', '', 4000);
+        this._navigationService.navigateTo('login', true);
+      },
+      err => this._feedbackService.show(FeedbackType.Error, 'Logout Error', `${err.message.substring(50)}...`, 4000)
+    );
   }
 
   onChangePassword(): void {
@@ -226,13 +231,13 @@ export class OverviewComponent implements OnInit, OnChanges {
   }
 
   // enables/disables scrolling of the specified ScrollView
-  private isScrollEnabled(enabled: boolean) {
+  private isScrollEnabled(enabled: boolean): void {
     const scrollView = <ScrollView>this._page.getViewById('scrollView');
     scrollView.isScrollEnabled = enabled;
   }
 
   // uses httpService to send a request confirming the payout and displays feedback to the user
-  private confirmPayout() {
+  private confirmPayout(): void {
     this._httpService.payout().subscribe(
       msg => {
         this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', 'Die Auszahlung wurde bestätigt', 4000);

@@ -18,7 +18,7 @@
     horizontal-align: center;
     font-size: 25;
     font-weight: 600;
-    margin-bottom: 70;
+    margin-bottom: 45;
     text-align: center;
     color: #eb0000;
   }
@@ -36,7 +36,7 @@
   }
   
   .btn-primary {
-    margin: 30 5 15 5;
+    margin: 20 5 15 5;
   }
   
   .login-label {

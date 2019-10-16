@@ -54,25 +54,7 @@
                         <Button text="Slide um Auszuzahlen >" class="btn flat" id="slideButton" (touch)="onSlideButtonTouch($event)"></Button>
                     </StackLayout>
                 </StackLayout>
-            
-                <GridLayout columns="auto, *" rows="auto" class="section-separator">
-                    <Label class="fa ic-overview" text="&#xf406;"></Label>
-                    <StackLayout col="1" class="hr-light"></StackLayout>
-                </GridLayout>
-                <StackLayout class="section-container">
-                    <GridLayout columns="auto, *" rows="auto, auto, auto">
-                        <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
-                        <Label col="1" row="0" class="email" [text]="getAuthenticatedUser().email" textWrap="true"></Label>
-                        <Label col="0" row="1" class="overview-label" text="Vorname: "></Label>
-                        <Label col="1" row="1" [text]="getAuthenticatedUser().first_name"></Label>
-                        <Label col="0" row="2" class="overview-label" text="Nachname: "></Label>
-                        <Label col="1" row="2" [text]="getAuthenticatedUser().last_name"></Label>
-                    </GridLayout>
-                    <!-- <StackLayout class="m-t-20">
-                        <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
-                        <Button text="Logout" class="btn btn-primary" (tap)="onLogout()"></Button>
-                    </StackLayout> -->
-                </StackLayout>
+
 
                 <GridLayout columns="auto, *" rows="auto" class="section-separator">
                     <Label class="fa ic-overview" text="&#xf05a;"></Label>
@@ -91,6 +73,25 @@
                         </FormattedString>
                     </Label>
                     <Button text="Info" class="btn flat" (tap)="onNavigateToInfo()"></Button>
+                </StackLayout>
+
+                <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                    <Label class="fa ic-overview" text="&#xf406;"></Label>
+                    <StackLayout col="1" class="hr-light"></StackLayout>
+                </GridLayout>
+                <StackLayout class="section-container">
+                    <GridLayout columns="auto, *" rows="auto, auto, auto">
+                        <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
+                        <Label col="1" row="0" class="email" [text]="getAuthenticatedUser().email" textWrap="true"></Label>
+                        <Label col="0" row="1" class="overview-label" text="Vorname: "></Label>
+                        <Label col="1" row="1" [text]="getAuthenticatedUser().first_name"></Label>
+                        <Label col="0" row="2" class="overview-label" text="Nachname: "></Label>
+                        <Label col="1" row="2" [text]="getAuthenticatedUser().last_name"></Label>
+                    </GridLayout>
+                    <StackLayout class="m-t-20">
+                        <!-- <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button> -->
+                        <Button text="Ausloggen" class="btn btn-primary" (tap)="onLogout()"></Button>
+                    </StackLayout>
                 </StackLayout>
             </StackLayout>
         </ScrollView>

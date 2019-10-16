@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     private _authService: AuthService,
     private _routerExtensions: RouterExtensions,
     private _navigationService: NavigationService,
-    private _feedbackService: FeedbackService, // TODO: Leave on the page for longer Feedbacks until next user action occurs
+    private _feedbackService: FeedbackService,
   ) {
     this._page.actionBarHidden = true;
   }
@@ -55,10 +55,9 @@ export class LoginComponent implements OnInit {
         this._feedbackService.show(FeedbackType.Error, 'Keine Internetverbindung', this.noConnectionMessage, 6000);
       }
     });
+    // TODO: Check if this does not suppress any error messages
     if (this._navigationService.getPreviousUrl().includes('info')) {
       this._feedbackService.show(FeedbackType.Success, 'Login', 'Melde dich bitte an', 4000);
-    } else {
-      this._feedbackService.show(FeedbackType.Error, 'Login', 'Melde dich bitte an', 4000);
     }
   }
 
@@ -155,11 +154,11 @@ export class LoginComponent implements OnInit {
     } as RegisteringUser;
     this._authService.register(userDetail).subscribe(
       user => {
-        // TODO: navigate user to login- or confirm-email screen
         // TODO: Save email and received token to store
         console.log('|===> Answer ', user);
         this._navigationService.navigateTo('/email-confirm', true);
-        this._feedbackService.show(FeedbackType.Success, 'Registrierung erfolgreich', 'Bestätige deine Email Adresse über das Email das du erhalten hast.', 4000);
+        const msg = 'Bestätige deine Email Adresse über das Email das du erhalten hast.';
+        this._feedbackService.show(FeedbackType.Success, 'Registrierung erfolgreich', msg, 4000);
         this.processing = false;
       },
       err => {

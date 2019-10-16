@@ -38,14 +38,13 @@ export class AuthService {
      }));
   }
 
-  // TODO: Has not been checked yet
   logout(): Observable<any> {
-    this.deleteStorageItem('usertoken');
     return this._http.post<any>(this._api + 'logout', {})
-      .pipe(map(() => {
-        this._authenticatedUser = null;
-        return null;
-      }));
+    .pipe(map(() => {
+      this.deleteStorageItem('usertoken');
+      this._authenticatedUser = null;
+      return null;
+    }));
   }
 
   register(user: RegisteringUser): Observable<RegisteringUser> {
@@ -64,7 +63,6 @@ export class AuthService {
     return this._secureStorage.getSync({ key: key });
   }
 
-  // TODO: Delete token on logout
   deleteStorageItem(key: string): boolean {
     return this._secureStorage.removeSync({ key: key });
   }
