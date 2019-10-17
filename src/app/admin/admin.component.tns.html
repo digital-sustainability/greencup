@@ -1,8 +1,8 @@
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
 
 
-<GridLayout *ngIf="loaded" class="page">
-  <RadListView #cupRoundListView [items]="cupRounds" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
+<GridLayout *ngIf="loaded" class="page" columns="*" rows="*, auto">
+  <RadListView #cupRoundListView col="0" row="0" [items]="cupRounds" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
     <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
         <ng-template tkListItemTemplate let-cupRound="item">
             <!-- TODO: On modal click descibe the status in words and other details -->
@@ -20,7 +20,10 @@
         </ng-template>
     </ListViewLinearLayout>
   </RadListView>
+  <StackLayout col="0" row="1">
+    <Button text="Neuer Scan" class="btn btn-primary" (tap)="onNewScanTap($event)" height="150"></Button>
+  </StackLayout>
 
   <!-- https://github.com/nstudio/nativescript-floatingactionbutton -->
-  <Fab (tap)="onNewScanTap($event)" icon="~/assets/images/scan01_white.png" rippleColor="#f1f1f1" class="fab-button"></Fab> 
+  <!--<Fab (tap)="onNewScanTap($event)" icon="~/assets/images/scan01_white.png" rippleColor="#f1f1f1" class="fab-button"></Fab> -->
 </GridLayout>

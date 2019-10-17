@@ -24,18 +24,6 @@ export class AdminComponent implements OnInit {
 
   actionBarTitle = 'SBB Rail Coffee ☕ - Cleaner';
 
-  private _scanOptions = {
-    formats: 'QR_CODE',
-    cancelLabel: 'Schliessen', // iOS only
-    cancelLabelBackgroundColor: '#999999', // iOS only
-    message: 'Use the volume buttons for extra light', // Android only
-    showFlipCameraButton: false,
-    preferFrontCamera: false,
-    showTorchButton: true,
-    beepOnScan: false,
-    resultDisplayDuration: 0, // Android only, default 1500 (ms)
-    openSettingsIfPermissionWasPreviouslyDenied: true // iOS only, send user to settings app if access previously denied
-  };
   private _cupRounds: ObservableArray<CupRound>;
   private _throttle = false;
   private _throttleTime = 2000;
@@ -43,7 +31,6 @@ export class AdminComponent implements OnInit {
   private _loaded = false;
 
   constructor(
-    private _codeScanner: BarcodeScanner,
     private _feedbackService: FeedbackService,
     private _httpService: HttpService,
     private _authService: AuthService
@@ -63,28 +50,45 @@ export class AdminComponent implements OnInit {
   // ANCHOR *** User-Interaction Methods ***
 
   onNewScanTap(): void {
+    const scanOptions = {
+      formats: 'QR_CODE',
+      cancelLabel: 'Schliessen', // iOS only
+      cancelLabelBackgroundColor: '#999999', // iOS only
+      message: 'Use the volume buttons for extra light', // Android only
+      showFlipCameraButton: false,
+      preferFrontCamera: false,
+      showTorchButton: true,
+      beepOnScan: true,
+      openSettingsIfPermissionWasPreviouslyDenied: true, // iOS only, send user to settings app if access previously denied
+      continuousScanCallback: (result) => {
+        if (result.format === 'QR_CODE' && result.text.length) {
+          if (this.validateScan(result.text)) {
+            console.log(result.text, 'huhuh');
+            // In case the QR-Code matches all requirements, send it to the server.
+            this.sendScan(result.text);
+           } /*else {
+            const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
+            this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
+          } */
+        } else {
+          //this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
+        }
+      },
+      closeCallback: function () { console.log('Scanner closed'); },
+      reportDuplicates: false
+    };
+
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
-      this._codeScanner.scan(this._scanOptions)
+      new BarcodeScanner().scan(scanOptions)
         // Handle codeScanner promise.
-        .then((result) => {
-          if (result.format === 'QR_CODE' && result.text.length) {
-            if (this.validateScan(result.text)) {
-              // In case the QR-Code matches all requirements, send it to the server.
-              this.sendScan(result.text);
-             } else {
-              const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
-              this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
-            }
-          } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
-          }
-        // Handle scan errors.
-        }, errMsg => {
-          if (errMsg === 'Scan aborted') {
-            this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
-          } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
+        .then(
+          (res) => console.log(res),
+          (errMsg) => {
+            if (errMsg === 'Scan aborted') {
+              this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
+            } else {
+              this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
           }
       });
     }
@@ -182,7 +186,7 @@ export class AdminComponent implements OnInit {
     this._cupRounds.unshift(cupRound);
     
     const msg = 'Die Runde wurde abgeschlossen.';
-    this._feedbackService.show(FeedbackType.Success, 'Runde geschlossen!', msg, 4500);
+    //this._feedbackService.show(FeedbackType.Success, 'Runde geschlossen!', msg, 4500);
   }
 
 
