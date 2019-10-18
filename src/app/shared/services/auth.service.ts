@@ -14,7 +14,7 @@ export class AuthService {
   private _authenticatedUser: User;
   private _store: string;
   private _api = config.api;
-  private _secureStorage: any; // TODO: Type
+  private _secureStorage: SecureStorage;
 
   constructor(
     private _http: HttpClient

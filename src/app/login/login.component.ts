@@ -159,7 +159,6 @@ export class LoginComponent implements OnInit {
     } as RegisteringUser;
     this._authService.register(userDetail).subscribe(
       user => {
-        // TODO: Save email and received token to store
         console.log('|===> Answer ', user);
         this._navigationService.navigateTo('/email-confirm', true);
         const msg = 'Bestätige deine Email Adresse über das Email das du erhalten hast.';
@@ -167,7 +166,6 @@ export class LoginComponent implements OnInit {
         this.processing = false;
       },
       err => {
-        // TODO: Better Error handling, depending on Backend response
         console.log('|===> Err ', err);
         if (err.status === 409) {
           this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Email wird bereits verwendet.', 4000);
@@ -181,7 +179,6 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  // TODO: Implement forgot password functionallity. Replace the default below
   forgotPassword() {
     prompt({
       title: 'Passwort vergessen',
@@ -246,9 +243,13 @@ export class LoginComponent implements OnInit {
   onTogglePeekPassword(): void {
     // Save the current password peek mode
     this.passwordHidden = !this.password.nativeElement.secure;
-    // Make the text visible by changing the `secure` property of password and the confirm field
+    // Make the text visible by changing the `secure` attribute of password and the confirm field
     this.password.nativeElement.secure = !this.password.nativeElement.secure;
-    // Fixes an Android bug, where the textfield cursor would jump to index 0 once the `secure` property changes
+    // Fixes an Android bug, where the textfield cursor would jump to index 0 once the `secure` attribute changes
+    /**
+     * FIXME Bug fix necessairy: On Android the password textfield changes CSS font with toggle of `secure` attribute
+     * Checkout this soltion: https://github.com/NativeScript/NativeScript/issues/4626#issuecomment-508094081
+     */
     if (isAndroid && this.pwAndroidTypeFace) {
       this.pwAndroidTypeFace.setSelection(this.pwAndroidTypeFace.length());
     }
