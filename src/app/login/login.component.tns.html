@@ -27,11 +27,17 @@
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>
 
-                    <StackLayout row="3" class="input-field">
-                        <TextField #password class="input" [isEnabled]="!processing" hint="Passwort" secure="true"
-                            [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
-                            (returnPress)="focusConfirmPassword()"></TextField>
-                        <StackLayout class="hr-light"></StackLayout>
+                    <StackLayout class="input-field"row="3">
+                        <GridLayout  columns="*, auto">
+                            <TextField #password col="0" class="input" [isEnabled]="!processing" hint="Passwort" secure="true"
+                                [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
+                                (returnPress)="focusConfirmPassword()" (loaded)="typeFaceLoaded($event)"></TextField>
+                            <Label *ngIf="passwordHasInput() && passwordHidden" col="1" class="peek-pw fa" text="&#xf06e;&nbsp;"
+                                (tap)="onTogglePeekPassword()" verticalAlignment="center"></Label>
+                            <Label *ngIf="passwordHasInput() && !passwordHidden" col="1" class="peek-pw fa" text="&#xf070;&nbsp;"
+                                (tap)="onTogglePeekPassword()" verticalAlignment="center"></Label>
+                        </GridLayout>
+                        <StackLayout class="hr-light xyv" verticalAlignment="top"></StackLayout>
                     </StackLayout>
 
                     <StackLayout row="4" *ngIf="!isLoggingIn" class="input-field">
@@ -50,10 +56,15 @@
             <Label *ngIf="isLoggingIn" text="Email bestätigen" class="login-label" (tap)="onEnter('/email-confirm')"></Label>
         </StackLayout>
 
-        <Label class="login-label sign-up-label" (tap)="toggleForm()">
+        <Label *ngIf="isLoggingIn" class="login-label" (tap)="toggleForm()">
             <FormattedString>
-                <Span [text]="isLoggingIn ? 'Noch keinen Account? ' : 'Zurück zum Login'"></Span>
-                <Span [text]="isLoggingIn ? 'Zur Registrierung' : ''" class="bold"></Span>
+                <Span text="Noch keinen Account? " class="bold"></Span>
+                <Span text="Zur Registrierung" class="call-to-action-text"></Span>
+            </FormattedString>
+        </Label>
+        <Label *ngIf="!isLoggingIn" class="login-label sign-up-label" (tap)="toggleForm()">
+            <FormattedString>
+                <Span text="Zurück zum Login"></Span>
             </FormattedString>
         </Label>
     </FlexboxLayout>

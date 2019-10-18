@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { prompt } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, isAndroid } from 'tns-core-modules/ui/page';
 import { RouterExtensions } from 'nativescript-angular/router';
 
 import { User } from '../shared/models/user';
@@ -23,6 +23,9 @@ registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanage
 })
 export class LoginComponent implements OnInit {
 
+  pwAndroidTypeFace: any;
+  passwordHidden = true;
+  passwordPeekIcon = '&#xf06e;&nbsp;';
   isLoggingIn = true;
   enteredFirstname: string;
   enteredLastname: string;
@@ -63,6 +66,8 @@ export class LoginComponent implements OnInit {
 
   toggleForm() {
     this.isLoggingIn = !this.isLoggingIn;
+    this.passwordHidden = true;
+    this.enteredPassword = '';
   }
 
   onSubmit(): void {
@@ -236,6 +241,34 @@ export class LoginComponent implements OnInit {
 
   onEnter(route: string): void {
     this._navigationService.navigateTo(route);
+  }
+
+  onTogglePeekPassword(): void {
+    // Save the current password peek mode
+    this.passwordHidden = !this.password.nativeElement.secure;
+    // Make the text visible by changing the `secure` property of password and the confirm field
+    this.password.nativeElement.secure = !this.password.nativeElement.secure;
+    // Fixes an Android bug, where the textfield cursor would jump to index 0 once the `secure` property changes
+    if (isAndroid && this.pwAndroidTypeFace) {
+      this.pwAndroidTypeFace.setSelection(this.pwAndroidTypeFace.length());
+    }
+    if (!this.isLoggingIn) {
+      this.confirmPassword.nativeElement.secure = !this.confirmPassword.nativeElement.secure;
+    }
+  }
+
+  onTogglePeekConfirmPassword(): void {
+    this.confirmPassword.nativeElement.secure = !this.confirmPassword.nativeElement.secure;
+  }
+
+  passwordHasInput(): boolean {
+    return this.enteredPassword && this.enteredPassword.length > 0;
+  }
+
+  typeFaceLoaded(args): void {
+    if (isAndroid) {
+      this.pwAndroidTypeFace = args.object.android;
+    }
   }
 
   private getUserToken() {
