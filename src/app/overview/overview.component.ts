@@ -239,11 +239,13 @@ export class OverviewComponent implements OnInit, OnChanges {
   // uses httpService to send a request confirming the payout and displays feedback to the user
   private confirmPayout(): void {
     this._httpService.payout().subscribe(
-      msg => {
-        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', 'Die Auszahlung wurde bestätigt', 4000);
+      event => {
+        this.loadData();
+        const msg = 'Geld wurde an der Kasse in Bar ausgezahlt';
+        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', msg, 4000);
       },
-      (errorMessage) => {
-        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', errorMessage, 4000);
+      err => {
+        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', err.message, 4000);
       }
     );
   }

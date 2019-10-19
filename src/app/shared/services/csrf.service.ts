@@ -15,7 +15,6 @@ export class CsrfService {
     return this.http.get<any>(`${config.api}csrf-token`)
       .pipe(map((res) => {
         this.csrf = res._csrf;
-        console.log(this.csrf);
         return res._csrf;
       }));
   }

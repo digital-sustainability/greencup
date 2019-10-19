@@ -44,7 +44,7 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
           } else {
             this._navigationService.navigateTo('tabs', true);
           }
-          this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '', 4000);
+          this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '');
         },
         err => {
           console.log('|===> Error', err);

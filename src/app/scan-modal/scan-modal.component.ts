@@ -48,11 +48,24 @@ export class ScanModalComponent implements OnInit {
     }
   }
 
-  getStatusDescription(scan: Scan): string {
+  getStatusLabel(scan: Scan): string {
     if (scan.verified) {
-      return scan.rewarded ? 'Ausbezahlt' : 'Gutgeschrieben';
+      return scan.rewarded ? 'Ausbezahlt' : 'Guthaben';
     } else {
-      return scan.status === StatusType.reserved ? 'Reserviert' : 'Überboten';
+      return scan.status === StatusType.reserved ? 'Gescannt' : 'Überscannt';
+    }
+  }
+
+  getStatusDescription(scan: Scan): string {
+    switch (this.getStatusLabel(scan)) {
+      case 'Gescannt':
+        return 'Becher wurde von dir gescannt. Wenn du ihn zurückgibst wird dir nach dem Waschvorgang das Depot in der App gutgeschrieben.';
+      case 'Guthaben':
+        return 'Du kannst dir das Guthaben für diesen Becher an der Kasse in Bargeld auszahlen lassen.';
+      case 'Ausbezahlt':
+        return 'Die Gutschrift für diesen Becher wurde dir an der Kasse in Bargeld ausbezahlt.';
+      default:
+        return 'Du hast den Becher nicht zurückgegeben. Eine andere Person hat den Becher nach dir gescannt.';
     }
   }
 
@@ -65,7 +78,6 @@ export class ScanModalComponent implements OnInit {
   }
 
   getVerifiedTime(scan: Scan): string {
-    console.log(scan);
     return scan.verified_at ? dayjs(scan.verified_at).format('D.M.YY – HH:mm:ss') : 'Unbekannt';
   }
 

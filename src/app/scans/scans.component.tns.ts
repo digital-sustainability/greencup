@@ -202,21 +202,21 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
 
   getStatusDescription(scan: Scan): string {
     if (scan.verified) {
-      return scan.rewarded ? 'Ausbezahlt' : 'Gutgeschrieben';
+      return scan.rewarded ? 'Guthaben für Becher ausbezahlt' : 'Offenes Guthaben';
     } else {
-      return scan.status === StatusType.reserved ? 'Reserviert' : 'Überboten';
+      return scan.status === StatusType.reserved ? 'Becher Gescannt' : 'Von anderer Person überscannt';
     }
   }
 
   getStatusDescriptionIdx(scan: Scan): string {
     switch (this.getStatusDescription(scan)) {
-      case 'Überboten':
+      case 'Von anderer Person überscannt':
         return 'a';
-      case 'Ausbezahlt':
+      case 'Guthaben für Becher ausbezahlt':
         return 'b';
-      case 'Gutgeschrieben':
+      case 'Offenes Guthaben':
         return 'c';
-      case 'Reserviert':
+      case 'Becher Gescannt':
         return 'd';
     }
   }
@@ -226,7 +226,9 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getScannedTime(scan: Scan): string {
-    return scan.scanned_at ? dayjs(scan.scanned_at).format('D.M.YY – HH:mm:ss') : 'Unbekannt';
+    return scan.scanned_at ?
+    `${ dayjs(scan.scanned_at).format('D.M.YY') } um ${ dayjs(scan.scanned_at).format('HH:mm') } Uhr` :
+    'Unbekannt';
   }
 
   get scanCount(): number {
@@ -331,7 +333,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
       this.scanListViewComponent.listView.scrollWithAmount(1000 * length, false);
     }
     const msg = 'Nach der Reinigung des Bechers erhält die letzte Reservation die Pfandgutschrift';
-    this._feedbackService.show(FeedbackType.Success, 'Becher reserviert!', msg, 4500);
+    this._feedbackService.show(FeedbackType.Success, 'Becher gescannt!', msg, 4500);
   }
 
 }
