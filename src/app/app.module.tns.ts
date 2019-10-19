@@ -26,6 +26,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { ScanModalComponent } from './scan-modal/scan-modal.component';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { InfoComponent } from './info/info.component';
+import { PasswordChangeComponent } from './password-change/password-change.component';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -47,6 +48,7 @@ import { InfoComponent } from './info/info.component';
     PasswordResetComponent,
     InfoComponent,
     ScanModalComponent,
+    PasswordChangeComponent,
   ],
   imports: [
     NativeScriptModule,
