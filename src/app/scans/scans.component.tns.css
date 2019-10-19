@@ -50,11 +50,12 @@
 }
 
 .scan-status-label {
+    margin-top: 10;
     font-weight: bold;
 }
 
 .scan-status-time {
-    margin-bottom: 15;
+    margin-bottom: 10;
     margin-top: 0;
 }
 
