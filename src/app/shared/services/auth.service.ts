@@ -94,12 +94,29 @@ export class AuthService {
   }
 
   passwordChange(old_password: string, password: string, confirm_password: string) {
-    console.log('|==> I am sending: ', old_password, password, confirm_password);
     return this._http.post<any>(this._api + 'token-auth/password-change', {
       old_password,
       password,
       confirm_password
     });
+  }
+
+  passwordLenghtValid(password: string, confirmPassword?: string, oldPassword?: string): boolean {
+    if (password) {
+      if (confirmPassword && oldPassword) {
+        return password.length >= 10 && confirmPassword.length >= 10 && oldPassword.length >= 10;
+      }
+      if (confirmPassword) {
+        return password.length >= 10 && confirmPassword.length >= 10;
+      }
+      return password.length >= 10;
+    } else {
+      return false;
+    }
+  }
+
+  passwordsMatch(password: string, confirmPassword: string): boolean {
+    return password && confirmPassword && password === confirmPassword;
   }
 
 }

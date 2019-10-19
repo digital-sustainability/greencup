@@ -120,9 +120,6 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    // TODO: Improve Password validation
-    // TODO: Refactor validation to seperate method
-
     if (!this.enteredFirstname
       || !this.enteredFirstname
       || !this.enteredEmail
@@ -137,17 +134,15 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    if (this.enteredPassword !== this.enteredConfirmPassword) {
-      this._feedbackService.show(FeedbackType.Warning, 'Ungültig', 'Passwörter stimmen nicht überein', 4000);
+    if (!this._authService.passwordLenghtValid(this.enteredPassword, this.enteredConfirmPassword)) {
+      this._feedbackService.show(FeedbackType.Warning, 'Passwörter müssen mind. 10 Zeichen enthalten', '');
       return;
     }
 
-    // if (this.enteredPassword.length >= 10) {
-    //   this._feedbackService.show(FeedbackType.Warning, 'Ungültig', 'Passwort muss mindestens 10 Zeichen enthalten', 4000);
-    //   return;
-    // }
-
-
+    if (!this._authService.passwordsMatch(this.enteredPassword, this.enteredConfirmPassword)) {
+      this._feedbackService.show(FeedbackType.Warning, 'Passwörter stimmen nicht überein', '');
+      return;
+    }
 
     this.processing = true;
     const userDetail = {
