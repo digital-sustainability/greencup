@@ -6,31 +6,27 @@
     <PullToRefresh (refresh)="onPullToRefreshInit($event)">
         <ScrollView id="scrollView" height="100%">
             <StackLayout class="p-20">
-                <GridLayout columns="auto, *" rows="auto" class="section-separator">
-                    <Label class="fa ic-overview" text="&#xf029;"></Label>
-                    <StackLayout col="1" class="hr-light"></StackLayout>
-                </GridLayout>
                 <StackLayout class="section-container">
-                    <Label class="h3 section-sub-head" text="Scan Zusammenfassung"></Label>
+                    <Label class="h3 section-main-head" text="Gescannte Becher"></Label>
                     <GridLayout class="scan-matrix" columns="*, *" rows="auto, auto">
                             <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Reserviert"></Label>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gescannt"></Label>
                                     <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'reserved')"></Label>
                                 </GridLayout>
                             </CardView>
                             <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überboten"></Label>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überscannt"></Label>
                                     <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'overbid')"></Label>
                                 </GridLayout>
                             </CardView>
                             <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gutgeschrieben"></Label>
+                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Guthaben"></Label>
                                     <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getVerifiedCount(scans)"></Label>
                                 </GridLayout>
                             </CardView>
@@ -42,42 +38,67 @@
                                 </GridLayout>
                             </CardView>
                     </GridLayout>
+                </StackLayout>
+                
+                <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
+                    <Label class="fa ic-overview" text="&#xf0d6;"></Label>
+                    <Label col="1" class="section-sub-head h3" text="Depot"></Label>
+                    <StackLayout col="2" class="hr-light"></StackLayout>
+                </GridLayout>
+                <StackLayout class="section-container">
                     <GridLayout columns="auto, *" rows="auto, auto, auto, auto">
-                        <Label col="0" row="0" class="overview-label" text="Gescannt:"></Label>
-                        <Label col="1" row="0" class="" [text]="scans.length + ' Becher'"></Label>
-                        <Label col="0" row="1" class="overview-label" text="Gutschrift:" ></Label>
-                        <Label col="1" row="1" class="" [text]="getDepositValue(scans, 'verified')"></Label>
-                        <Label col="0" row="2" class="overview-label" text="Ausbezahlt:"></Label>
-                        <Label col="1" row="2" class="" [text]="getDepositValue(scans, 'rewarded')"></Label>
+                        <Label col="0" row="0" class="" text="Bezogene Becher:"></Label>
+                        <Label col="1" row="0" class="overview-label" [text]="scans.length + ' Stück'"></Label>
+                        <Label col="0" row="1" class="" text="Offene Gutschrift:" ></Label>
+                        <Label col="1" row="1" class="overview-label" [text]="getDepositValue(scans, 'verified')"></Label>
+                        <Label col="0" row="2" class="" text="Bisher Ausbezahlt:"></Label>
+                        <Label col="1" row="2" class="overview-label" [text]="getDepositValue(scans, 'rewarded')"></Label>
                     </GridLayout>
-                    <StackLayout class="m-t-30">
+                    <Label textWrap="true" class="body m-t-20">
+                        <FormattedString>
+                            <Span text="Eine offene Gutschrift wird an der Kasse der "></Span>
+                            <Span text="Kantine im SBB Hauptsitz Wankdorf in Bargeld ausbezahlt" class="bold"></Span>
+                            <Span text=". Weise dazu dem Personal an der Kasse den Betrag auf dem Bildschrim vor und wische dann auf der Fläche unter diesem Text, um die "></Span>                                                <Span text="Betrag auf dem Bildschrim" class="bold"></Span>
+                            <Span text="Auszahlung der Gutschrift zu bestätigen" class="bold"></Span>
+                            <Span text="."></Span>
+                        </FormattedString>
+                    </Label>
+                    <Label class="body m-t-10" textWrap="true">
+                        <FormattedString>
+                            <Span text="Achtung!" class="bold user-warning"></Span>
+                            <Span text=" Die Bestätigung der Auszahlung kann nicht rückgängig gemacht werden!" class="bold"></Span>
+                        </FormattedString>
+                    </Label>
+                    <StackLayout class="m-t-20">
                         <Button text="Slide um Auszuzahlen >" class="btn flat" id="slideButton" (touch)="onSlideButtonTouch($event)"></Button>
                     </StackLayout>
                 </StackLayout>
 
 
-                <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
                     <Label class="fa ic-overview" text="&#xf05a;"></Label>
-                    <StackLayout col="1" class="hr-light"></StackLayout>
+                    <Label col="1" class="section-sub-head h3" text="Informationen"></Label>
+                    <StackLayout col="2" class="hr-light"></StackLayout>
                 </GridLayout>
                 <StackLayout class="section-container">
                     <Label textWrap="true" class="body">
                         <FormattedString>
                             <Span text="SBB Rail Coffee" class="bold"></Span>
-                            <Span text=" ist eine mobile NativeScript Applikation, welche als Proof of Concept von der"></Span>
+                            <Span text=" ist eine Mobile App programmiert in NativeScript, welche als Proof of Concept von der"></Span>
                             <Span text=" Forschungsstelle Digitale Nachhaltigkeit" class="bold"></Span>
                             <Span text=" der Universität Bern für die"></Span>
                             <Span text=" SBB" class="bold"></Span>
                             <Span text=" entwickelt wurde. Das Ziel des Proof of Concept besteht darin, dass Nutzer wiederverwendbare Kaffee-Becher über einen"></Span>
-                            <Span text=" angebrachten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
+                            <Span text=" aufgedruckten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
                         </FormattedString>
                     </Label>
-                    <Button text="Info" class="btn flat" (tap)="onNavigateToInfo()"></Button>
+                    <Button text="Info" class="btn btn-primary m-t-30" (tap)="onNavigateToInfo()"></Button>
                 </StackLayout>
 
-                <GridLayout columns="auto, *" rows="auto" class="section-separator">
+                <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
                     <Label class="fa ic-overview" text="&#xf406;"></Label>
-                    <StackLayout col="1" class="hr-light"></StackLayout>
+                    <Label col="1" class="section-sub-head h3" text="Benutzerangaben"></Label>
+                    <StackLayout col="2" class="hr-light"></StackLayout>
                 </GridLayout>
                 <StackLayout class="section-container">
                     <GridLayout columns="auto, *" rows="auto, auto, auto">
