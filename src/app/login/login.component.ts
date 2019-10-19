@@ -258,10 +258,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onTogglePeekConfirmPassword(): void {
-    this.confirmPassword.nativeElement.secure = !this.confirmPassword.nativeElement.secure;
-  }
-
   passwordHasInput(): boolean {
     return this.enteredPassword && this.enteredPassword.length > 0;
   }

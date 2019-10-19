@@ -93,4 +93,13 @@ export class AuthService {
     });
   }
 
+  passwordChange(old_password: string, password: string, confirm_password: string) {
+    console.log('|==> I am sending: ', old_password, password, confirm_password);
+    return this._http.post<any>(this._api + 'token-auth/password-change', {
+      old_password,
+      password,
+      confirm_password
+    });
+  }
+
 }
