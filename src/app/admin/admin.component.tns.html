@@ -5,7 +5,6 @@
   <RadListView #cupRoundListView [items]="cupRounds" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
     <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
         <ng-template tkListItemTemplate let-cupRound="item">
-            <!-- TODO: On modal click descibe the status in words and other details -->
             <CardView class="card" ripple="true" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
               <GridLayout columns="20, auto, *" rows="auto, auto, auto">
                 <!--<StackLayout col="0" rowspan="3" [ngClass]="getStatusClass(scan)"></StackLayout>-->

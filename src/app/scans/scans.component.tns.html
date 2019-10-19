@@ -1,4 +1,3 @@
-<!-- TODO: Display No-internet connection sign -->
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
 <GridLayout *ngIf="!connection"  columns="auto, *" rows="auto" class="connection-warning fa">
     <Label col="0" id="warning-icon" text="&#xf071;"></Label>
@@ -28,7 +27,6 @@
     <RadListView #scanListView [items]="scans" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
         <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
             <ng-template tkListItemTemplate let-scan="item">
-                <!-- TODO: On modal click descibe the status in words and other details -->
                 <CardView class="card" ripple="true" margin="5" elevation="10" (tap)="onScanTap(scan)" radius="10" ios:shadowRadius="3" android:elevation="6">
                 <!-- <CardView class="card list-item-ios" ripple="true" margin="5"> -->
                     <GridLayout columns="20, auto, *" rows="auto, auto, auto">

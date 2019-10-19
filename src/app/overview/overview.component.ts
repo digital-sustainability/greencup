@@ -158,7 +158,7 @@ export class OverviewComponent implements OnInit, OnChanges {
   }
 
   onChangePassword(): void {
-    console.log('|===> Change Password');
+    this._navigationService.navigateTo('/password-change');
   }
 
   // ANCHOR *** Accessor Methods ***
