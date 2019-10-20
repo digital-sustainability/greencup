@@ -120,7 +120,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
             // In case the QR-Code matches all requirements, send it to the server.
             this.saveScan(result.text);
           } else {
-            const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
+            const msg = 'Der gescannte Code ist kein GreenCup Code!';
             this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
           }
         } else {
