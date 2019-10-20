@@ -59,8 +59,6 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
 
   private _loaded: boolean;
   private _scans: ObservableArray<Scan>;
-  private _throttle = false;
-  private _throttleTime = 2000;
   private _hasInternetConnection: boolean;
   private _scanOptions = {
     formats: 'QR_CODE',

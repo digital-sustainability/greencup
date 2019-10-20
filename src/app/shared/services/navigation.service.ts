@@ -20,7 +20,7 @@ export class NavigationService {
     });
   }
 
-  navigateTo(path: string, clearHistory?: boolean): void {
+  navigateTo(path: string, clearHistory?: boolean, data?: string | number): void {
     const config = {
       animated: true,
       transition: {
@@ -30,16 +30,13 @@ export class NavigationService {
       },
       clearHistory: clearHistory || false
     };
-    this._routerExtensions.navigate([path], config);
+    const commands = data ? [path, data] : [path];
+    this._routerExtensions.navigate(commands, config);
   }
 
   navigateBack(backRoute?: string): void {
-    if (backRoute) {
-      // Fixes a bug that sometimes the back button won't work on specific sites
-      this._routerExtensions.navigate([backRoute]);
-    } else {
-      this._routerExtensions.back();
-    }
+    // Fixes a bug that sometimes the back button won't work on specific sites
+    backRoute ? this._routerExtensions.navigate([backRoute]) : this._routerExtensions.back();
   }
 
   getPreviousUrl(): string {

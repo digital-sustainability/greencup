@@ -21,7 +21,7 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path: 'email-confirm',
+    path: 'email-confirm/:email',
     component: EmailConfirmComponent
   },
   {
