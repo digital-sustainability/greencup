@@ -36,7 +36,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 export class ScansComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
-  actionBarTitle = 'SBB Rail Coffee ☕';
+  actionBarTitle = 'SBB GreenCup ☕';
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
@@ -120,7 +120,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
             // In case the QR-Code matches all requirements, send it to the server.
             this.saveScan(result.text);
           } else {
-            const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
+            const msg = 'Der gescannte Code ist kein GreenCup Code!';
             this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
           }
         } else {

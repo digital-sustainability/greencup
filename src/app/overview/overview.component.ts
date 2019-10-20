@@ -38,7 +38,7 @@ export class OverviewComponent implements OnInit, OnChanges {
 
   @Input() selectedTab: number;
 
-  actionBarTitle = 'SBB Rail Coffee ☕';
+  actionBarTitle = 'SBB GreenCup ☕';
   backRoute = '/home';
   lastScan = '...';
   obs: any;
