@@ -22,7 +22,7 @@ import * as dayjs from 'dayjs';
 
 export class AdminComponent implements OnInit {
 
-  actionBarTitle = 'SBB Rail Coffee ☕ - Cleaner';
+  actionBarTitle = 'SBB GreenCup ☕ - Cleaner';
 
   private _scanOptions = {
     formats: 'QR_CODE',

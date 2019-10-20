@@ -36,7 +36,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 export class ScansComponent implements OnInit, OnChanges, OnDestroy {
 
   @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
-  actionBarTitle = 'SBB Rail Coffee ☕';
+  actionBarTitle = 'SBB GreenCup ☕';
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
