@@ -1,51 +1,38 @@
-<app-action-bar title="Wie funktioniert es?"></app-action-bar>
-<GridLayout columns="*" rows="*, auto" height>
-    <ScrollView col="0" row="0">
-        <StackLayout>
-            <StackLayout class="image-container">
-                <Image src="~/assets/images/railcoffee.jpg" stretch="aspectFill"></Image>
+<GridLayout>
+    <Carousel id="carousel" indicatorColor="white" indicatorColorUnselected="#f0b1ad" showIndicator="true">
+        <CarouselItem id="slide1" class="carousel-item">
+            <StackLayout id="image-box">
+                <Label text="SBB GreenCup"></Label>
+                <Button title="Los gehts"></Button>
+                <Button title="Überspringen"></Button>
+                <Button title="Zurück"></Button>
+               
             </StackLayout>
-            <StackLayout class="p-20">
-                <Label textWrap="true" class="info-label">
-                    <FormattedString>
-                        <Span text="SBB Mehrwegbecher mit der App scannen und an einer beliebigen Rückgabestelle zurückbringen. "></Span>
-                        <Span text="Das Depot wird in der App gutgeschrieben und kann gesammelt an einer Kasse ausbezahlt werden. "></Span>
-                        <Span text="Becher können von verschiedenen Personen gescannt werden, "></Span>
-                        <Span text="das Guthaben wird jeweils dem User des letzten Scans gutgeschrieben."></Span>
-                    </FormattedString>
-                </Label>
-                <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
-                    <GridLayout columns="20, auto, *" rows="auto">
-                        <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
-                        <Label col="1" row="0" class="scan-label" text="Gescannt:"></Label>
-                        <Label col="2" row="0" class="scan-value" text="Sie haben den Becher zuletzt gescannt. Bei einer Rückgabe wird Ihnen das Depot gutgeschrieben." textWrap="true"></Label>
-                    </GridLayout>
-                </CardView>
-                <CardView class="card" ripple="false" margin="5" elevation="10"radius="10" ios:shadowRadius="3" android:elevation="6">
-                    <GridLayout columns="20, auto, *" rows="auto">
-                        <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
-                        <Label col="1" row="0" class="scan-label" text="Überscannt:"></Label>
-                        <Label col="2" row="0" class="scan-value" text="Der Becher, den Sie gescannt haben, wurde von einer anderen Person gescannt und abgegeben." textWrap="true"></Label>
-                    </GridLayout>
-                </CardView>
-                <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
-                    <GridLayout columns="20, auto, *" rows="auto">
-                        <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
-                        <Label col="1" row="0" class="scan-label" text="Guthaben:"></Label>
-                        <Label col="2" row="0" class="scan-value" text="Die Rückgabestelle hat Ihren Becher zur Reinigung angenommen. Das Depot wird zu Ihrem Guthaben hinzugefügt." textWrap="true"></Label>
-                    </GridLayout>
-                </CardView>
-                <CardView class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
-                    <GridLayout columns="20, auto, *" rows="auto">
-                        <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
-                        <Label col="1" row="0" class="scan-label" text="Ausbezahlt:"></Label>
-                        <Label col="2" row="0" class="scan-value" text="Das Depot dieses Bechers wurde bereits ausbezahlt." textWrap="true"></Label>
-                    </GridLayout>
-                </CardView>
-            </StackLayout>
-        </StackLayout>
-    </ScrollView>
-    <StackLayout col="0" row="1" *ngIf="isFirstRun">
-        <Button text="Alles klar" class="btn btn-primary" (tap)="onNavigateToLogin()"></Button>
-    </StackLayout>
+            <!--<Image src="~/assets/images/railcoffee.jpg" stretch="aspectFill"></Image>-->
+        </CarouselItem>
+        <CarouselItem id="slide2" class="carousel-item">
+            <Label text="Geniessen." class="item-title" horizontalAlignment="center"></Label>
+            <Label text="Trinke ein Getränk aus einem SBB GreenCup" class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+        </CarouselItem>
+        <CarouselItem id="slide3" class="carousel-item">
+            <Label text="Scannen." class="item-title" horizontalAlignment="center"></Label>
+            <Label text="Scanne den Becher mit der App" class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+        </CarouselItem>
+        <CarouselItem id="slide4" class="carousel-item">
+            <Label text="Zurückbringen." class="item-title" horizontalAlignment="center"></Label>
+            <Label text="Bringe den Becher zurück" class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+        </CarouselItem>
+        <CarouselItem id="slide5" class="carousel-item">
+            <Label text="Depot erhalten." class="item-title" horizontalAlignment="center"></Label>
+            <Label text="Das Depot wird bei der Reinigung gutgeschrieben und kann an der Kasse der Kantine ausbezahlt werden." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+        </CarouselItem>
+        <CarouselItem id="slide6" class="carousel-item">
+            <Label text="Nachhaltig." class="item-title" horizontalAlignment="center"></Label>
+            <Label text="Das Guthaben wird der Person gutgeschrieben, die den Becher als letztes gescannt hat. Also, wenn ein Becher herumliegt, scannen und zurückgeben." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+        </CarouselItem>
+        <CarouselItem id="slide7" class="carousel-item">
+            <Label text="Preview." class="item-title" horizontalAlignment="center"></Label>
+            <Label text="Diese App ist eine Preview. Vielen Dank für dein Feedback."  class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+        </CarouselItem>
+    </Carousel>
 </GridLayout>

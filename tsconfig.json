@@ -16,6 +16,7 @@
             "es6",
             "es2015.iterable"
         ],
+        "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
             "~/*": [
