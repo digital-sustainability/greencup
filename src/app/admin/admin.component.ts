@@ -13,6 +13,7 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
 import { AuthService } from '../shared/services/auth.service';
 import * as dayjs from 'dayjs';
+import * as Toast from 'nativescript-toast';
 
 @Component({
   selector: 'app-admin',
@@ -29,6 +30,8 @@ export class AdminComponent implements OnInit {
   private _throttleTime = 2000;
   private _connection: boolean;
   private _loaded = false;
+  private _lastQrCode = '';
+  private _lastScanTime = 0;
 
   constructor(
     private _feedbackService: FeedbackService,
@@ -63,34 +66,32 @@ export class AdminComponent implements OnInit {
       continuousScanCallback: (result) => {
         if (result.format === 'QR_CODE' && result.text.length) {
           if (this.validateScan(result.text)) {
-            console.log(result.text, 'huhuh');
-            // In case the QR-Code matches all requirements, send it to the server.
-            this.sendScan(result.text);
-           } /*else {
-            const msg = 'Der gescannte Code ist kein Rail-Coffee Code!';
-            this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
-          } */
+            // In case the QR-Code matches all requirements, send it to the server, if its not the same code as the code scanned before
+
+            // allow duplicates after 10 seconds
+            if (this._lastQrCode !== result.text || Date.now() - this._lastScanTime >= 1000 * 10) {
+              this._lastQrCode = result.text; // update last scan
+              this._lastScanTime = Date.now();
+
+              const toast = Toast.makeText('Scan überprüfen...');
+              toast.show();
+              this.sendScan(result.text);
+            }
+           } else {
+            const toast = Toast.makeText('Der gescannte Code ist kein Rail-Coffee Code!');
+            toast.show();
+          }
         } else {
-          //this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
+          const toast = Toast.makeText('Scan nicht erkannt');
+          toast.show();
         }
       },
-      closeCallback: function () { console.log('Scanner closed'); },
-      reportDuplicates: false
+      reportDuplicates: true // allow multiple scans of the same cup
     };
 
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
-      new BarcodeScanner().scan(scanOptions)
-        // Handle codeScanner promise.
-        .then(
-          (res) => console.log(res),
-          (errMsg) => {
-            if (errMsg === 'Scan aborted') {
-              this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
-            } else {
-              this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
-          }
-      });
+      new BarcodeScanner().scan(scanOptions).then((res) => {});
     }
     setTimeout(() => this._throttle = false, this._throttleTime);
   }
@@ -155,16 +156,16 @@ export class AdminComponent implements OnInit {
     this._httpService.closeRound(code).subscribe(
       (cupRound: CupRound) => {
         if (cupRound) {
-          console.log(cupRound);
           this.adjustCupRoundList(cupRound);
         } else {
           // TODO: Test all possible backend responses
-          const msg = 'Die Runde konnte nicht geschlossen werden.';
-          this._feedbackService.show(FeedbackType.Error, 'Kein Scan erhalten', msg);
+          const toast = Toast.makeText('Die Runde konnte nicht geschlossen werden');
+          toast.show();
         }
       },
       err => {
-        console.log(err);
+        const toast = Toast.makeText('Fehler bei der Übertragung');
+        toast.show();
       }
     );
   }
@@ -184,9 +185,9 @@ export class AdminComponent implements OnInit {
     }
     // Add the new scan and notify the user.
     this._cupRounds.unshift(cupRound);
-    
-    const msg = 'Die Runde wurde abgeschlossen.';
-    //this._feedbackService.show(FeedbackType.Success, 'Runde geschlossen!', msg, 4500);
+
+    const toast = Toast.makeText('Erfolgreich, Becher-ID: ' + cupRound.cup_id);
+    toast.show();
   }
 
 
