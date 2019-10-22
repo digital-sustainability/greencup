@@ -40,13 +40,14 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // FIXME re enable monitoring
      // Monitor the users internet connection. Change connection status if the user is offline
-    startMonitoring((newConnectionType) => {
-      this._connection = newConnectionType !== connectionType.none;
-      if (this._connection) {
+     //startMonitoring((newConnectionType) => {
+     // this._connection = newConnectionType !== connectionType.none;
+     // if (this._connection) {
         this.loadData();
-      }
-    });
+     // }
+    //});
   }
 
 
@@ -186,7 +187,7 @@ export class AdminComponent implements OnInit {
     // Add the new scan and notify the user.
     this._cupRounds.unshift(cupRound);
 
-    const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id });
+    const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id, textColor: 'limegreen' });
     toast.show();
   }
 
