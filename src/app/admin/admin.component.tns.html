@@ -1,8 +1,8 @@
 <app-action-bar [title]="actionBarTitle"></app-action-bar>
 
 
-<GridLayout *ngIf="loaded" class="page" columns="*" rows="*, auto">
-  <RadListView #cupRoundListView col="0" row="0" [items]="cupRounds" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
+<GridLayout class="page" columns="*" rows="*, auto">
+  <RadListView *ngIf="loaded" #cupRoundListView col="0" row="0" [items]="cupRounds" (itemTap)="onScanTap($event)" pullToRefresh="true" (pullToRefreshInitiated)="onPullToRefreshInit($event)">
     <ListViewLinearLayout tkListViewLayout scrollDirection="Vertical" itemInsertAnimation="Slide" itemDeleteAnimation="Slide">
         <ng-template tkListItemTemplate let-cupRound="item">
             <!-- TODO: On modal click descibe the status in words and other details -->

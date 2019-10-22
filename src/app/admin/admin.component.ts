@@ -13,7 +13,7 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
 import { AuthService } from '../shared/services/auth.service';
 import * as dayjs from 'dayjs';
-import * as Toast from 'nativescript-toast';
+import { Toasty } from 'nativescript-toasty';
 
 @Component({
   selector: 'app-admin',
@@ -73,16 +73,16 @@ export class AdminComponent implements OnInit {
               this._lastQrCode = result.text; // update last scan
               this._lastScanTime = Date.now();
 
-              const toast = Toast.makeText('Scan überprüfen...');
+              const toast = new Toasty({ text: 'Scan überprüfen...' });
               toast.show();
               this.sendScan(result.text);
             }
            } else {
-            const toast = Toast.makeText('Der gescannte Code ist kein Rail-Coffee Code!');
+            const toast = new Toasty({ text: 'Der gescannte Code ist kein Rail-Coffee Code!' });
             toast.show();
           }
         } else {
-          const toast = Toast.makeText('Scan nicht erkannt');
+          const toast = new Toasty({ text: 'Scan nicht erkannt' });
           toast.show();
         }
       },
@@ -159,12 +159,12 @@ export class AdminComponent implements OnInit {
           this.adjustCupRoundList(cupRound);
         } else {
           // TODO: Test all possible backend responses
-          const toast = Toast.makeText('Die Runde konnte nicht geschlossen werden');
+          const toast = new Toasty({ text: 'Die Runde konnte nicht geschlossen werden' });
           toast.show();
         }
       },
       err => {
-        const toast = Toast.makeText('Fehler bei der Übertragung');
+        const toast = new Toasty({ text: 'Fehler bei der Übertragung' });
         toast.show();
       }
     );
@@ -186,7 +186,7 @@ export class AdminComponent implements OnInit {
     // Add the new scan and notify the user.
     this._cupRounds.unshift(cupRound);
 
-    const toast = Toast.makeText('Erfolgreich, Becher-ID: ' + cupRound.cup_id);
+    const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id });
     toast.show();
   }
 
