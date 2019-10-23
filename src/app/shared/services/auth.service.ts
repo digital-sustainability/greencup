@@ -30,7 +30,7 @@ export class AuthService {
       }));
   }
 
-  tokenLogin(loginDetails: { email: string, token: string }): Observable<User> {
+  tokenLogin(loginDetails: { email: string, token: string, device_token: string }): Observable<User> {
     return this._http.post<User>(this._api + 'token-auth/login', loginDetails)
     .pipe(map((user) => {
       this._authenticatedUser = user;

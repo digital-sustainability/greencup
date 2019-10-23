@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "478241511625",
+    "firebase_url": "https://greencup-60b01.firebaseio.com",
+    "project_id": "greencup-60b01",
+    "storage_bucket": "greencup-60b01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:478241511625:android:278a41fd6348d21401d518",
+        "android_client_info": {
+          "package_name": "ch.digisus.greencup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "478241511625-uvbvjrc6strsco2uiucns1tcjardkidg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlStnbndHEqoTp4zb9W-VteHyWz85H3fE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "478241511625-uvbvjrc6strsco2uiucns1tcjardkidg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
