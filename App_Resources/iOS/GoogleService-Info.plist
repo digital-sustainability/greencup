@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>478241511625-onckrpoevq770uuqihs5sfkl1k46rter.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.478241511625-onckrpoevq770uuqihs5sfkl1k46rter</string>
+	<key>API_KEY</key>
+	<string>AIzaSyANhLzk-F9dq_7spyz1uWqH3va-E5V_P3M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>478241511625</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>ch.digisus.greencup</string>
+	<key>PROJECT_ID</key>
+	<string>greencup-60b01</string>
+	<key>STORAGE_BUCKET</key>
+	<string>greencup-60b01.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:478241511625:ios:4e287d82efe87a4a01d518</string>
+	<key>DATABASE_URL</key>
+	<string>https://greencup-60b01.firebaseio.com</string>
+</dict>
+</plist>
