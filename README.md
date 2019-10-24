@@ -1,6 +1,6 @@
-# rail-coffee-mobile
+# SBB GreenCup (former rail-coffee-mobile)
 
-*rail-coffee-mobile* is a [NativeScript](https://docs.nativescript.org/) mobile app created within a proof of concept by the [Research Center for Digital Sustainability](https://www.digitale-nachhaltigkeit.unibe.ch/) of the University of Bern. The POC app has the purpose to scan and manage QR-codes on reusable beverage cups for the Swiss Federal Railway company [SBB](https://www.sbb.ch/de/).
+*SBB GreenCup* is a [NativeScript](https://docs.nativescript.org/) mobile app created within a proof of concept by the [Research Center for Digital Sustainability](https://www.digitale-nachhaltigkeit.unibe.ch/) of the University of Bern. The POC app has the purpose to scan and manage QR-codes on reusable beverage cups for the Swiss Federal Railway company [SBB](https://www.sbb.ch/de/).
 
 ## NativeScript Code-Sharing
 

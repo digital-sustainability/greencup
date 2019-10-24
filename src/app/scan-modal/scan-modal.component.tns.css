@@ -5,12 +5,10 @@
 .h3 {
     margin: 5;
 }
-
 .scan-label {
     margin: 5;
     font-weight: bold;
 }
-
-.scan-value {
+.scan-info {
     margin: 5;
 }

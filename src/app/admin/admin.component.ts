@@ -23,7 +23,7 @@ import { Toasty } from 'nativescript-toasty';
 
 export class AdminComponent implements OnInit {
 
-  actionBarTitle = 'SBB Rail Coffee ☕ - Cleaner';
+  actionBarTitle = 'SBB GreenCup ☕ - Cleaner';
 
   private _cupRounds: ObservableArray<CupRound>;
   private _throttle = false;
@@ -79,7 +79,7 @@ export class AdminComponent implements OnInit {
               this.sendScan(result.text);
             }
            } else {
-            const toast = new Toasty({ text: 'Der gescannte Code ist kein Rail-Coffee Code!' });
+            const toast = new Toasty({ text: 'Der gescannte Code ist kein SBB GreenCup-Code!' });
             toast.show();
           }
         } else {

@@ -49,6 +49,16 @@
     margin: 5 5 5 10;
 }
 
+.scan-status-label {
+    margin-top: 10;
+    font-weight: bold;
+}
+
+.scan-status-time {
+    margin-bottom: 10;
+    margin-top: 0;
+}
+
 .fab-button {
     height: 58;
     width: 58; 

@@ -61,9 +61,23 @@
 
 .section-container {
    padding: 15;
+   margin-bottom: 20;
 }
 
 .section-separatror {
+}
+
+.section-main-head {
+    horizontal-align: center;
+}
+
+.section-sub-head {
+    vertical-align: center;
+    color: #a2a2a2;
+    margin-right: 15;
+}
+.user-warning {
+    color: #d9534f;
 }
 
 #slideButton {

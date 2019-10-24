@@ -14,7 +14,7 @@ export class AuthService {
   private _authenticatedUser: User;
   private _store: string;
   private _api = config.api;
-  private _secureStorage: any; // TODO: Type
+  private _secureStorage: SecureStorage;
 
   constructor(
     private _http: HttpClient
@@ -30,7 +30,7 @@ export class AuthService {
       }));
   }
 
-  tokenLogin(loginDetails: { email: string, token: string }): Observable<User> {
+  tokenLogin(loginDetails: { email: string, token: string, device_token: string }): Observable<User> {
     return this._http.post<User>(this._api + 'token-auth/login', loginDetails)
     .pipe(map((user) => {
       this._authenticatedUser = user;
@@ -91,6 +91,32 @@ export class AuthService {
       password,
       password_confirm
     });
+  }
+
+  passwordChange(old_password: string, password: string, confirm_password: string) {
+    return this._http.post<any>(this._api + 'token-auth/password-change', {
+      old_password,
+      password,
+      confirm_password
+    });
+  }
+
+  passwordLenghtValid(password: string, confirmPassword?: string, oldPassword?: string): boolean {
+    if (password) {
+      if (confirmPassword && oldPassword) {
+        return password.length >= 10 && confirmPassword.length >= 10 && oldPassword.length >= 10;
+      }
+      if (confirmPassword) {
+        return password.length >= 10 && confirmPassword.length >= 10;
+      }
+      return password.length >= 10;
+    } else {
+      return false;
+    }
+  }
+
+  passwordsMatch(password: string, confirmPassword: string): boolean {
+    return password && confirmPassword && password === confirmPassword;
   }
 
 }

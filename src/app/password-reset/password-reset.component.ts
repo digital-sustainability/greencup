@@ -19,6 +19,7 @@ export class PasswordResetComponent implements OnInit {
   enteredToken: string;
   enteredPassword: string;
   enteredPasswordConfirm: string;
+  passwordHidden = true;
   processing: boolean;
   @ViewChild('token', { static: false }) token: ElementRef;
   @ViewChild('password', { static: false }) password: ElementRef;
@@ -28,47 +29,64 @@ export class PasswordResetComponent implements OnInit {
     private _navigationService: NavigationService,
     private _feedbackService: FeedbackService) { }
 
-  ngOnInit() {
-  }
+  ngOnInit(): void { }
 
-  onSubmit() {
-    this.processing = true;
-    this._authService.passwordReset(
-      this.enteredUserId,
-      this.enteredToken,
-      this.enteredPassword,
-      this.enteredPasswordConfirm)
-      .subscribe(() => {
-        this._navigationService.navigateTo('/login', true);
-        this._feedbackService.show(FeedbackType.Success, 'Passwort erfolgreich zurückgesetzt', '', 4000);
-      }, (err) => {
-        console.log('|===> Err', err);
-        if (err.status === 404) {
-          this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Nutzer-Id stimmt nicht.', 4000);
+  onSubmit(): void {
+    if (!this._authService.passwordLenghtValid(this.enteredPassword, this.enteredPasswordConfirm)) {
+      this._feedbackService.show(FeedbackType.Warning, 'Passwörter müssen mind. 10 Zeichen enthalten', '');
+    } else if (!this._authService.passwordsMatch(this.enteredPassword, this.enteredPasswordConfirm)) {
+      this._feedbackService.show(FeedbackType.Warning, 'Neue Passwörter stimmen nicht überein', '');
+    } else {
+      this.processing = true;
+      this._authService.passwordReset(
+        this.enteredUserId,
+        this.enteredToken,
+        this.enteredPassword,
+        this.enteredPasswordConfirm)
+        .subscribe(() => {
+          this._navigationService.navigateTo('/login', true);
+          this._feedbackService.show(FeedbackType.Success, 'Passwort erfolgreich zurückgesetzt', '', 4000);
+        }, (err) => {
+          console.log('|===> Err', err);
+          if (err.status === 404) {
+            this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Nutzer-Id stimmt nicht.', 4000);
+          }
+          else if (err.status === 403) {
+            this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Code stimmt nicht.', 4000);
+          }
+          else if (err.status === 412) {
+            const msg = 'Code ist abgelaufen. Geh zurück auf den Login Screen und führe den Passwort Reset erneut aus.';
+            this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', msg, 20000);
+          }
+          else {
+            const msg = err.status.substring(50) + '...';
+            this._feedbackService.show(FeedbackType.Error, 'Passwort konnte nicht zurückgesetzt werden', msg, 4000);
+          }
+          this.processing = false;
         }
-        else if (err.status === 403) {
-          this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Code stimmt nicht.', 4000);
-        }
-        else if (err.status === 412) {
-          this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden',
-            'Code ist abgelaufen. Geh zurück auf den Login Screen und führe den Passwort Reset erneut aus.', 20000);
-        }
-        else {
-          this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Passwörter stimmen nicht überein.', 4000);
-        }
-        this.processing = false;
-      });
+      );
+    }
   }
-  focusToken() {
+  focusToken(): void {
     this.token.nativeElement.focus();
   }
 
-  focusPassword() {
+  focusPassword(): void {
     this.password.nativeElement.focus();
   }
 
-  focusPasswordConfirm() {
+  focusPasswordConfirm(): void {
     this.passwordConfirm.nativeElement.focus();
+  }
+
+  onTogglePeekPassword(): void {
+    /**
+     * FIXME Android: Move curser to back of text once `secure` attribute changes --> See login.component
+     * FIXME Android: Fix bug that changes CSS font when `secure` attribute changes --> See login.component
+     */
+    this.passwordHidden = !this.passwordHidden;
+    this.password.nativeElement.secure = !this.password.nativeElement.secure;
+    this.passwordConfirm.nativeElement.secure = !this.passwordConfirm.nativeElement.secure;
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { prompt } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, isAndroid } from 'tns-core-modules/ui/page';
 import { RouterExtensions } from 'nativescript-angular/router';
 
 import { User } from '../shared/models/user';
@@ -23,6 +23,9 @@ registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanage
 })
 export class LoginComponent implements OnInit {
 
+  pwAndroidTypeFace: any;
+  passwordHidden = true;
+  passwordPeekIcon = '&#xf06e;&nbsp;';
   isLoggingIn = true;
   enteredFirstname: string;
   enteredLastname: string;
@@ -63,6 +66,8 @@ export class LoginComponent implements OnInit {
 
   toggleForm() {
     this.isLoggingIn = !this.isLoggingIn;
+    this.passwordHidden = true;
+    this.enteredPassword = '';
   }
 
   onSubmit(): void {
@@ -115,9 +120,6 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    // TODO: Improve Password validation
-    // TODO: Refactor validation to seperate method
-
     if (!this.enteredFirstname
       || !this.enteredFirstname
       || !this.enteredEmail
@@ -132,17 +134,15 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    if (this.enteredPassword !== this.enteredConfirmPassword) {
-      this._feedbackService.show(FeedbackType.Warning, 'Ungültig', 'Passwörter stimmen nicht überein', 4000);
+    if (!this._authService.passwordLenghtValid(this.enteredPassword, this.enteredConfirmPassword)) {
+      this._feedbackService.show(FeedbackType.Warning, 'Passwörter müssen mind. 10 Zeichen enthalten', '');
       return;
     }
 
-    // if (this.enteredPassword.length >= 10) {
-    //   this._feedbackService.show(FeedbackType.Warning, 'Ungültig', 'Passwort muss mindestens 10 Zeichen enthalten', 4000);
-    //   return;
-    // }
-
-
+    if (!this._authService.passwordsMatch(this.enteredPassword, this.enteredConfirmPassword)) {
+      this._feedbackService.show(FeedbackType.Warning, 'Passwörter stimmen nicht überein', '');
+      return;
+    }
 
     this.processing = true;
     const userDetail = {
@@ -154,7 +154,6 @@ export class LoginComponent implements OnInit {
     } as RegisteringUser;
     this._authService.register(userDetail).subscribe(
       user => {
-        // TODO: Save email and received token to store
         console.log('|===> Answer ', user);
         this._navigationService.navigateTo('/email-confirm', true);
         const msg = 'Bestätige deine Email Adresse über das Email das du erhalten hast.';
@@ -162,7 +161,6 @@ export class LoginComponent implements OnInit {
         this.processing = false;
       },
       err => {
-        // TODO: Better Error handling, depending on Backend response
         console.log('|===> Err ', err);
         if (err.status === 409) {
           this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Email wird bereits verwendet.', 4000);
@@ -176,7 +174,6 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  // TODO: Implement forgot password functionallity. Replace the default below
   forgotPassword() {
     prompt({
       title: 'Passwort vergessen',
@@ -236,6 +233,34 @@ export class LoginComponent implements OnInit {
 
   onEnter(route: string): void {
     this._navigationService.navigateTo(route);
+  }
+
+  onTogglePeekPassword(): void {
+    // Save the current password peek mode
+    this.passwordHidden = !this.password.nativeElement.secure;
+    // Make the text visible by changing the `secure` attribute of password and the confirm field
+    this.password.nativeElement.secure = !this.password.nativeElement.secure;
+    // Fixes an Android bug, where the textfield cursor would jump to index 0 once the `secure` attribute changes
+    /**
+     * FIXME Bug fix necessairy: On Android the password textfield changes CSS font with toggle of `secure` attribute
+     * Checkout this soltion: https://github.com/NativeScript/NativeScript/issues/4626#issuecomment-508094081
+     */
+    if (isAndroid && this.pwAndroidTypeFace) {
+      this.pwAndroidTypeFace.setSelection(this.pwAndroidTypeFace.length());
+    }
+    if (!this.isLoggingIn) {
+      this.confirmPassword.nativeElement.secure = !this.confirmPassword.nativeElement.secure;
+    }
+  }
+
+  passwordHasInput(): boolean {
+    return this.enteredPassword && this.enteredPassword.length > 0;
+  }
+
+  typeFaceLoaded(args): void {
+    if (isAndroid) {
+      this.pwAndroidTypeFace = args.object.android;
+    }
   }
 
   private getUserToken() {
