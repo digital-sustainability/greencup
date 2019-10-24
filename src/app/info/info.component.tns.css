@@ -2,12 +2,12 @@
     background-color: #eb0000;
     color: white;
     font-size: 17;
+    width: 100%;
 }
 
-#image-box {
+#slide1 {
     background-image: url('~/assets/images/railcoffee.jpg');
     background-size: cover;
-    height: 100%;
     width: 100%;
 }
 
@@ -17,4 +17,16 @@
 
 .item-text {
     text-align: center;
+}
+
+
+
+.item-flexbox {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-flat {
+    background-color: white;
 }
