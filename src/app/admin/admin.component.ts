@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FeedbackService } from '../shared/services/feedback.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { BarcodeScanner } from 'nativescript-barcodescanner';
@@ -13,80 +13,92 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
 import { AuthService } from '../shared/services/auth.service';
 import * as dayjs from 'dayjs';
+import { Toasty } from 'nativescript-toasty';
+import { RadListViewComponent } from 'nativescript-ui-listview/angular';
+
+
+const sound = require('nativescript-sound');
+const beep = sound.create('~/assets/sounds/beep.mp3');
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-
 export class AdminComponent implements OnInit {
+
+  @ViewChild('cupRoundListView', { read: RadListViewComponent, static: false }) cupRoundListViewComponent: RadListViewComponent;
 
   actionBarTitle = 'SBB GreenCup ☕ - Cleaner';
 
-  private _scanOptions = {
-    formats: 'QR_CODE',
-    cancelLabel: 'Schliessen', // iOS only
-    cancelLabelBackgroundColor: '#999999', // iOS only
-    message: 'Use the volume buttons for extra light', // Android only
-    showFlipCameraButton: false,
-    preferFrontCamera: false,
-    showTorchButton: true,
-    beepOnScan: false,
-    resultDisplayDuration: 0, // Android only, default 1500 (ms)
-    openSettingsIfPermissionWasPreviouslyDenied: true // iOS only, send user to settings app if access previously denied
-  };
   private _cupRounds: ObservableArray<CupRound>;
   private _throttle = false;
   private _throttleTime = 2000;
   private _connection: boolean;
   private _loaded = false;
+  private _lastQrCode = '';
+  private _lastScanTime = 0;
+
 
   constructor(
-    private _codeScanner: BarcodeScanner,
     private _feedbackService: FeedbackService,
     private _httpService: HttpService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-     // Monitor the users internet connection. Change connection status if the user is offline
     startMonitoring((newConnectionType) => {
       this._connection = newConnectionType !== connectionType.none;
       if (this._connection) {
         this.loadData();
       }
     });
+
+    this.loadData();
   }
 
 
   // ANCHOR *** User-Interaction Methods ***
 
   onNewScanTap(): void {
+    const scanOptions = {
+      formats: 'QR_CODE',
+      cancelLabel: 'Schliessen', // iOS only
+      cancelLabelBackgroundColor: '#999999', // iOS only
+      message: 'Use the volume buttons for extra light', // Android only
+      showFlipCameraButton: false,
+      preferFrontCamera: false,
+      showTorchButton: true,
+      beepOnScan: false,
+      openSettingsIfPermissionWasPreviouslyDenied: true, // iOS only, send user to settings app if access previously denied
+      continuousScanCallback: (result) => {
+        if (result.format === 'QR_CODE' && result.text.length) {
+          if (this.validateScan(result.text)) {
+            // In case the QR-Code matches all requirements, send it to the server, if its not the same code as the code scanned before
+
+            // allow duplicates after 3 seconds
+            if (this._lastQrCode !== result.text || Date.now() - this._lastScanTime >= 1000 * 3) {
+              this._lastQrCode = result.text; // update last scan
+              this._lastScanTime = Date.now();
+
+              this.sendScan(result.text);
+            }
+           } else {
+            const toast = new Toasty({ text: 'Der gescannte Code ist kein SBB GreenCup-Code!' });
+            toast.show();
+          }
+        } else {
+          const toast = new Toasty({ text: 'Scan nicht erkannt' });
+          toast.show();
+        }
+      },
+      reportDuplicates: true // allow multiple scans of the same cup
+    };
+
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
-      this._codeScanner.scan(this._scanOptions)
-        // Handle codeScanner promise.
-        .then((result) => {
-          if (result.format === 'QR_CODE' && result.text.length) {
-            if (this.validateScan(result.text)) {
-              // In case the QR-Code matches all requirements, send it to the server.
-              this.sendScan(result.text);
-             } else {
-              const msg = 'Der gescannte Code ist kein GreenCup Code!';
-              this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
-            }
-          } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scan nicht erkannt');
-          }
-        // Handle scan errors.
-        }, errMsg => {
-          if (errMsg === 'Scan aborted') {
-            this._feedbackService.show(FeedbackType.Info, 'Scan abgebrochen', '', 2000);
-          } else {
-            this._feedbackService.show(FeedbackType.Error, 'Scanfehler', errMsg.substring(0, 60) + '...');
-          }
-      });
+      new BarcodeScanner().scan(scanOptions).then((res) => {});
     }
     setTimeout(() => this._throttle = false, this._throttleTime);
   }
@@ -128,8 +140,7 @@ export class AdminComponent implements OnInit {
   private loadData(pullToRefreshArgs?): void {
     this._httpService.getCupRounds(this._authService.getAuthenticatedUser().id).subscribe(
       (cupRounds: CupRound[]) => {
-        // Initally sort list ASC by closed time
-        this._cupRounds = new ObservableArray(cupRounds.sort((a: CupRound, b: CupRound) => b.closed_at - a.closed_at));
+        this._cupRounds = new ObservableArray(cupRounds);
         this._loaded = true;
 
         if (pullToRefreshArgs) {
@@ -151,16 +162,21 @@ export class AdminComponent implements OnInit {
     this._httpService.closeRound(code).subscribe(
       (cupRound: CupRound) => {
         if (cupRound) {
-          console.log(cupRound);
           this.adjustCupRoundList(cupRound);
         } else {
           // TODO: Test all possible backend responses
-          const msg = 'Die Runde konnte nicht geschlossen werden.';
-          this._feedbackService.show(FeedbackType.Error, 'Kein Scan erhalten', msg);
+          const toast = new Toasty({ text: 'Die Runde konnte nicht geschlossen werden' });
+          toast.show();
         }
       },
       err => {
-        console.log(err);
+        if (err.status === 412) {
+          const toast = new Toasty({ text: 'Bereits gescannt' });
+          toast.show();
+        } else {
+          const toast = new Toasty({ text: 'Fehler bei der Übertragung' });
+          toast.show();
+        }
       }
     );
   }
@@ -180,9 +196,13 @@ export class AdminComponent implements OnInit {
     }
     // Add the new scan and notify the user.
     this._cupRounds.unshift(cupRound);
-    
-    const msg = 'Die Runde wurde abgeschlossen.';
-    this._feedbackService.show(FeedbackType.Success, 'Runde geschlossen!', msg, 4500);
+
+    this.cupRoundListViewComponent.listView.refresh();
+
+    beep.play();
+
+    const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id, textColor: 'limegreen' });
+    toast.show();
   }
 
 

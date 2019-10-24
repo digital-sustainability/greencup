@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from './shared/services/firebase.service';
 import { FeedbackService } from './shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
+import { Carousel, CarouselItem } from 'nativescript-carousel';
+import { registerElement } from 'nativescript-angular';
+
+registerElement('Carousel', () => Carousel);
+registerElement('CarouselItem', () => CarouselItem);
 
 @Component({
   selector: 'app-root',

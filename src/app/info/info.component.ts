@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavigationService } from '../shared/services/navigation.service';
+import { Page } from 'tns-core-modules/ui/page/page';
+import { Carousel } from 'nativescript-carousel';
 
 @Component({
   selector: 'app-info',
@@ -7,9 +9,14 @@ import { NavigationService } from '../shared/services/navigation.service';
   styleUrls: ['./info.component.css']
 })
 export class InfoComponent implements OnInit {
+  @ViewChild('CarouselView', { static: false }) carouselView: ElementRef<Carousel>;
+
   isFirstRun = false;
 
-  constructor(private _navigationService: NavigationService) {
+  constructor(
+    private _navigationService: NavigationService,
+    private _page: Page) {
+      _page.actionBarHidden = true;
   }
 
   ngOnInit() {
@@ -20,6 +27,14 @@ export class InfoComponent implements OnInit {
 
   onNavigateToLogin(): void {
     this._navigationService.navigateTo('login');
+  }
+
+  onNavigateBack(): void {
+    this._navigationService.navigateBack();
+  }
+
+  onNavigateToSlide(index): void {
+    this.carouselView.nativeElement.selectedPage = index;
   }
 
 }

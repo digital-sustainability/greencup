@@ -1,41 +1,32 @@
-/* Add mobile styles for the component here.  */
-.status-reserved {
-    background-color: #ffff4d;
+#carousel {
+    background-color: #eb0000;
+    color: white;
+    font-size: 17;
+    width: 100%;
 }
 
-.status-verified {
-    background-color: #C8EC85;
+#slide1 {
+    background-image: url('~/assets/images/railcoffee.jpg');
+    background-size: cover;
+    width: 100%;
 }
 
-.status-rewarded {
-    background-color: #92DB00;
+.item-title {
+    font-size: 25;
 }
 
-.status-overbid {
-    background-color: #EB6A00;
+.item-text {
+    text-align: center;
 }
 
-.card {
-    background-color: #fff;;
-    color: #4d4d4d;
-    margin: 15 15 0;
-    border-radius: 5;
+
+
+.item-flexbox {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
-.scan-label {
-    margin: 5 5 5 10;
-    font-weight: bold;
-}
-
-.scan-value {
-    margin: 5 5 5 10;
-}
-
-.info-label {
-    margin: 10;
-    color: black;
-    font-size: 15;
-}
-.image-container {
-    height: 250;
+.btn-flat {
+    background-color: white;
 }
