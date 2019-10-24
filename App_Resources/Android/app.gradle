@@ -8,7 +8,7 @@
 android {  
   defaultConfig {  
     generatedDensities = []
-    applicationId = "org.nativescript.railcoffeemobile" 
+    applicationId = "ch.digisus.greencup" 
     
     //override supported platforms
     // ndk {

@@ -5,6 +5,9 @@ import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
+import { FirebaseService } from '../shared/services/firebase.service';
+import { Subscription } from 'rxjs';
+import { device } from 'tns-core-modules/platform/platform';
 
 @Component({
   selector: 'app-login-splash',
@@ -20,6 +23,7 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
     private _authService: AuthService,
     private _feedbackService: FeedbackService,
     private _page: Page,
+    private firebaseService: FirebaseService
   ) {
     this._page.actionBarHidden = true;
   }
@@ -34,10 +38,33 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
       }
     });
 
+    // Init firebase
+    this.firebaseService.initFirebase()
+      .subscribe((complete) => {
+        if (complete) {
+          this.login();
+        }
+      }, (err) => {
+        console.log('[Firebase]', err);
+        if (err === 'Firebase already initialized') {
+          this.login();
+        }
+        else {
+          this._feedbackService.show(FeedbackType.Error, 'Push Benachrichtigungen konnten nicht initialisiert werden', '');
+        }
+      });
+  }
+
+  login() {
     const email = this._authService.getStorageItem('email');
     const token = this._authService.getStorageItem('usertoken');
-    if (email && token) {
-      this._authService.tokenLogin({ email: email, token: token }).subscribe(
+    const deviceToken = this._authService.getStorageItem('deviceToken');
+    if (email && token && deviceToken) {
+      this._authService.tokenLogin({
+        email: email,
+        token: token,
+        device_token: deviceToken
+      }).subscribe(
         user => {
           if (user.cleaner) {
             this._navigationService.navigateTo('admin', true);

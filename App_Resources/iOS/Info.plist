@@ -47,5 +47,9 @@
 	<string>SBB GreenCup braucht die Kamera-Berechtigung, damit Sie QR-Codes scannen können.</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>UIBackgroundModes</key>
+	<array>
+	<string>remote-notification</string>
+	</array>
 </dict>
 </plist>
