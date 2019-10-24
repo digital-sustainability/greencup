@@ -1,12 +1,12 @@
 {
-  "name": "rail-coffee-mobile",
+  "name": "greencup",
   "nativescript": {
-    "id": "org.nativescript.railcoffeemobile",
+    "id": "ch.digisus.greencup",
     "tns-ios": {
       "version": "6.1.0"
     },
     "tns-android": {
-      "version": "6.1.1"
+      "version": "6.0.2"
     }
   },
   "version": "0.0.0",
@@ -47,6 +47,7 @@
     "nativescript-feedback": "^1.3.11",
     "nativescript-iqkeyboardmanager": "^1.5.1",
     "nativescript-material-cardview": "^2.3.14",
+    "nativescript-plugin-firebase": "^10.1.0",
     "nativescript-secure-storage": "^2.5.0",
     "nativescript-theme-core": "~1.0.4",
     "nativescript-toasty": "^2.0.1",

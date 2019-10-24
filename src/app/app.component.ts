@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FirebaseService } from './shared/services/firebase.service';
+import { FeedbackService } from './shared/services/feedback.service';
+import { FeedbackType } from 'nativescript-feedback';
 import { Carousel, CarouselItem } from 'nativescript-carousel';
 import { registerElement } from 'nativescript-angular';
 
@@ -10,4 +13,16 @@ registerElement('CarouselItem', () => CarouselItem);
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent { }
+export class AppComponent implements OnInit {
+
+  constructor(private _firebaseService: FirebaseService,
+    private _feedbackService: FeedbackService) {}
+
+  ngOnInit() {
+    this._firebaseService.onMessageReceived()
+    .subscribe((message) => {
+      this._feedbackService.show(FeedbackType.Info, message.title, message.body,
+        10000);
+    });
+  }
+}
