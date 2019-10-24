@@ -1,9 +1,6 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { prompt } from 'tns-core-modules/ui/dialogs';
 import { Page, isAndroid } from 'tns-core-modules/ui/page';
-import { RouterExtensions } from 'nativescript-angular/router';
-
-import { User } from '../shared/models/user';
 import { RegisteringUser } from '../shared/models/registering-user';
 import { FeedbackType } from 'nativescript-feedback';
 import { AuthService } from '../shared/services/auth.service';
@@ -43,7 +40,6 @@ export class LoginComponent implements OnInit {
   constructor(
     private _page: Page,
     private _authService: AuthService,
-    private _routerExtensions: RouterExtensions,
     private _navigationService: NavigationService,
     private _feedbackService: FeedbackService,
   ) {
@@ -155,7 +151,8 @@ export class LoginComponent implements OnInit {
     this._authService.register(userDetail).subscribe(
       user => {
         console.log('|===> Answer ', user);
-        this._navigationService.navigateTo('/email-confirm', true);
+        const email = this.enteredEmail ? this.enteredEmail : '';
+        this._navigationService.navigateTo('/email-confirm', true, email);
         const msg = 'Bestätige deine Email Adresse über das Email das du erhalten hast.';
         this._feedbackService.show(FeedbackType.Success, 'Registrierung erfolgreich', msg, 4000);
         this.processing = false;

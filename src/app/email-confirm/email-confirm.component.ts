@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AuthService } from '../shared/services/auth.service';
+import { Component, OnInit } from '@angular/core';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
-import { registerElement } from 'nativescript-angular';
+import { registerElement, PageRoute } from 'nativescript-angular';
+import { switchMap } from 'rxjs/operators';
 
 registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
 
@@ -15,45 +15,27 @@ registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanage
 })
 export class EmailConfirmComponent implements OnInit {
 
-  enteredUserId: number;
-  enteredToken: string;
-  processing: boolean;
-  @ViewChild('token', { static: false }) token: ElementRef;
+  email: string;
 
-  constructor(private _authService: AuthService,
+  constructor(
     private _navigationService: NavigationService,
-    private _feedbackService: FeedbackService
+    private _feedbackService: FeedbackService,
+    private _pageRoute: PageRoute,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this._pageRoute.activatedRoute
+      .pipe(switchMap(activatedRoute => activatedRoute.params))
+      .forEach(params => this.email = params.email);
+  }
 
-  onSubmit(): void {
-    this.processing = true;
-    this._authService.confirmEmail(this.enteredUserId, this.enteredToken)
-      .subscribe(() => {
-        this._navigationService.navigateTo('info', true);
-        this._feedbackService.show(FeedbackType.Success, 'Email erfolgreich bestätigt', '', 4000);
-      }, (err) => {
-        console.log('|===> Err', err);
-        if (err.status === 404) {
-          this._feedbackService.show(FeedbackType.Warning, 'Email Bestätigung fehlgeschlagen', 'Nutzer-Id stimmt nicht', 4000);
-        } else {
-          this._feedbackService.show(FeedbackType.Warning, 'Email Bestätigung fehlgeschlagen', 'Code stimmt nicht', 4000);
-        }
-        this.processing = false;
-      });
+  onOkay(): void {
+    this._navigationService.navigateTo('/login', true);
+    this._feedbackService.show(FeedbackType.Info, 'Bitte bestätige deine Email vor dem Login', '', 4000);
   }
 
   onNavigateToLogin(): void {
     this._navigationService.navigateTo('login');
-  }
-
-  canGoBack(): boolean {
-    return this._navigationService.historyAvailable();
-  }
-
-  focusToken() {
-    this.token.nativeElement.focus();
   }
 
 }
