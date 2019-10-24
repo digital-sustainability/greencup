@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FeedbackService } from '../shared/services/feedback.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { BarcodeScanner } from 'nativescript-barcodescanner';
@@ -14,14 +14,20 @@ import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-module
 import { AuthService } from '../shared/services/auth.service';
 import * as dayjs from 'dayjs';
 import { Toasty } from 'nativescript-toasty';
+import { RadListViewComponent } from 'nativescript-ui-listview/angular';
+
+
+const sound = require('nativescript-sound');
+const beep = sound.create('~/assets/sounds/beep.mp3');
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-
 export class AdminComponent implements OnInit {
+
+  @ViewChild('cupRoundListView', { read: RadListViewComponent, static: false }) cupRoundListViewComponent: RadListViewComponent;
 
   actionBarTitle = 'SBB GreenCup ☕ - Cleaner';
 
@@ -33,21 +39,23 @@ export class AdminComponent implements OnInit {
   private _lastQrCode = '';
   private _lastScanTime = 0;
 
+
   constructor(
     private _feedbackService: FeedbackService,
     private _httpService: HttpService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _changeDetectionRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    // FIXME re enable monitoring
-     // Monitor the users internet connection. Change connection status if the user is offline
-     //startMonitoring((newConnectionType) => {
-     // this._connection = newConnectionType !== connectionType.none;
-     // if (this._connection) {
+    startMonitoring((newConnectionType) => {
+      this._connection = newConnectionType !== connectionType.none;
+      if (this._connection) {
         this.loadData();
-     // }
-    //});
+      }
+    });
+
+    this.loadData();
   }
 
 
@@ -69,13 +77,11 @@ export class AdminComponent implements OnInit {
           if (this.validateScan(result.text)) {
             // In case the QR-Code matches all requirements, send it to the server, if its not the same code as the code scanned before
 
-            // allow duplicates after 10 seconds
-            if (this._lastQrCode !== result.text || Date.now() - this._lastScanTime >= 1000 * 10) {
+            // allow duplicates after 3 seconds
+            if (this._lastQrCode !== result.text || Date.now() - this._lastScanTime >= 1000 * 3) {
               this._lastQrCode = result.text; // update last scan
               this._lastScanTime = Date.now();
 
-              const toast = new Toasty({ text: 'Scan überprüfen...' });
-              toast.show();
               this.sendScan(result.text);
             }
            } else {
@@ -134,8 +140,7 @@ export class AdminComponent implements OnInit {
   private loadData(pullToRefreshArgs?): void {
     this._httpService.getCupRounds(this._authService.getAuthenticatedUser().id).subscribe(
       (cupRounds: CupRound[]) => {
-        // Initally sort list ASC by closed time
-        this._cupRounds = new ObservableArray(cupRounds.sort((a: CupRound, b: CupRound) => b.closed_at - a.closed_at));
+        this._cupRounds = new ObservableArray(cupRounds);
         this._loaded = true;
 
         if (pullToRefreshArgs) {
@@ -186,6 +191,10 @@ export class AdminComponent implements OnInit {
     }
     // Add the new scan and notify the user.
     this._cupRounds.unshift(cupRound);
+
+    this.cupRoundListViewComponent.listView.refresh();
+
+    beep.play();
 
     const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id, textColor: 'limegreen' });
     toast.show();

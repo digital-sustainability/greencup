@@ -25,7 +25,8 @@ export class HttpService {
     return this._http.get<CupRound[]>(`${this._api}cupRound`, {
       params: {
         'complete': 'true',
-        'closed_by': userId.toString()
+        'closed_by': userId.toString(),
+        sort: 'createdAt DESC'
       }
     });
   }
