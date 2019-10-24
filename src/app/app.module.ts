@@ -15,6 +15,7 @@ import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ScanModalComponent } from './scan-modal/scan-modal.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
+import { PayoutModalComponent } from './payout-modal/payout-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { PasswordChangeComponent } from './password-change/password-change.compo
     InfoComponent,
     ScanModalComponent,
     PasswordChangeComponent,
+    PayoutModalComponent,
   ],
   imports: [
     BrowserModule,
