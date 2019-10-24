@@ -70,7 +70,7 @@ export class AdminComponent implements OnInit {
       showFlipCameraButton: false,
       preferFrontCamera: false,
       showTorchButton: true,
-      beepOnScan: true,
+      beepOnScan: false,
       openSettingsIfPermissionWasPreviouslyDenied: true, // iOS only, send user to settings app if access previously denied
       continuousScanCallback: (result) => {
         if (result.format === 'QR_CODE' && result.text.length) {
@@ -170,8 +170,13 @@ export class AdminComponent implements OnInit {
         }
       },
       err => {
-        const toast = new Toasty({ text: 'Fehler bei der Übertragung' });
-        toast.show();
+        if (err.status === 412) {
+          const toast = new Toasty({ text: 'Bereits gescannt' });
+          toast.show();
+        } else {
+          const toast = new Toasty({ text: 'Fehler bei der Übertragung' });
+          toast.show();
+        }
       }
     );
   }
