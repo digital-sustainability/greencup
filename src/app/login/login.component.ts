@@ -8,6 +8,7 @@ import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { startMonitoring, connectionType } from 'tns-core-modules/connectivity/connectivity';
 import { registerElement } from 'nativescript-angular';
+import * as connectivity from 'tns-core-modules/connectivity';
 
 registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
 
@@ -54,6 +55,8 @@ export class LoginComponent implements OnInit {
         this._feedbackService.show(FeedbackType.Error, 'Keine Internetverbindung', this.noConnectionMessage, 6000);
       }
     });
+    const currentConnectionType = connectivity.getConnectionType();
+    this._hasInternetConnection = currentConnectionType !== connectionType.none;
     // TODO: Check if this does not suppress any error messages
     if (this._navigationService.getPreviousUrl().includes('info')) {
       this._feedbackService.show(FeedbackType.Success, 'Login', 'Melde dich bitte an', 4000);

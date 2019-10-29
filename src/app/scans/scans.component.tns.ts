@@ -27,6 +27,7 @@ import * as dayjs from 'dayjs';
 import { RadListView } from 'nativescript-ui-listview';
 import { topmost } from 'tns-core-modules/ui/frame/frame';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
+import * as connectivity from 'tns-core-modules/connectivity';
 
 @Component({
   selector: 'app-scans',
@@ -93,6 +94,9 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
         this.loadData();
       }
     });
+    const currentConnectionType = connectivity.getConnectionType();
+    this._hasInternetConnection = currentConnectionType !== connectionType.none;
+
     this._changeDetectionRef.detectChanges();
   }
 
