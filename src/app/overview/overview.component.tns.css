@@ -84,4 +84,32 @@
     background-image: url('~/assets/images/red.png');
     background-repeat: no-repeat;
     background-position: 0 0;
+    border-width: 1;
+    border-color: #e10000;
+    border-radius: 5;
+}
+
+.ns-ios #slideButtonLabel {
+    font-size: 15;
+}
+
+#slideButtonLabel {
+    margin: 15;
+}
+
+#slideButtonImage {
+    width: 30;
+    height: 30;
+    animation-name: slide-animation;
+    animation-duration: 1;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    margin: 20 30 20 0;
+}
+
+
+@keyframes slide-animation {
+    0%   { transform: translate(-20, 0); }
+    50%  { transform: translate(0, 0); }
+    100% { transform: translate(20, 0); }
 }
