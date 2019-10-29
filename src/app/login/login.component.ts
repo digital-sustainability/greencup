@@ -101,12 +101,13 @@ export class LoginComponent implements OnInit {
       },
       err => {
         console.log('|===> Err ', err);
-        if (!this._hasInternetConnection) {
-          this._feedbackService.show(FeedbackType.Warning, 'Keine Internetverbindung', this.noConnectionMessage, 4000);
-        } else if (err.status === 404) {
+
+        if (err.status === 404) {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Email Adresse nicht korrekt', 4000);
         } else if (err.status === 401) {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Passwort ist ungültig', 4000);
+        } else if (!this._hasInternetConnection) {
+          this._feedbackService.show(FeedbackType.Warning, 'Keine Internetverbindung', this.noConnectionMessage, 4000);
         } else {
           this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
         }

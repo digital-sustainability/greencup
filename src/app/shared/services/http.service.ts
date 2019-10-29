@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { config } from '../config';
 import { Scan } from '../models/scan';
 import { User} from '../models/user';
 import { Cup } from '../models/cup';
 import { CupRound } from '../models/cup-round';
+import { environment } from '~/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
 
-  private _api = config.api;
+  private _api = environment.api;
 
   constructor(
     private _http: HttpClient,

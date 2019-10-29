@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, NgZone } from '@angular/core';
 import { FeedbackService } from '../shared/services/feedback.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { BarcodeScanner } from 'nativescript-barcodescanner';
@@ -44,7 +44,8 @@ export class AdminComponent implements OnInit {
     private _feedbackService: FeedbackService,
     private _httpService: HttpService,
     private _authService: AuthService,
-    private _changeDetectionRef: ChangeDetectorRef
+    private _changeDetectionRef: ChangeDetectorRef,
+    private ngZone: NgZone
   ) { }
 
   ngOnInit() {
@@ -84,7 +85,7 @@ export class AdminComponent implements OnInit {
 
               this.sendScan(result.text);
             }
-           } else {
+          } else {
             const toast = new Toasty({ text: 'Der gescannte Code ist kein SBB GreenCup-Code!' });
             toast.show();
           }
@@ -98,7 +99,7 @@ export class AdminComponent implements OnInit {
 
     if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
       this._throttle = true;
-      new BarcodeScanner().scan(scanOptions).then((res) => {});
+      new BarcodeScanner().scan(scanOptions).then((res) => { });
     }
     setTimeout(() => this._throttle = false, this._throttleTime);
   }
@@ -124,7 +125,7 @@ export class AdminComponent implements OnInit {
   }
   getClosedBy(cupRound: CupRound): number {
     if (typeof cupRound.closed_by === 'number') {
-       return cupRound.closed_by;
+      return cupRound.closed_by;
     } else {
       return has(cupRound, 'closed_by.id') ? (<User>cupRound.closed_by).id : 0;
     }
@@ -187,22 +188,24 @@ export class AdminComponent implements OnInit {
   }
 
   private adjustCupRoundList(cupRound: CupRound): void {
-    // Check whether the newly added scan ID aleady exist in the view
-    const existing = this._cupRounds.filter(e => e.id === cupRound.id);
-    // If scan already exists remove it by index.
-    if (existing && existing.length) {
-      const idx = this._cupRounds.indexOf(existing[0]);
-      this._cupRounds.splice(idx, 1);
-    }
-    // Add the new scan and notify the user.
-    this._cupRounds.unshift(cupRound);
+    this.ngZone.run(() => {
+      // Check whether the newly added scan ID aleady exist in the view
+      const existing = this._cupRounds.filter(e => e.id === cupRound.id);
+      // If scan already exists remove it by index.
+      if (existing && existing.length) {
+        const idx = this._cupRounds.indexOf(existing[0]);
+        this._cupRounds.splice(idx, 1);
+      }
+      // Add the new scan and notify the user.
+      this._cupRounds.unshift(cupRound);
 
-    this.cupRoundListViewComponent.listView.refresh();
+      //this.cupRoundListViewComponent.listView.refresh();
 
-    beep.play();
+      beep.play();
 
-    const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id, textColor: 'limegreen' });
-    toast.show();
+      const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id, textColor: 'limegreen' });
+      toast.show();
+    });
   }
 
 

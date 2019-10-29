@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  api: 'https://rail-coffee-rail-coffee-staging.dev.digisus.ch/api/'
 };
 
 /*

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { RegisteringUser } from '../models/registering-user';
-import { config } from '../config';
 import { Observable, pipe, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { SecureStorage } from 'nativescript-secure-storage';
+import { environment } from '~/environments/environment';
 
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,7 @@ export class AuthService {
 
   private _authenticatedUser: User;
   private _store: string;
-  private _api = config.api;
+  private _api = environment.api;
   private _secureStorage: SecureStorage;
 
   constructor(
