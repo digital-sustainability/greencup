@@ -70,7 +70,10 @@
                         </FormattedString>
                     </Label>
                     <StackLayout class="m-t-20">
-                        <Button text="Wischen um Auszuzahlen >" class="btn flat" id="slideButton" (touch)="onSlideButtonTouch($event)"></Button>
+                        <GridLayout id="slideButton" (touch)="onSlideButtonTouch($event)" columns="*, auto" rows="auto">
+                            <Label text="WISCHEN UM AUSZUZAHLEN" id="slideButtonLabel" verticalAlignment="center" col="0" row="0"></Label>
+                            <Image src="~/assets/images/slidegray.png" id="slideButtonImage" col="1" row="0"></Image>
+                        </GridLayout>
                     </StackLayout>
                 </StackLayout>
 

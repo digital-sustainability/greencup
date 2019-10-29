@@ -1,19 +1,22 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { Button } from 'tns-core-modules/ui/button';
 import { View } from 'tns-core-modules/ui/core/view';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { FeedbackType } from 'nativescript-feedback';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { PanGestureEventData, TouchGestureEventData } from 'tns-core-modules/ui/gestures';
-import { confirm } from 'tns-core-modules/ui/dialogs';
+import { alert } from 'tns-core-modules/ui/dialogs';
 import { layout } from 'tns-core-modules/utils/utils';
 import { isAndroid } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
+import * as connectivity from 'tns-core-modules/connectivity';
+
 
 import { HttpService } from '../shared/services/http.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 
 import { Scan, StatusType } from '../shared/models/scan';
+import { PayoutModalComponent } from '../payout-modal/payout-modal.component';
 import { registerElement } from 'nativescript-angular/element-registry';
 registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
 
@@ -21,6 +24,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../shared/services/auth.service';
 import { ThrowStmt } from '@angular/compiler';
 import { NavigationService } from '../shared/services/navigation.service';
+import { ModalDialogService } from 'nativescript-angular';
 
 
 @Component({
@@ -49,7 +53,9 @@ export class OverviewComponent implements OnInit, OnChanges {
     private _feedbackService: FeedbackService,
     private _authService: AuthService,
     private _navigationService: NavigationService,
-    private _page: Page
+    private _page: Page,
+    private _modalService: ModalDialogService,
+    private _viewContainerRef: ViewContainerRef
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -100,28 +106,44 @@ export class OverviewComponent implements OnInit, OnChanges {
       if (this.hasPannedEnough(x, layout.toDeviceIndependentPixels(args.view.getMeasuredWidth()))
         && !this._isConfirmPayoutDialogOpen) {
         // the user panned enough, show the confirm dialog
-        this._isConfirmPayoutDialogOpen = true;
-        const options = {
-            title: 'Auszahlung bestätigen',
-            message: 'Dieser Schritt kann nicht rückgängig gemacht werden.',
-            okButtonText: 'Ja',
-            cancelButtonText: 'Nein',
-            neutralButtonText: 'Abbrechen'
-        };
+        if (this.hasInternetConnection()) {
+          this._isConfirmPayoutDialogOpen = true;
 
-        confirm(options).then((result: boolean) => {
+          let depositValue = 0;
+          if (this._scans) {
+            depositValue = this._depositChfValue * this._scans.filter(e => e['verified'] && !e['rewarded']).length; // FIXME
+          }
+
+          const options = {
+            viewContainerRef: this._viewContainerRef,
+            context: {depositValue: depositValue},
+            fullscreen: false
+          };
+
+          this._modalService.showModal(PayoutModalComponent, options).then(result => {
             this._isConfirmPayoutDialogOpen = false;
 
             if (result) {
               this.confirmPayout();
             }
-        });
+          });
 
-        // reset slide progress indicator (for iOS)
-        args.view.style.backgroundSize = '0 0';
+          // reset slide progress indicator (for iOS)
+          args.view.style.backgroundSize = '0 0';
 
-        this._sliding = false;
-        this.isScrollEnabled(true);
+          this._sliding = false;
+          this.isScrollEnabled(true);
+        } else {
+          this._isConfirmPayoutDialogOpen = true;
+
+          const options = {
+            title: 'Keine Internetverbindung',
+            message: 'Um eine Auszahlung vorzunehmen, wird eine Internetverbindung benötigt.',
+            okButtonText: 'OK'
+          };
+
+          alert(options).then((res) => {this._isConfirmPayoutDialogOpen = false;});
+        }
       }
 
       if (this.isFarAwayFromButton(y, layout.toDeviceIndependentPixels(args.view.getMeasuredHeight()))) {
@@ -142,6 +164,7 @@ export class OverviewComponent implements OnInit, OnChanges {
       this.isScrollEnabled(true);
     }
   }
+
 
   onNavigateToInfo(): void {
     this._navigationService.navigateTo('info');
@@ -189,7 +212,12 @@ export class OverviewComponent implements OnInit, OnChanges {
 
   getDepositValue(scans: ObservableArray<Scan>, filterProperty: string): string {
     if (scans) {
-      const val = this._depositChfValue * scans.filter(e => e[filterProperty]).length;
+      let val;
+      if (filterProperty === 'verified') {
+        val = this._depositChfValue * scans.filter(e => e['verified'] && !e['rewarded']).length;
+      } else {
+        val = this._depositChfValue * scans.filter(e => e[filterProperty]).length;
+      }
       // Return floats rounded to two digits
       return val % 1 === 0 ? `${val.toString()} CHF` : `${val.toFixed(2)} CHF`;
     } else {
@@ -250,6 +278,15 @@ export class OverviewComponent implements OnInit, OnChanges {
     );
   }
 
+  private hasInternetConnection(): boolean {
+    const connectionType = connectivity.getConnectionType();
+    if (connectionType === connectivity.connectionType.none) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
+
 
 

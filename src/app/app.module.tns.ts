@@ -60,7 +60,8 @@ import { PayoutModalComponent } from './payout-modal/payout-modal.component';
     NativeScriptFormsModule,
   ],
   entryComponents: [
-    ScanModalComponent
+    ScanModalComponent,
+    PayoutModalComponent
   ],
   providers: [
     NavigationService,

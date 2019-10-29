@@ -1,1 +1,9 @@
-<Button text="payout-modal works!" class="btn btn-primary"></Button>
+<ScrollView>
+    <StackLayout class="modal-view-style payout-modal">
+        <Label class="h3" text="Auszahlung an der Kasse." textWrap="true"></Label>
+        <Label text="Diesen Bildschirm an der Kasse zeigen. Nicht vorher bestätigen." textWrap="true"></Label>
+        <Label class="h2" [text]="getDepositValue()"></Label>
+        <Button text="Auszahlung bestätigen" class="btn btn-primary" (tap)="onConfirmPayout()"></Button>
+        <Button text="Abbrechen" class="btn btn-flat" (tap)="onCancel()"></Button>
+    </StackLayout>
+</ScrollView>
