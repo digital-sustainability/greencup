@@ -1,8 +1,13 @@
 /* Add mobile styles for the component here.  */
 .payout-modal {
     padding: 15;
+    background-color: white;
 }
 
 .btn-flat {
     background-color: white;
+}
+
+.h1 {
+    margin: 20 0;
 }

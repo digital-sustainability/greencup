@@ -90,7 +90,8 @@
 }
 
 #slideButtonLabel {
-    margin: 30px;
+    margin: 15;
+    font-size: 15;
 }
 
 #slideButtonImage {
