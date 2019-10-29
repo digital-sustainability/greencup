@@ -23,6 +23,7 @@
 
 .item-flexbox {
     height: 100%;
+    padding: 20;
     align-items: center;
     justify-content: center;
 }

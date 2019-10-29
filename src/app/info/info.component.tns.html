@@ -7,7 +7,7 @@
                     <Label text="" class="item-text" horizontalAlignment="center" textWrap="true"></Label>
                     <Button text="Los gehts" class="btn btn-primary" (tap)="onNavigateToSlide(1)"></Button>
                     <Button text="Zurück" class="btn btn-flat" (tap)="onNavigateBack()" *ngIf="!isFirstRun"></Button>
-                    <Button text="Überspringen" class="btn btn-flat" (tap)="onNavigateToLogin()" *ngIf="isFirstRun"></Button>
+                    <Button text="Überspringen" class="btn btn-flat" (tap)="onNavigateToTabs()" *ngIf="isFirstRun"></Button>
                 </StackLayout>
             </FlexboxLayout>
         </CarouselItem>
@@ -56,7 +56,8 @@
                 <StackLayout>
                     <Label text="Preview." class="item-title" horizontalAlignment="center"></Label>
                     <Label text="Diese App ist eine Preview. Vielen Dank für dein Feedback."  class="item-text" horizontalAlignment="center" textWrap="true"></Label>
-                    <Button text="Start" class="btn btn-flat" (tap)="onNavigateBack()"></Button>
+                    <Button text="Start" class="btn btn-flat" (tap)="onNavigateBack()" *ngIf="!isFirstRun"></Button>
+                    <Button text="Start" class="btn btn-flat" (tap)="onNavigateToTabs()" *ngIf="isFirstRun"></Button>
                 </StackLayout>
             </FlexboxLayout>
         </CarouselItem>

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavigationService } from '../shared/services/navigation.service';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Carousel } from 'nativescript-carousel';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-info',
@@ -15,18 +16,21 @@ export class InfoComponent implements OnInit {
 
   constructor(
     private _navigationService: NavigationService,
+    private _authService: AuthService,
     private _page: Page) {
       _page.actionBarHidden = true;
   }
 
   ngOnInit() {
-    if (this._navigationService.getPreviousUrl().includes('email-confirm')) {
+    if (this._authService.isFirstRun()) {
       this.isFirstRun = true;
     }
   }
 
-  onNavigateToLogin(): void {
-    this._navigationService.navigateTo('login');
+  onNavigateToTabs(): void {
+    this._authService.setFirstRun(true);
+
+    this._navigationService.navigateTo('tabs', true);
   }
 
   onNavigateBack(): void {

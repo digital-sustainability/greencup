@@ -119,4 +119,16 @@ export class AuthService {
     return password && confirmPassword && password === confirmPassword;
   }
 
+  isFirstRun(): boolean {
+    if (this.getStorageItem('tutorial-displayed') === 'true') {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  setFirstRun(value: boolean) {
+    this.setStorageItem('tutorial-displayed', value.toString());
+  }
+
 }

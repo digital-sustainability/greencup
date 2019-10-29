@@ -69,7 +69,11 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
           if (user.cleaner) {
             this._navigationService.navigateTo('admin', true);
           } else {
-            this._navigationService.navigateTo('tabs', true);
+            if (this._authService.isFirstRun()) {
+              this._navigationService.navigateTo('info', true);
+            } else {
+              this._navigationService.navigateTo('tabs', true);
+            }
           }
           this._feedbackService.show(FeedbackType.Success, `Hallo ${user.first_name} ${user.last_name}`, '');
         },
