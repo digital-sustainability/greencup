@@ -26,7 +26,7 @@ export class HttpService {
       params: {
         'complete': 'true',
         'closed_by': userId.toString(),
-        sort: 'createdAt DESC'
+        sort: 'updatedAt DESC'
       }
     });
   }

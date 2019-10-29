@@ -199,7 +199,7 @@ export class AdminComponent implements OnInit {
       // Add the new scan and notify the user.
       this._cupRounds.unshift(cupRound);
 
-      //this.cupRoundListViewComponent.listView.refresh();
+      this.cupRoundListViewComponent.listView.refresh();
 
       beep.play();
 

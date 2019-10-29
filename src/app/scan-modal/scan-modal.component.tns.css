@@ -1,6 +1,7 @@
 /* Add mobile styles for the component here.  */
 .scan-modal {
     padding: 10;
+    background-color: white;
 }
 .h3 {
     margin: 5;
