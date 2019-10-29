@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, ChangeDetectorRef, ViewChild, ViewContainerRef, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ChangeDetectorRef, ViewChild, ViewContainerRef, Input, SimpleChanges, NgZone } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
@@ -81,7 +81,8 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
     private _changeDetectionRef: ChangeDetectorRef,
     private _authService: AuthService,
     private _modalService: ModalDialogService,
-    private _viewContainerRef: ViewContainerRef
+    private _viewContainerRef: ViewContainerRef,
+    private _ngZone: NgZone
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -89,10 +90,12 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
     startMonitoring((newConnectionType) => {
-      this._hasInternetConnection = newConnectionType !== connectionType.none;
-      if (this._hasInternetConnection) {
-        this.loadData();
-      }
+      this._ngZone.run(() => {
+        this._hasInternetConnection = newConnectionType !== connectionType.none;
+        if (this._hasInternetConnection) {
+          this.loadData();
+        }
+      });
     });
     const currentConnectionType = connectivity.getConnectionType();
     this._hasInternetConnection = currentConnectionType !== connectionType.none;

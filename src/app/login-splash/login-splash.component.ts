@@ -66,6 +66,7 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
         device_token: deviceToken
       }).subscribe(
         user => {
+          stopMonitoring();
           if (user.cleaner) {
             this._navigationService.navigateTo('admin', true);
           } else {
