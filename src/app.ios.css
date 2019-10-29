@@ -4,3 +4,7 @@
 @import './app/shared/styles/theme.tns.css';
 @import './app/shared/styles/global.tns.css';
 @import './app/shared/styles/global.ios.css';
+
+#slideButtonLabel {
+    font-size: 15;
+}
