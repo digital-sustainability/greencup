@@ -1,12 +1,13 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { prompt } from 'tns-core-modules/ui/dialogs';
-import { Page, isAndroid } from 'tns-core-modules/ui/page';
+import { Page, isAndroid, isIOS } from 'tns-core-modules/ui/page';
 import { RegisteringUser } from '../shared/models/registering-user';
 import { FeedbackType } from 'nativescript-feedback';
 import { AuthService } from '../shared/services/auth.service';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { startMonitoring, connectionType } from 'tns-core-modules/connectivity/connectivity';
+import { TextField } from 'tns-core-modules/ui/text-field';
 import { registerElement } from 'nativescript-angular';
 import * as connectivity from 'tns-core-modules/connectivity';
 
@@ -21,9 +22,9 @@ registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanage
 })
 export class LoginComponent implements OnInit {
 
-  pwAndroidTypeFace: any;
-  passwordHidden = true;
-  passwordPeekIcon = '&#xf06e;&nbsp;';
+  passwordField: TextField;
+  androidTypeFace: any;
+  showPassword = false;
   isLoggingIn = true;
   enteredFirstname: string;
   enteredLastname: string;
@@ -37,6 +38,7 @@ export class LoginComponent implements OnInit {
   @ViewChild('confirmPassword', { static: false }) confirmPassword: ElementRef;
   private _hasInternetConnection: boolean;
   noConnectionMessage = 'Anmeldung nicht möglich, da keine Verbindung zum Internet besteht';
+  passwordConfirmField: any;
 
   constructor(
     private _page: Page,
@@ -65,7 +67,7 @@ export class LoginComponent implements OnInit {
 
   toggleForm() {
     this.isLoggingIn = !this.isLoggingIn;
-    this.passwordHidden = true;
+    this.showPassword = false;
     this.enteredPassword = '';
   }
 
@@ -238,19 +240,30 @@ export class LoginComponent implements OnInit {
 
   onTogglePeekPassword(): void {
     // Save the current password peek mode
-    this.passwordHidden = !this.password.nativeElement.secure;
-    // Make the text visible by changing the `secure` attribute of password and the confirm field
-    this.password.nativeElement.secure = !this.password.nativeElement.secure;
-    // Fixes an Android bug, where the textfield cursor would jump to index 0 once the `secure` attribute changes
-    /**
-     * FIXME Bug fix necessairy: On Android the password textfield changes CSS font with toggle of `secure` attribute
-     * Checkout this soltion: https://github.com/NativeScript/NativeScript/issues/4626#issuecomment-508094081
-     */
-    if (isAndroid && this.pwAndroidTypeFace) {
-      this.pwAndroidTypeFace.setSelection(this.pwAndroidTypeFace.length());
+    this.showPassword = !this.showPassword;
+    // Change password visibility on iOS by changing the `secure` attribute of password and the confirm field
+    if (isIOS) {
+      this.password.nativeElement.secure = this.showPassword;
+    } else {
+      this.updateAndroidPasswordVisibility(this.passwordField, this.androidTypeFace);
     }
     if (!this.isLoggingIn) {
-      this.confirmPassword.nativeElement.secure = !this.confirmPassword.nativeElement.secure;
+      this.updateAndroidPasswordVisibility(this.passwordConfirmField, this.androidTypeFace);
+    }
+  }
+
+  /**
+   * Fixes Android bug where the textfield cursor jumps to index 0 and the typeface changes once
+   * the `secure` attribute is toggled --> https://github.com/NativeScript/NativeScript/issues/4626
+   */
+  updateAndroidPasswordVisibility(textField: TextField, typeFace: any): void {
+    if (isAndroid && typeFace) {
+      // toggle secure or plain text
+      textField.android.setInputType(this.showPassword ? 16385 : 129);
+      // set usage to initial typeface
+      textField.android.setTypeface(typeFace);
+      // move curser to end of the input
+      textField.android.setSelection(textField.android.length());
     }
   }
 
@@ -258,15 +271,22 @@ export class LoginComponent implements OnInit {
     return this.enteredPassword && this.enteredPassword.length > 0;
   }
 
-  typeFaceLoaded(args): void {
+  passwordFieldLoaded(args: any): void {
     if (isAndroid) {
-      this.pwAndroidTypeFace = args.object.android;
+      this.passwordField = args.object;
+      this.androidTypeFace = this.passwordField.android.getTypeface();
+      this.updateAndroidPasswordVisibility(this.passwordField, this.androidTypeFace);
     }
   }
 
-  private getUserToken() {
-    const v = this._authService.getStorageItem('usertoken');
-    console.log(v + ' reloaded');
+  passwordConfirmFieldLoaded(args: any): void {
+    if (isAndroid) {
+      this.passwordConfirmField = args.object;
+      if (!this.androidTypeFace) {
+        this.androidTypeFace = this.passwordConfirmField.android.getTypeface();
+      }
+      this.updateAndroidPasswordVisibility(this.passwordConfirmField, this.androidTypeFace);
+    }
   }
 
   private validateEmail(password: string): boolean {

@@ -29,20 +29,20 @@
 
                     <StackLayout class="input-field"row="3">
                         <GridLayout  columns="*, auto">
-                            <TextField #password col="0" class="input" [isEnabled]="!processing" hint="Passwort" secure="true"
-                                [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
-                                (returnPress)="focusConfirmPassword()" (loaded)="typeFaceLoaded($event)"></TextField>
-                            <Label *ngIf="passwordHasInput() && passwordHidden" col="1" class="peek-pw fa" text="&#xf06e;&nbsp;"
+                            <TextField #password col="0" class="input" [isEnabled]="!processing" [hint]="isLoggingIn ? 'Passwort' : 'Passwort (mind. 10 Zeichen)'"
+                                [ios:secure]="!showPassword" [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
+                                (returnPress)="focusConfirmPassword()" (loaded)="passwordFieldLoaded($event)"></TextField>
+                            <Label *ngIf="passwordHasInput() && !showPassword" col="1" class="peek-pw fa" text="&#xf06e;&nbsp;"
                                 (tap)="onTogglePeekPassword()" verticalAlignment="center"></Label>
-                            <Label *ngIf="passwordHasInput() && !passwordHidden" col="1" class="peek-pw fa" text="&#xf070;&nbsp;"
+                            <Label *ngIf="passwordHasInput() && showPassword" col="1" class="peek-pw fa" text="&#xf070;&nbsp;"
                                 (tap)="onTogglePeekPassword()" verticalAlignment="center"></Label>
                         </GridLayout>
                         <StackLayout class="hr-light xyv" verticalAlignment="top"></StackLayout>
                     </StackLayout>
 
                     <StackLayout row="4" *ngIf="!isLoggingIn" class="input-field">
-                        <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen"
-                            secure="true" [(ngModel)]="enteredConfirmPassword" returnKeyType="done" (returnPress)="onSubmit()"></TextField>
+                        <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen" [ios:secure]="!showPassword"
+                            [(ngModel)]="enteredConfirmPassword" returnKeyType="done" (returnPress)="onSubmit()" (loaded)="passwordConfirmFieldLoaded($event)"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>
 
