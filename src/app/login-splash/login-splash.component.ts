@@ -84,6 +84,10 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
             this._navigationService.navigateTo('email-confirm', true);
             const msg = 'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.';
             this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
+          } else if(err.status === 401) {
+            const msg = 'Bitte logge dich ein oder erstelle einen Account';
+            this._feedbackService.show(FeedbackType.Info, 'Login erforderlich', msg, 5000);
+            this._navigationService.navigateTo('login', true);
           } else {
             const msg = 'Beim Login ist ein unbekannter Fehler aufgetreten. Bitte versuche es später erneut.';
             this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
