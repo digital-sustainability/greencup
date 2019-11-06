@@ -15,10 +15,7 @@ import { AuthService } from '../shared/services/auth.service';
 import * as dayjs from 'dayjs';
 import { Toasty } from 'nativescript-toasty';
 import { RadListViewComponent } from 'nativescript-ui-listview/angular';
-
-
-const sound = require('nativescript-sound');
-const beep = sound.create('~/assets/sounds/beep.mp3');
+import { TNSPlayer } from 'nativescript-audio';
 
 @Component({
   selector: 'app-admin',
@@ -28,6 +25,7 @@ const beep = sound.create('~/assets/sounds/beep.mp3');
 export class AdminComponent implements OnInit {
 
   @ViewChild('cupRoundListView', { read: RadListViewComponent, static: false }) cupRoundListViewComponent: RadListViewComponent;
+  private _player: TNSPlayer;
 
   actionBarTitle = 'SBB GreenCup ☕ - Cleaner';
 
@@ -46,7 +44,14 @@ export class AdminComponent implements OnInit {
     private _authService: AuthService,
     private _changeDetectionRef: ChangeDetectorRef,
     private ngZone: NgZone
-  ) { }
+  ) {
+    this._player = new TNSPlayer();
+    this._player
+      .initFromFile({
+        audioFile: '~/assets/sounds/beep.mp3', // ~ = app directory
+        loop: false
+      });
+  }
 
   ngOnInit() {
     startMonitoring((newConnectionType) => {
@@ -201,7 +206,7 @@ export class AdminComponent implements OnInit {
 
       this.cupRoundListViewComponent.listView.refresh();
 
-      beep.play();
+      this._player.play();
 
       const toast = new Toasty({ text: 'Erfolgreich, Becher-ID: ' + cupRound.cup_id, textColor: 'limegreen' });
       toast.show();

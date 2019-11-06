@@ -9,19 +9,19 @@
                     <StackLayout row="0" *ngIf="!isLoggingIn" class="input-field">
                         <TextField #firstname class="input" hint="Vorname" [isEnabled]="!processing" autocorrect="false"
                             autocapitalizationType="none" [(ngModel)]="enteredFirstname" returnKeyType="next"
-                            (returnPress)="focusFirstname()"></TextField>
+                            (returnPress)="focusLastname()"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>
 
                     <StackLayout row="1" *ngIf="!isLoggingIn" class="input-field">
                         <TextField #lastname class="input" hint="Nachname" [isEnabled]="!processing" autocorrect="false"
                             autocapitalizationType="none" [(ngModel)]="enteredLastname" returnKeyType="next"
-                            (returnPress)="focusLastname()"></TextField>
+                            (returnPress)="focusEmail()"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>
 
                     <StackLayout row="2" class="input-field">
-                        <TextField class="input" hint="Email" [isEnabled]="!processing" keyboardType="email"
+                        <TextField #email class="input" hint="Email" [isEnabled]="!processing" keyboardType="email"
                             autocorrect="false" autocapitalizationType="none" [(ngModel)]="enteredEmail" returnKeyType="next"
                             (returnPress)="focusPassword()"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
@@ -30,7 +30,7 @@
                     <StackLayout class="input-field"row="3">
                         <GridLayout  columns="*, auto">
                             <TextField #password col="0" class="input" [isEnabled]="!processing" [hint]="isLoggingIn ? 'Passwort' : 'Passwort (mind. 10 Zeichen)'"
-                                [ios:secure]="!showPassword" [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
+                                ios:secure="{{!showPassword}}" [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
                                 (returnPress)="focusConfirmPassword()" (loaded)="passwordFieldLoaded($event)"></TextField>
                             <Label *ngIf="passwordHasInput() && !showPassword" col="1" class="peek-pw fa" text="&#xf06e;&nbsp;"
                                 (tap)="onTogglePeekPassword()" verticalAlignment="center"></Label>
@@ -41,7 +41,7 @@
                     </StackLayout>
 
                     <StackLayout row="4" *ngIf="!isLoggingIn" class="input-field">
-                        <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen" [ios:secure]="!showPassword"
+                        <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen" ios:secure="{{!showPassword}}"
                             [(ngModel)]="enteredConfirmPassword" returnKeyType="done" (returnPress)="onSubmit()" (loaded)="passwordConfirmFieldLoaded($event)"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>

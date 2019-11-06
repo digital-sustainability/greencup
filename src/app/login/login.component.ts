@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   processing = false;
   @ViewChild('firstname', { static: false }) firstname: ElementRef;
   @ViewChild('lastname', { static: false }) lastname: ElementRef;
+  @ViewChild('email', { static: false }) email: ElementRef;
   @ViewChild('password', { static: false }) password: ElementRef;
   @ViewChild('confirmPassword', { static: false }) confirmPassword: ElementRef;
   private _hasInternetConnection: boolean;
@@ -81,7 +82,7 @@ export class LoginComponent implements OnInit {
 
   loginWithNewToken(): void {
     if (!this.enteredEmail || !this.enteredPassword || this.validateEmail(this.enteredPassword)) {
-      this._feedbackService.show(FeedbackType.Warning, '', 'Bitte Email und Password angeben', 4000);
+      this._feedbackService.show(FeedbackType.Warning, '', 'Bitte Email und Passwort angeben', 4000);
       return;
     }
     this.processing = true;
@@ -226,6 +227,10 @@ export class LoginComponent implements OnInit {
     this.lastname.nativeElement.focus();
   }
 
+  focusEmail() {
+    this.email.nativeElement.focus();
+  }
+
   focusConfirmPassword() {
     if (!this.isLoggingIn) {
       this.confirmPassword.nativeElement.focus();
@@ -242,13 +247,11 @@ export class LoginComponent implements OnInit {
     // Save the current password peek mode
     this.showPassword = !this.showPassword;
     // Change password visibility on iOS by changing the `secure` attribute of password and the confirm field
-    if (isIOS) {
-      this.password.nativeElement.secure = this.showPassword;
-    } else {
+    if (isAndroid) {
       this.updateAndroidPasswordVisibility(this.passwordField, this.androidTypeFace);
-    }
-    if (!this.isLoggingIn) {
-      this.updateAndroidPasswordVisibility(this.passwordConfirmField, this.androidTypeFace);
+      if (!this.isLoggingIn) {
+        this.updateAndroidPasswordVisibility(this.passwordConfirmField, this.androidTypeFace);
+      }
     }
   }
 

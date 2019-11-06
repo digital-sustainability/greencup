@@ -7,7 +7,6 @@ import { ActionBarComponent } from './shared/components/action-bar/action-bar.co
 import { OverviewComponent } from './overview/overview.component';
 import { TabsComponent } from './tabs/tabs.component';
 import { ScansComponent } from './scans/scans.component';
-import { NativeScriptMaterialCardViewModule } from 'nativescript-material-cardview/angular';
 import { InfoComponent } from './info/info.component';
 import { LoginComponent } from './login/login.component';
 import { LoginSplashComponent } from './login-splash/login-splash.component';
@@ -24,7 +23,6 @@ import { PayoutModalComponent } from './payout-modal/payout-modal.component';
     OverviewComponent,
     TabsComponent,
     ScansComponent,
-    NativeScriptMaterialCardViewModule,
     LoginComponent,
     LoginSplashComponent,
     EmailConfirmComponent,
