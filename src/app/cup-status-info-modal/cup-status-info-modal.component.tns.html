@@ -1,0 +1,32 @@
+<ScrollView>
+    <StackLayout class="modal-view-style scan-modal">
+        <Label class="h3" [text]="statusString"></Label>
+            <StackLayout>
+                <CardView *ngIf="status==='reserved'" class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                    <GridLayout columns="20, *" rows="auto">
+                        <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
+                        <Label col="2" row="0" class="scan-value" text="Du hast den Becher zuletzt gescannt. Bei einer Rückgabe wird dir das Depot gutgeschrieben." textWrap="true"></Label>
+                    </GridLayout>
+                </CardView>
+                <CardView *ngIf="status==='overbid'"  class="card" ripple="false" margin="5" elevation="10"radius="10" ios:shadowRadius="3" android:elevation="6">
+                    <GridLayout columns="20, *" rows="auto">
+                        <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
+                        <Label col="2" row="0" class="scan-value" text="Der Becher, den du gescannt hast, wurde von einer anderen Person gescannt und abgegeben." textWrap="true"></Label>
+                    </GridLayout>
+                </CardView>
+                <CardView *ngIf="status==='verified'"  class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                    <GridLayout columns="20, *" rows="auto">
+                        <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
+                        <Label col="2" row="0" class="scan-value" text="Die Rückgabestelle hat deinen Becher zur Reinigung angenommen. Das Depot wurde zu deinem Guthaben hinzugefügt." textWrap="true"></Label>
+                    </GridLayout>
+                </CardView>
+                <CardView *ngIf="status==='rewarded'"  class="card" ripple="false" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="6">
+                    <GridLayout columns="20, *" rows="auto">
+                        <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
+                        <Label col="2" row="0" class="scan-value" text="Das Depot dieses Bechers wurde bereits ausbezahlt." textWrap="true"></Label>
+                    </GridLayout>
+                </CardView>
+            </StackLayout>
+        <Button text="Schliessen" class="btn flat close-button" (tap)="onClose()"></Button>
+    </StackLayout>
+</ScrollView>

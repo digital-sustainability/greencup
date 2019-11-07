@@ -28,6 +28,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { InfoComponent } from './info/info.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import { PayoutModalComponent } from './payout-modal/payout-modal.component';
+import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-info-modal.component';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -51,6 +52,7 @@ import { PayoutModalComponent } from './payout-modal/payout-modal.component';
     ScanModalComponent,
     PasswordChangeComponent,
     PayoutModalComponent,
+    CupStatusInfoModalComponent,
   ],
   imports: [
     NativeScriptModule,
@@ -61,7 +63,8 @@ import { PayoutModalComponent } from './payout-modal/payout-modal.component';
   ],
   entryComponents: [
     ScanModalComponent,
-    PayoutModalComponent
+    PayoutModalComponent,
+    CupStatusInfoModalComponent
   ],
   providers: [
     NavigationService,
