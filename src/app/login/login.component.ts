@@ -255,6 +255,10 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  get isIOS(): boolean {
+    return isIOS;
+  }
+
   /**
    * Fixes Android bug where the textfield cursor jumps to index 0 and the typeface changes once
    * the `secure` attribute is toggled --> https://github.com/NativeScript/NativeScript/issues/4626
