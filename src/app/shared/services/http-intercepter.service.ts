@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError, empty } from 'rxjs';
 import { CsrfService } from './csrf.service';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { NavigationService } from './navigation.service';
@@ -25,6 +25,7 @@ export class HttpInterceptorService implements HttpInterceptor {
             // Navigate to login screen if not authenticated
             if (err.status === 401) {
               this.navigationService.navigateTo('/login', true);
+
             }
             return throwError(err);
           })

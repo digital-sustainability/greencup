@@ -3,6 +3,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 @Component({
   selector: 'app-password-change',
@@ -23,7 +24,8 @@ export class PasswordChangeComponent implements OnInit {
   constructor(
     private _authService: AuthService,
     private _navigationService: NavigationService,
-    private _feedbackService: FeedbackService
+    private _feedbackService: FeedbackService,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) { }
 
   ngOnInit(): void { }
@@ -46,11 +48,12 @@ export class PasswordChangeComponent implements OnInit {
         },
         (err) => {
           console.log('|===> Err', err);
-          if (err.status === 400) {
-            this._feedbackService.show(FeedbackType.Warning, 'Altes Passwort ist nicht korrekt', '', 4000);
-          } else {
-            const msg = err.message.substring(50) + '...';
-            this._feedbackService.show(FeedbackType.Error, 'Passwort konnte nicht geändert werden', msg, 4000);
+          if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+            if (err.status === 400) {
+              this._feedbackService.show(FeedbackType.Warning, 'Altes Passwort ist nicht korrekt', '', 4000);
+            } else {
+              this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Passwort konnte nicht geändert werden', 4000);
+            }
           }
           this.processing = false;
         }

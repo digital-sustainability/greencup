@@ -8,13 +8,15 @@ import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-module
 import { FirebaseService } from '../shared/services/firebase.service';
 import { Subscription } from 'rxjs';
 import { device } from 'tns-core-modules/platform/platform';
+import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 @Component({
   selector: 'app-login-splash',
   templateUrl: './login-splash.component.html',
   styleUrls: ['./login-splash.component.css']
 })
-export class LoginSplashComponent implements OnInit, OnDestroy {
+export class LoginSplashComponent implements OnInit {
 
   private _hasInternetConnection: boolean;
 
@@ -23,19 +25,30 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
     private _authService: AuthService,
     private _feedbackService: FeedbackService,
     private _page: Page,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private _connectivityMonitorService: ConnectivityMonitorService,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) {
     this._page.actionBarHidden = true;
   }
 
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
-    startMonitoring((newConnectionType) => {
-      this._hasInternetConnection = newConnectionType !== connectionType.none;
-      if (!this._hasInternetConnection) {
-        // If offline navigate the user to login screen where a 'No Connection' message is displayed
-        this._navigationService.navigateTo('login');
+    const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
+      (newConnectionType: connectionType) => {
+        this._hasInternetConnection = newConnectionType !== connectionType.none;
+
+        if (!this._hasInternetConnection) {
+          // If offline navigate the user to login screen where a 'No Connection' message is displayed
+          this._navigationService.navigateTo('login');
+        }
       }
+    );
+
+    this._page.on('navigatingFrom', (data) => {
+      connectivityMonitorSubscription.unsubscribe();
+
+      console.log('login-splash left');
     });
 
     // Init firebase
@@ -48,8 +61,7 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
         console.log('[Firebase]', err);
         if (err === 'Firebase already initialized') {
           this.login();
-        }
-        else {
+        } else {
           this._feedbackService.show(FeedbackType.Error, 'Push Benachrichtigungen konnten nicht initialisiert werden', '');
         }
       });
@@ -66,7 +78,6 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
         device_token: deviceToken
       }).subscribe(
         user => {
-          stopMonitoring();
           if (user.cleaner) {
             this._navigationService.navigateTo('admin', true);
           } else {
@@ -80,28 +91,26 @@ export class LoginSplashComponent implements OnInit, OnDestroy {
         },
         err => {
           console.log('|===> Error', err);
-          if (err.status === 400) {
-            this._navigationService.navigateTo('email-confirm', true);
-            const msg = 'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.';
-            this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
-          } else if(err.status === 401) {
-            const msg = 'Bitte logge dich ein oder erstelle einen Account';
-            this._feedbackService.show(FeedbackType.Info, 'Login erforderlich', msg, 5000);
-            this._navigationService.navigateTo('login', true);
-          } else {
-            const msg = 'Beim Login ist ein unbekannter Fehler aufgetreten. Bitte versuche es später erneut.';
-            this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
-            this._navigationService.navigateTo('login', true);
+          if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err, false)) {
+            if (err.status === 400) {
+              this._navigationService.navigateTo('email-confirm', true);
+              const msg = 'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.';
+              this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
+            } else if (err.status === 401) {
+              const msg = 'Bitte logge dich ein oder erstelle einen Account';
+              this._feedbackService.show(FeedbackType.Info, 'Login erforderlich', msg, 5000);
+              this._navigationService.navigateTo('login', true);
+            } else {
+              const msg = 'Beim Login ist ein unbekannter Fehler aufgetreten';
+              this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', msg, 5000);
+              this._navigationService.navigateTo('login', true);
+            }
           }
         }
       );
     } else {
       this._navigationService.navigateTo('login', true);
     }
-  }
-
-  ngOnDestroy(): void {
-    stopMonitoring();
   }
 
 }
