@@ -142,7 +142,7 @@ export class OverviewComponent implements OnInit, OnChanges {
             okButtonText: 'OK'
           };
 
-          alert(options).then((res) => {this._isConfirmPayoutDialogOpen = false;});
+          alert(options).then((res) => {this._isConfirmPayoutDialogOpen = false; });
         }
       }
 

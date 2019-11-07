@@ -10,6 +10,7 @@ import { startMonitoring, connectionType } from 'tns-core-modules/connectivity/c
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { registerElement } from 'nativescript-angular';
 import * as connectivity from 'tns-core-modules/connectivity';
+import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
 
 registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
 
@@ -46,18 +47,27 @@ export class LoginComponent implements OnInit {
     private _authService: AuthService,
     private _navigationService: NavigationService,
     private _feedbackService: FeedbackService,
+    private _connectivityMonitorService: ConnectivityMonitorService,
   ) {
     this._page.actionBarHidden = true;
   }
 
   ngOnInit() {
     // Monitor the users internet connection. Change connection status if the user is offline
-    startMonitoring((newConnectionType) => {
-      this._hasInternetConnection = newConnectionType !== connectionType.none;
-      if (!this._hasInternetConnection) {
-        this._feedbackService.show(FeedbackType.Error, 'Keine Internetverbindung', this.noConnectionMessage, 6000);
+    const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
+      (newConnectionType: connectionType) => {
+        this._hasInternetConnection = newConnectionType !== connectionType.none;
+
+        if (!this._hasInternetConnection) {
+          this._feedbackService.show(FeedbackType.Error, 'Keine Internetverbindung', this.noConnectionMessage, 6000);
+        }
       }
+    );
+
+    this._page.on('navigatingFrom', (data) => {
+      connectivityMonitorSubscription.unsubscribe();
     });
+
     const currentConnectionType = connectivity.getConnectionType();
     this._hasInternetConnection = currentConnectionType !== connectionType.none;
     // TODO: Check if this does not suppress any error messages
@@ -168,8 +178,7 @@ export class LoginComponent implements OnInit {
         console.log('|===> Err ', err);
         if (err.status === 409) {
           this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Email wird bereits verwendet.', 4000);
-        }
-        else {
+        } else {
           this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Account konnte nicht erstellt werden.', 4000);
         }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, ChangeDetectorRef, ViewChild, ViewContainerRef, Input, SimpleChanges, NgZone } from '@angular/core';
+import { Component, OnInit, OnChanges, ChangeDetectorRef, ViewChild, ViewContainerRef, Input, SimpleChanges, NgZone } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { CardView } from 'nativescript-cardview';
 registerElement('CardView', () => CardView);
@@ -9,6 +9,7 @@ import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-module
 import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 
 import { HttpService } from '../shared/services/http.service';
+import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { AuthService } from '../shared/services/auth.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
@@ -26,6 +27,7 @@ import { has } from 'lodash';
 import * as dayjs from 'dayjs';
 import { RadListView } from 'nativescript-ui-listview';
 import { topmost } from 'tns-core-modules/ui/frame/frame';
+import { Page } from 'tns-core-modules/ui';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import * as connectivity from 'tns-core-modules/connectivity';
 
@@ -34,7 +36,7 @@ import * as connectivity from 'tns-core-modules/connectivity';
   templateUrl: './scans.component.html',
   styleUrls: ['./scans.component.css']
 })
-export class ScansComponent implements OnInit, OnChanges, OnDestroy {
+export class ScansComponent implements OnInit, OnChanges {
 
   @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
   actionBarTitle = 'SBB GreenCup ☕';
@@ -82,23 +84,28 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
     private _authService: AuthService,
     private _modalService: ModalDialogService,
     private _viewContainerRef: ViewContainerRef,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private _connectivityMonitorService: ConnectivityMonitorService,
+    private _page: Page
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
 
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
-    startMonitoring((newConnectionType) => {
-      this._ngZone.run(() => {
+    const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
+      (newConnectionType: connectionType) => {
         this._hasInternetConnection = newConnectionType !== connectionType.none;
+
         if (this._hasInternetConnection) {
           this.loadData();
         }
-      });
+      }
+    );
+
+    this._page.on('navigatingFrom', (data) => {
+      connectivityMonitorSubscription.unsubscribe();
     });
-    const currentConnectionType = connectivity.getConnectionType();
-    this._hasInternetConnection = currentConnectionType !== connectionType.none;
 
     this._changeDetectionRef.detectChanges();
   }
@@ -108,10 +115,6 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
     if (this.selectedTab === 1) {
       this.loadData();
     }
-  }
-
-  ngOnDestroy(): void {
-    stopMonitoring();
   }
 
   // ANCHOR *** User-Interaction Methods ***
@@ -149,7 +152,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     this._modalService.showModal(ScanModalComponent, options).then(result => {
-        console.log(result);
+
     });
   }
 
@@ -160,8 +163,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
   onSort(attr: string) {
     if (attr === this.sortConfig.attr) {
       this.sortConfig.direction = this.sortConfig.direction === 'DESC' ? 'ASC' : 'DESC';
-    }
-    else {
+    } else {
       this.sortConfig = {
         attr: attr,
         direction: 'DESC'
@@ -171,8 +173,7 @@ export class ScansComponent implements OnInit, OnChanges, OnDestroy {
     if (attr === 'status') {
       this.statusSortIcon = this.sortConfig.direction === 'DESC' ? this.sortDESC : this.sortASC;
       this.timeSortIcon = ' ';
-    }
-    else {
+    } else {
       this.timeSortIcon = this.sortConfig.direction === 'DESC' ? this.sortDESC : this.sortASC;
       this.statusSortIcon = ' ';
     }
