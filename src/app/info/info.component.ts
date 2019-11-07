@@ -18,7 +18,7 @@ export class InfoComponent implements OnInit {
     private _navigationService: NavigationService,
     private _authService: AuthService,
     private _page: Page) {
-      _page.actionBarHidden = true;
+    _page.actionBarHidden = true;
   }
 
   ngOnInit() {

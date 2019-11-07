@@ -26,6 +26,7 @@ import { ThrowStmt } from '@angular/compiler';
 import { NavigationService } from '../shared/services/navigation.service';
 import { ModalDialogService } from 'nativescript-angular';
 import { CupStatusInfoModalComponent } from '../cup-status-info-modal/cup-status-info-modal.component';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 
 @Component({
@@ -56,7 +57,8 @@ export class OverviewComponent implements OnInit, OnChanges {
     private _navigationService: NavigationService,
     private _page: Page,
     private _modalService: ModalDialogService,
-    private _viewContainerRef: ViewContainerRef
+    private _viewContainerRef: ViewContainerRef,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -143,7 +145,7 @@ export class OverviewComponent implements OnInit, OnChanges {
             okButtonText: 'OK'
           };
 
-          alert(options).then((res) => {this._isConfirmPayoutDialogOpen = false;});
+          alert(options).then((res) => {this._isConfirmPayoutDialogOpen = false; });
         }
       }
 
@@ -177,7 +179,11 @@ export class OverviewComponent implements OnInit, OnChanges {
         this._feedbackService.show(FeedbackType.Info, 'Tschüss, bis bald!', '', 4000);
         this._navigationService.navigateTo('login', true);
       },
-      err => this._feedbackService.show(FeedbackType.Error, 'Logout Error', `${err.message.substring(50)}...`, 4000)
+      err => {
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Logout konnte nicht durchgeführt werden', 4000);
+        }
+      }
     );
   }
 
@@ -249,7 +255,9 @@ export class OverviewComponent implements OnInit, OnChanges {
         this._loaded = true;
       },
       err => {
-        this._feedbackService.show(FeedbackType.Error, 'Verbindungsfehler', err.message.substring(0, 60) + '...');
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Daten konnten nicht geladen werden', 4000);
+        }
         console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
       }
     );
@@ -288,7 +296,9 @@ export class OverviewComponent implements OnInit, OnChanges {
         this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', msg, 4000);
       },
       err => {
-        this._feedbackService.show(FeedbackType.Error, 'Auszahlung konnte nicht bestätigt werden', err.message, 4000);
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Auszahlung konnte nicht bestätigt werden', 4000);
+        }
       }
     );
   }

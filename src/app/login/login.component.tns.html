@@ -30,7 +30,7 @@
                     <StackLayout class="input-field"row="3">
                         <GridLayout  columns="*, auto">
                             <TextField #password col="0" class="input" [isEnabled]="!processing" [hint]="isLoggingIn ? 'Passwort' : 'Passwort (mind. 10 Zeichen)'"
-                                ios:secure="{{!showPassword}}" [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
+                                 [secure]="isIOS && !showPassword" [(ngModel)]="enteredPassword" [returnKeyType]="isLoggingIn ? 'done' : 'next'"
                                 (returnPress)="focusConfirmPassword()" (loaded)="passwordFieldLoaded($event)"></TextField>
                             <Label *ngIf="passwordHasInput() && !showPassword" col="1" class="peek-pw fa" text="&#xf06e;&nbsp;"
                                 (tap)="onTogglePeekPassword()" verticalAlignment="center"></Label>
@@ -41,7 +41,7 @@
                     </StackLayout>
 
                     <StackLayout row="4" *ngIf="!isLoggingIn" class="input-field">
-                        <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen" ios:secure="{{!showPassword}}"
+                        <TextField #confirmPassword class="input" [isEnabled]="!processing" hint="Passwort bestätigen" [secure]="isIOS && !showPassword"
                             [(ngModel)]="enteredConfirmPassword" returnKeyType="done" (returnPress)="onSubmit()" (loaded)="passwordConfirmFieldLoaded($event)"></TextField>
                         <StackLayout class="hr-light"></StackLayout>
                     </StackLayout>

@@ -12,10 +12,14 @@ import { CupRound } from '../shared/models/cup-round';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
 import { AuthService } from '../shared/services/auth.service';
+import { alert } from 'tns-core-modules/ui/dialogs';
 import * as dayjs from 'dayjs';
 import { Toasty } from 'nativescript-toasty';
 import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 import { TNSPlayer } from 'nativescript-audio';
+import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
+import { Page } from 'tns-core-modules/ui';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 @Component({
   selector: 'app-admin',
@@ -43,7 +47,10 @@ export class AdminComponent implements OnInit {
     private _httpService: HttpService,
     private _authService: AuthService,
     private _changeDetectionRef: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _connectivityMonitorService: ConnectivityMonitorService,
+    private _page: Page,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) {
     this._player = new TNSPlayer();
     this._player
@@ -54,59 +61,73 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    startMonitoring((newConnectionType) => {
-      this._connection = newConnectionType !== connectionType.none;
-      if (this._connection) {
-        this.loadData();
-      }
-    });
+    const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
+      (newConnectionType: connectionType) => {
+        this._connection = newConnectionType !== connectionType.none;
 
-    this.loadData();
+        if (this._connection) {
+          this.loadData();
+        }
+      }
+    );
+
+    this._page.on('navigatingFrom', (data) => {
+      connectivityMonitorSubscription.unsubscribe();
+    });
   }
 
 
   // ANCHOR *** User-Interaction Methods ***
 
   onNewScanTap(): void {
-    const scanOptions = {
-      formats: 'QR_CODE',
-      cancelLabel: 'Schliessen', // iOS only
-      cancelLabelBackgroundColor: '#999999', // iOS only
-      message: 'Use the volume buttons for extra light', // Android only
-      showFlipCameraButton: false,
-      preferFrontCamera: false,
-      showTorchButton: true,
-      beepOnScan: false,
-      openSettingsIfPermissionWasPreviouslyDenied: true, // iOS only, send user to settings app if access previously denied
-      continuousScanCallback: (result) => {
-        if (result.format === 'QR_CODE' && result.text.length) {
-          if (this.validateScan(result.text)) {
-            // In case the QR-Code matches all requirements, send it to the server, if its not the same code as the code scanned before
+    if (this._connection) {
+      const scanOptions = {
+        formats: 'QR_CODE',
+        cancelLabel: 'Schliessen', // iOS only
+        cancelLabelBackgroundColor: '#999999', // iOS only
+        message: 'Use the volume buttons for extra light', // Android only
+        showFlipCameraButton: false,
+        preferFrontCamera: false,
+        showTorchButton: true,
+        beepOnScan: false,
+        openSettingsIfPermissionWasPreviouslyDenied: true, // iOS only, send user to settings app if access previously denied
+        continuousScanCallback: (result) => {
+          if (result.format === 'QR_CODE' && result.text.length) {
+            if (this.validateScan(result.text)) {
+              // In case the QR-Code matches all requirements, send it to the server, if its not the same code as the code scanned before
 
-            // allow duplicates after 3 seconds
-            if (this._lastQrCode !== result.text || Date.now() - this._lastScanTime >= 1000 * 3) {
-              this._lastQrCode = result.text; // update last scan
-              this._lastScanTime = Date.now();
+              // allow duplicates after 3 seconds
+              if (this._lastQrCode !== result.text || Date.now() - this._lastScanTime >= 1000 * 3) {
+                this._lastQrCode = result.text; // update last scan
+                this._lastScanTime = Date.now();
 
-              this.sendScan(result.text);
+                this.sendScan(result.text);
+              }
+            } else {
+              const toast = new Toasty({ text: 'Der gescannte Code ist kein SBB GreenCup-Code!' });
+              toast.show();
             }
           } else {
-            const toast = new Toasty({ text: 'Der gescannte Code ist kein SBB GreenCup-Code!' });
+            const toast = new Toasty({ text: 'Scan nicht erkannt' });
             toast.show();
           }
-        } else {
-          const toast = new Toasty({ text: 'Scan nicht erkannt' });
-          toast.show();
-        }
-      },
-      reportDuplicates: true // allow multiple scans of the same cup
-    };
+        },
+        reportDuplicates: true // allow multiple scans of the same cup
+      };
 
-    if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
-      this._throttle = true;
-      new BarcodeScanner().scan(scanOptions).then((res) => { });
-    }
-    setTimeout(() => this._throttle = false, this._throttleTime);
+      if (!this._throttle) { // TODO Replace with rxjs that calls next on btn click
+        this._throttle = true;
+        new BarcodeScanner().scan(scanOptions).then((res) => { });
+      }
+      setTimeout(() => this._throttle = false, this._throttleTime); } else {
+        const options = {
+          title: 'Keine Internetverbindung',
+          message: 'Ohne Internetverbindung können keine Becher gescannt werden.',
+          okButtonText: 'OK'
+        };
+
+        alert(options);
+      }
   }
 
   onPullToRefreshInit(args) {
@@ -155,7 +176,10 @@ export class AdminComponent implements OnInit {
         }
       },
       err => {
-        this._feedbackService.show(FeedbackType.Error, 'Verbindungsfehler', err.message.substring(0, 60) + '...');
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Daten konnten nicht geladen werden', 4000);
+        }
+
         if (pullToRefreshArgs) {
           const listView = pullToRefreshArgs.object;
           listView.notifyPullToRefreshFinished();

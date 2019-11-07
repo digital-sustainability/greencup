@@ -15,7 +15,7 @@
             <FlexboxLayout class="item-flexbox">
                 <StackLayout>
                     <Label text="Geniessen." class="item-title" horizontalAlignment="center"></Label>
-                    <Label text="Trinke ein Getränk aus einem SBB GreenCup." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+                    <Label text="Trinke ein Getränk aus einem SBB GreenCup. Beim Kauf wird ein Depot für den Becher erhoben." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
                 </StackLayout>
             </FlexboxLayout>
         </CarouselItem>
@@ -31,7 +31,7 @@
             <FlexboxLayout class="item-flexbox">
                 <StackLayout>
                     <Label text="Zurückbringen." class="item-title" horizontalAlignment="center"></Label>
-                    <Label text="Bringe den Becher zurück." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+                    <Label text="Deponiere den Becher in einem der Rückgabebehälter." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
                 </StackLayout>
             </FlexboxLayout>
         </CarouselItem>
@@ -39,27 +39,19 @@
             <FlexboxLayout class="item-flexbox">
                 <StackLayout>
                     <Label text="Depot erhalten." class="item-title" horizontalAlignment="center"></Label>
-                    <Label text="Das Depot wird bei der Reinigung gutgeschrieben und kann an der Kasse der Kantine ausbezahlt werden." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+                    <Label text="Das Depot wird bei der Reinigung des Bechers gutgeschrieben. Dein Guthaben von mehreren Bechern wird dir an der Kasse der Kantine ausbezahlt." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
                 </StackLayout>
             </FlexboxLayout>
         </CarouselItem>
         <CarouselItem id="slide6" class="carousel-item">
             <FlexboxLayout class="item-flexbox">
-                <StackLayout>
-                    <Label text="Nachhaltig." class="item-title" horizontalAlignment="center"></Label>
-                    <Label text="Das Guthaben wird der Person gutgeschrieben, die den Becher als letztes gescannt hat. Man kann daher auch herumliegende Becher scannen und zurückgeben." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
-                </StackLayout>
-            </FlexboxLayout>
-        </CarouselItem>
-        <CarouselItem id="slide7" class="carousel-item">
-            <FlexboxLayout class="item-flexbox">
-                <StackLayout>
-                    <Label text="Preview." class="item-title" horizontalAlignment="center"></Label>
-                    <Label text="Diese App ist eine Preview. Vielen Dank für dein Feedback."  class="item-text" horizontalAlignment="center" textWrap="true"></Label>
-                    <Button text="Start" class="btn btn-flat" (tap)="onNavigateBack()" *ngIf="!isFirstRun"></Button>
-                    <Button text="Start" class="btn btn-flat" (tap)="onNavigateToTabs()" *ngIf="isFirstRun"></Button>
-                </StackLayout>
-            </FlexboxLayout>
+              <StackLayout>
+                  <Label text="Nachhaltig." class="item-title" horizontalAlignment="center"></Label>
+                  <Label text="Das Guthaben wird der Person gutgeschrieben, die den Becher als letztes gescannt hat. Man kann daher auch herumliegende Becher scannen und zurückgeben." class="item-text" horizontalAlignment="center" textWrap="true"></Label>
+                  <Button text="Start" class="btn btn-flat" (tap)="onNavigateBack()" *ngIf="!isFirstRun"></Button>
+                  <Button text="Start" class="btn btn-flat" (tap)="onNavigateToTabs()" *ngIf="isFirstRun"></Button>
+              </StackLayout>
+          </FlexboxLayout>
         </CarouselItem>
     </Carousel>
 </GridLayout>
