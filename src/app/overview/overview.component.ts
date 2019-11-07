@@ -25,6 +25,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { ThrowStmt } from '@angular/compiler';
 import { NavigationService } from '../shared/services/navigation.service';
 import { ModalDialogService } from 'nativescript-angular';
+import { CupStatusInfoModalComponent } from '../cup-status-info-modal/cup-status-info-modal.component';
 
 
 @Component({
@@ -182,6 +183,20 @@ export class OverviewComponent implements OnInit, OnChanges {
 
   onChangePassword(): void {
     this._navigationService.navigateTo('/password-change');
+  }
+
+  onShowCupStatusInfoModal(status: string): void {
+    const options = {
+      viewContainerRef: this._viewContainerRef,
+      context: {status: status},
+      fullscreen: false
+    };
+
+    this._modalService.showModal(CupStatusInfoModalComponent, options).then(result => {
+      if (result) {
+
+      }
+    });
   }
 
   // ANCHOR *** Accessor Methods ***

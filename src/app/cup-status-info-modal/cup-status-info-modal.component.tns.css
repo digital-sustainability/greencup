@@ -1,0 +1,44 @@
+/* Add mobile styles for the component here.  */
+.scan-modal {
+    padding: 10;
+    background-color: white;
+}
+.h3 {
+    margin: 5;
+}
+.scan-label {
+    margin: 5;
+    font-weight: bold;
+}
+.scan-info {
+    margin: 5;
+}
+.status-reserved {
+    background-color: #ffff4d;
+}
+
+.status-verified {
+    background-color: #C8EC85;
+}
+
+.status-rewarded {
+    background-color: #92DB00;
+}
+
+.status-overbid {
+    background-color: #EB6A00;
+}
+
+.card {
+    background-color: #fff;;
+    color: #4d4d4d;
+    border-radius: 5;
+}
+
+.scan-value {
+    margin: 5 5 5 10;
+}
+
+.close-button {
+    margin-top: 30;
+}

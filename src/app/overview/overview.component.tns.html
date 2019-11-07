@@ -9,28 +9,28 @@
                 <StackLayout class="section-container">
                     <Label class="h3 section-main-head" text="Gescannte Becher"></Label>
                     <GridLayout class="scan-matrix" columns="*, *" rows="auto, auto">
-                            <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                            <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('reserved')">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
                                     <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gescannt"></Label>
                                     <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'reserved')"></Label>
                                 </GridLayout>
                             </CardView>
-                            <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                            <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('overbid')">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
                                     <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überscannt"></Label>
                                     <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'overbid')"></Label>
                                 </GridLayout>
                             </CardView>
-                            <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                            <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('verified')">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
                                     <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Guthaben"></Label>
                                     <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getVerifiedCount(scans)"></Label>
                                 </GridLayout>
                             </CardView>
-                            <CardView col="1" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3">
+                            <CardView col="1" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('rewarded')">
                                 <GridLayout columns="20, *" rows="auto, auto">
                                     <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
                                     <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Ausbezahlt"></Label>
