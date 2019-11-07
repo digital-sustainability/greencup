@@ -19,6 +19,7 @@ import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 import { TNSPlayer } from 'nativescript-audio';
 import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
 import { Page } from 'tns-core-modules/ui';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 @Component({
   selector: 'app-admin',
@@ -48,7 +49,8 @@ export class AdminComponent implements OnInit {
     private _changeDetectionRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private _connectivityMonitorService: ConnectivityMonitorService,
-    private _page: Page
+    private _page: Page,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) {
     this._player = new TNSPlayer();
     this._player
@@ -72,13 +74,6 @@ export class AdminComponent implements OnInit {
     this._page.on('navigatingFrom', (data) => {
       connectivityMonitorSubscription.unsubscribe();
     });
-
-    /*startMonitoring((newConnectionType) => {
-      this._connection = newConnectionType !== connectionType.none;
-      if (this._connection) {
-        this.loadData();
-      }
-    });*/
   }
 
 
@@ -181,7 +176,10 @@ export class AdminComponent implements OnInit {
         }
       },
       err => {
-        this._feedbackService.show(FeedbackType.Error, 'Verbindungsfehler', err.message.substring(0, 60) + '...');
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Daten konnten nicht geladen werden', 4000);
+        }
+
         if (pullToRefreshArgs) {
           const listView = pullToRefreshArgs.object;
           listView.notifyPullToRefreshFinished();

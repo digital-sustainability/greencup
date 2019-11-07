@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { prompt } from 'tns-core-modules/ui/dialogs';
-import { Page, isAndroid, isIOS } from 'tns-core-modules/ui/page';
+import { isAndroid, isIOS } from 'tns-core-modules/ui/page';
+import { Page } from 'tns-core-modules/ui';
 import { RegisteringUser } from '../shared/models/registering-user';
 import { FeedbackType } from 'nativescript-feedback';
 import { AuthService } from '../shared/services/auth.service';
@@ -11,6 +12,7 @@ import { TextField } from 'tns-core-modules/ui/text-field';
 import { registerElement } from 'nativescript-angular';
 import * as connectivity from 'tns-core-modules/connectivity';
 import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
 
@@ -48,6 +50,7 @@ export class LoginComponent implements OnInit {
     private _navigationService: NavigationService,
     private _feedbackService: FeedbackService,
     private _connectivityMonitorService: ConnectivityMonitorService,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) {
     this._page.actionBarHidden = true;
   }
@@ -65,6 +68,7 @@ export class LoginComponent implements OnInit {
     );
 
     this._page.on('navigatingFrom', (data) => {
+      console.log('login left');
       connectivityMonitorSubscription.unsubscribe();
     });
 
@@ -118,15 +122,16 @@ export class LoginComponent implements OnInit {
       err => {
         console.log('|===> Err ', err);
 
-        if (err.status === 404) {
-          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Email Adresse nicht korrekt', 4000);
-        } else if (err.status === 401) {
-          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Passwort ist ungültig', 4000);
-        } else if (!this._hasInternetConnection) {
-          this._feedbackService.show(FeedbackType.Warning, 'Keine Internetverbindung', this.noConnectionMessage, 4000);
-        } else {
-          this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', '', 4000);
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err, false)) {
+          if (err.status === 404) {
+            this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Email Adresse nicht korrekt', 4000);
+          } else if (err.status === 401) {
+            this._feedbackService.show(FeedbackType.Warning, 'Login fehlgeschlagen', 'Passwort ist ungültig', 4000);
+          } else {
+            this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Login konnte nicht durchgeführt werden', 4000);
+          }
         }
+
         this.processing = false;
       }
     );
@@ -176,10 +181,12 @@ export class LoginComponent implements OnInit {
       },
       err => {
         console.log('|===> Err ', err);
-        if (err.status === 409) {
-          this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Email wird bereits verwendet.', 4000);
-        } else {
-          this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Account konnte nicht erstellt werden.', 4000);
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          if (err.status === 409) {
+            this._feedbackService.show(FeedbackType.Error, 'Fehler', 'Email wird bereits verwendet', 4000);
+          } else {
+            this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Account konnte nicht erstellt werden', 4000);
+          }
         }
 
         this.processing = false;
@@ -214,10 +221,13 @@ export class LoginComponent implements OnInit {
       },
       err => {
         console.log('|===> Err ', err);
-        if (err.status === 404) {
-          this._feedbackService.show(FeedbackType.Warning, 'Email inkorrekt', 'Die Email Adresse existiert nicht.', 4000);
-        } else {
-          this._feedbackService.show(FeedbackType.Warning, 'Error', 'Passwort kann nicht zurückgesetzt werden. Versuche es erneut.', 4000);
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          if (err.status === 404) {
+            this._feedbackService.show(FeedbackType.Warning, 'Email inkorrekt', 'Die Email Adresse existiert nicht.', 4000);
+          } else {
+            this._feedbackService.show(FeedbackType.Warning, 'Unbekannter Fehler',
+              'Passwort kann nicht zurückgesetzt werden. Versuche es erneut.', 4000);
+          }
         }
         this.processing = false;
       }

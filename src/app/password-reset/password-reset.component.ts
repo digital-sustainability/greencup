@@ -4,6 +4,7 @@ import { NavigationService } from '../shared/services/navigation.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { FeedbackType } from 'nativescript-feedback';
 import { registerElement } from 'nativescript-angular';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 registerElement('PreviousNextView', () => require('nativescript-iqkeyboardmanager').PreviousNextView);
 
@@ -27,7 +28,8 @@ export class PasswordResetComponent implements OnInit {
 
   constructor(private _authService: AuthService,
     private _navigationService: NavigationService,
-    private _feedbackService: FeedbackService) { }
+    private _feedbackService: FeedbackService,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService) { }
 
   ngOnInit(): void { }
 
@@ -48,19 +50,18 @@ export class PasswordResetComponent implements OnInit {
           this._feedbackService.show(FeedbackType.Success, 'Passwort erfolgreich zurückgesetzt', '', 4000);
         }, (err) => {
           console.log('|===> Err', err);
-          if (err.status === 404) {
-            this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Nutzer-Id stimmt nicht.', 4000);
-          }
-          else if (err.status === 403) {
-            this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Code stimmt nicht.', 4000);
-          }
-          else if (err.status === 412) {
-            const msg = 'Code ist abgelaufen. Geh zurück auf den Login Screen und führe den Passwort Reset erneut aus.';
-            this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', msg, 20000);
-          }
-          else {
-            const msg = err.status.substring(50) + '...';
-            this._feedbackService.show(FeedbackType.Error, 'Passwort konnte nicht zurückgesetzt werden', msg, 4000);
+          if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+            if (err.status === 404) {
+              this._feedbackService.show(FeedbackType.Warning,
+                'Passwort konnte nicht zurückgesetzt werden', 'Nutzer-Id stimmt nicht.', 4000);
+            } else if (err.status === 403) {
+              this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', 'Code stimmt nicht.', 4000);
+            } else if (err.status === 412) {
+              const msg = 'Code ist abgelaufen. Geh zurück auf den Login Screen und führe den Passwort Reset erneut aus.';
+              this._feedbackService.show(FeedbackType.Warning, 'Passwort konnte nicht zurückgesetzt werden', msg, 20000);
+            } else {
+              this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Passwort konnte nicht zurückgesetzt werden', 4000);
+            }
           }
           this.processing = false;
         }

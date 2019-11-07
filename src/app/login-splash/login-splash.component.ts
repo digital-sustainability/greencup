@@ -9,6 +9,7 @@ import { FirebaseService } from '../shared/services/firebase.service';
 import { Subscription } from 'rxjs';
 import { device } from 'tns-core-modules/platform/platform';
 import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 
 @Component({
   selector: 'app-login-splash',
@@ -25,7 +26,8 @@ export class LoginSplashComponent implements OnInit {
     private _feedbackService: FeedbackService,
     private _page: Page,
     private firebaseService: FirebaseService,
-    private _connectivityMonitorService: ConnectivityMonitorService
+    private _connectivityMonitorService: ConnectivityMonitorService,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) {
     this._page.actionBarHidden = true;
   }
@@ -45,6 +47,8 @@ export class LoginSplashComponent implements OnInit {
 
     this._page.on('navigatingFrom', (data) => {
       connectivityMonitorSubscription.unsubscribe();
+
+      console.log('login-splash left');
     });
 
     // Init firebase
@@ -87,18 +91,20 @@ export class LoginSplashComponent implements OnInit {
         },
         err => {
           console.log('|===> Error', err);
-          if (err.status === 400) {
-            this._navigationService.navigateTo('email-confirm', true);
-            const msg = 'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.';
-            this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
-          } else if (err.status === 401) {
-            const msg = 'Bitte logge dich ein oder erstelle einen Account';
-            this._feedbackService.show(FeedbackType.Info, 'Login erforderlich', msg, 5000);
-            this._navigationService.navigateTo('login', true);
-          } else {
-            const msg = 'Beim Login ist ein unbekannter Fehler aufgetreten. Bitte versuche es später erneut.';
-            this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
-            this._navigationService.navigateTo('login', true);
+          if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err, false)) {
+            if (err.status === 400) {
+              this._navigationService.navigateTo('email-confirm', true);
+              const msg = 'Bestätige bitte deine Email Adresse über das Mail, das wir dir geschickt haben.';
+              this._feedbackService.show(FeedbackType.Error, 'Login error', msg, 5000);
+            } else if (err.status === 401) {
+              const msg = 'Bitte logge dich ein oder erstelle einen Account';
+              this._feedbackService.show(FeedbackType.Info, 'Login erforderlich', msg, 5000);
+              this._navigationService.navigateTo('login', true);
+            } else {
+              const msg = 'Beim Login ist ein unbekannter Fehler aufgetreten';
+              this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', msg, 5000);
+              this._navigationService.navigateTo('login', true);
+            }
           }
         }
       );

@@ -10,6 +10,7 @@ import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 
 import { HttpService } from '../shared/services/http.service';
 import { ConnectivityMonitorService } from '../shared/services/connectivity-monitor.service';
+import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { AuthService } from '../shared/services/auth.service';
 // https://github.com/EddyVerbruggen/nativescript-barcodescanner
@@ -86,7 +87,8 @@ export class ScansComponent implements OnInit, OnChanges {
     private _viewContainerRef: ViewContainerRef,
     private _ngZone: NgZone,
     private _connectivityMonitorService: ConnectivityMonitorService,
-    private _page: Page
+    private _page: Page,
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -274,7 +276,10 @@ export class ScansComponent implements OnInit, OnChanges {
         }
       },
       err => {
-        this._feedbackService.show(FeedbackType.Error, 'Verbindungsfehler', err.message.substring(0, 60) + '...');
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Daten konnten nicht geladen werden', 4000);
+        }
+
         console.log('|===> ERROR WHILE CONNECTING TO BACKEND', err);
         if (pullToRefreshArgs) {
           const listView = pullToRefreshArgs.object;
@@ -312,7 +317,11 @@ export class ScansComponent implements OnInit, OnChanges {
           this._feedbackService.show(FeedbackType.Error, 'Kein Scan erhalten', msg);
         }
       },
-      err => this._feedbackService.show(FeedbackType.Error, 'Ein Fehler ist aufgetreten', err.message.substring(0, 60) + '...')
+      err => {
+        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
+          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Scan konnte nicht gespeichert werden', 4000);
+        }
+      }
     );
   }
 
