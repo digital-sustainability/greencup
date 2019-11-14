@@ -39,6 +39,7 @@ export class LoginSplashComponent implements OnInit {
 
     const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
       (newConnectionType: connectionType) => {
+        console.log('login splash subscribed')
         const newConnection = newConnectionType !== connectionType.none;
 
         if (!this._hasInternetConnection && newConnection) {

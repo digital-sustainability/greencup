@@ -97,6 +97,7 @@ export class ScansComponent implements OnInit, OnChanges {
     // Monitor the users internet connection. Change connection status if the user is offline
     const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
       (newConnectionType: connectionType) => {
+        console.log('scans subscribed');
         this._hasInternetConnection = newConnectionType !== connectionType.none;
 
         if (this._hasInternetConnection) {
@@ -107,6 +108,8 @@ export class ScansComponent implements OnInit, OnChanges {
 
     this._page.on('navigatingFrom', (data) => {
       connectivityMonitorSubscription.unsubscribe();
+
+      console.log('scans left & unsubscribed');
     });
 
     this._changeDetectionRef.detectChanges();
