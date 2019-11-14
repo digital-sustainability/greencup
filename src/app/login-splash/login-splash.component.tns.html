@@ -2,5 +2,5 @@
     <ActivityIndicator color="white" busy="true" *ngIf="_hasInternetConnection || _working"></ActivityIndicator>
     <Label color="white" class="h1 p-15" text="SBB GreenCup ☕" *ngIf="_hasInternetConnection || _working"></Label>
     <Label color="white" text="Keine Internetverbindung." *ngIf="!_hasInternetConnection && !_working"></Label>
-    <Button text="Erneut versuchen" class="btn btn-primary" (tap)="login()" *ngIf="!_hasInternetConnection && !_working"></Button>
+    <Button text="Erneut versuchen" class="btn btn-flat" (tap)="login()" *ngIf="!_hasInternetConnection && !_working"></Button>
 </FlexboxLayout>
