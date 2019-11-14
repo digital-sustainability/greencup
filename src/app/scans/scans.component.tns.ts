@@ -212,7 +212,7 @@ export class ScansComponent implements OnInit, OnChanges {
     if (scan.verified) {
       return scan.rewarded ? 'Guthaben für Becher ausbezahlt' : 'Offenes Guthaben';
     } else {
-      return scan.status === StatusType.reserved ? 'Becher Gescannt' : 'Von anderer Person überscannt';
+      return scan.status === StatusType.reserved ? 'Becher gescannt' : 'Von anderer Person überscannt';
     }
   }
 
@@ -224,7 +224,7 @@ export class ScansComponent implements OnInit, OnChanges {
         return 'b';
       case 'Offenes Guthaben':
         return 'c';
-      case 'Becher Gescannt':
+      case 'Becher gescannt':
         return 'd';
     }
   }

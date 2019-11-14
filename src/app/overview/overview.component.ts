@@ -124,14 +124,16 @@ export class OverviewComponent implements OnInit, OnChanges {
           const options = {
             viewContainerRef: this._viewContainerRef,
             context: {depositValue: depositValue},
-            fullscreen: false
+            fullscreen: false,
+            android: {cancelable: false}, // to prevent closing of modal if tapped outside
           };
 
-          this._modalService.showModal(PayoutModalComponent, options).then(result => {
+          this._modalService.showModal(PayoutModalComponent, options).then((result) => {
             this._isConfirmPayoutDialogOpen = false;
 
-            if (result) {
-              this.confirmPayout();
+            if (result !== false) {
+              // we want also result === undefined
+              this.loadData();
             }
           });
 
@@ -297,21 +299,6 @@ export class OverviewComponent implements OnInit, OnChanges {
     scrollView.isScrollEnabled = enabled;
   }
 
-  // uses httpService to send a request confirming the payout and displays feedback to the user
-  private confirmPayout(): void {
-    this._httpService.payout().subscribe(
-      event => {
-        this.loadData();
-        const msg = 'Geld wurde an der Kasse in Bar ausgezahlt';
-        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', msg, 4000);
-      },
-      err => {
-        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
-          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Auszahlung konnte nicht bestätigt werden', 4000);
-        }
-      }
-    );
-  }
 
   private hasInternetConnection(): boolean {
     const connectionType = connectivity.getConnectionType();

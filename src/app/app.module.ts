@@ -14,13 +14,9 @@ import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ScanModalComponent } from './scan-modal/scan-modal.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
-<<<<<<< src/app/app.module.ts
 import { PayoutModalComponent } from './payout-modal/payout-modal.component';
 import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-info-modal.component';
-=======
-import { PayoutModalComponent } from './payout-modal/payout-modal.component';
 import { AdminComponent } from './admin/admin.component';
->>>>>>> src/app/app.module.ts
 
 @NgModule({
   declarations: [
@@ -37,11 +33,8 @@ import { AdminComponent } from './admin/admin.component';
     ScanModalComponent,
     PasswordChangeComponent,
     PayoutModalComponent,
-<<<<<<< src/app/app.module.ts
     CupStatusInfoModalComponent,
-=======
     AdminComponent
->>>>>>> src/app/app.module.ts
   ],
   imports: [
     BrowserModule,
