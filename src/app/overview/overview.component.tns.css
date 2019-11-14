@@ -107,6 +107,16 @@
     margin: 20 30 20 0;
 }
 
+.fab-button {
+    height: 58;
+    width: 58; 
+        /* required on iOS */
+    margin: 20;
+    background-color: #eb0000;
+    vertical-align: bottom;
+    horizontal-align: right;
+}
+
 
 @keyframes slide-animation {
     0%   { transform: translate(-20, 0); }

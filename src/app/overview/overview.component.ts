@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges, SimpleChanges, ViewContainerRef, Output, EventEmitter } from '@angular/core';
 import { Button } from 'tns-core-modules/ui/button';
 import { View } from 'tns-core-modules/ui/core/view';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
@@ -10,6 +10,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { isAndroid } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 import * as connectivity from 'tns-core-modules/connectivity';
+import { ScansComponent } from '../scans/scans.component.tns';
 
 
 import { HttpService } from '../shared/services/http.service';
@@ -32,7 +33,8 @@ import { DefaultHttpResponseHandlerService } from '../shared/services/default-ht
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.css']
+  styleUrls: ['./overview.component.css'],
+  providers: [ScansComponent]
 })
 export class OverviewComponent implements OnInit, OnChanges {
 
@@ -43,6 +45,7 @@ export class OverviewComponent implements OnInit, OnChanges {
   private _sliding = false;
 
   @Input() selectedTab: number;
+  @Output() selectedTabEvent = new EventEmitter<number>();
 
   actionBarTitle = 'SBB GreenCup ☕';
   backRoute = '/home';
@@ -58,7 +61,8 @@ export class OverviewComponent implements OnInit, OnChanges {
     private _page: Page,
     private _modalService: ModalDialogService,
     private _viewContainerRef: ViewContainerRef,
-    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService
+    private _defaultHttpResponseHandlerService: DefaultHttpResponseHandlerService,
+    private _scansComponent: ScansComponent
   ) { }
 
   // ANCHOR *** Angular Lifecycle Methods ***
@@ -120,14 +124,16 @@ export class OverviewComponent implements OnInit, OnChanges {
           const options = {
             viewContainerRef: this._viewContainerRef,
             context: {depositValue: depositValue},
-            fullscreen: false
+            fullscreen: false,
+            android: {cancelable: false}, // to prevent closing of modal if tapped outside
           };
 
-          this._modalService.showModal(PayoutModalComponent, options).then(result => {
+          this._modalService.showModal(PayoutModalComponent, options).then((result) => {
             this._isConfirmPayoutDialogOpen = false;
 
-            if (result) {
-              this.confirmPayout();
+            if (result !== false) {
+              // we want also result === undefined
+              this.loadData();
             }
           });
 
@@ -203,6 +209,12 @@ export class OverviewComponent implements OnInit, OnChanges {
 
       }
     });
+  }
+
+  onNewScanTap(): void {
+    this.selectedTabEvent.emit(1);
+
+    this._scansComponent.onNewScanTap();
   }
 
   // ANCHOR *** Accessor Methods ***
@@ -287,21 +299,6 @@ export class OverviewComponent implements OnInit, OnChanges {
     scrollView.isScrollEnabled = enabled;
   }
 
-  // uses httpService to send a request confirming the payout and displays feedback to the user
-  private confirmPayout(): void {
-    this._httpService.payout().subscribe(
-      event => {
-        this.loadData();
-        const msg = 'Geld wurde an der Kasse in Bar ausgezahlt';
-        this._feedbackService.show(FeedbackType.Success, 'Auszahlung bestätigt', msg, 4000);
-      },
-      err => {
-        if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err)) {
-          this._feedbackService.show(FeedbackType.Error, 'Unbekannter Fehler', 'Auszahlung konnte nicht bestätigt werden', 4000);
-        }
-      }
-    );
-  }
 
   private hasInternetConnection(): boolean {
     const connectionType = connectivity.getConnectionType();

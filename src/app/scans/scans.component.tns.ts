@@ -97,6 +97,7 @@ export class ScansComponent implements OnInit, OnChanges {
     // Monitor the users internet connection. Change connection status if the user is offline
     const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
       (newConnectionType: connectionType) => {
+        console.log('scans subscribed');
         this._hasInternetConnection = newConnectionType !== connectionType.none;
 
         if (this._hasInternetConnection) {
@@ -107,6 +108,8 @@ export class ScansComponent implements OnInit, OnChanges {
 
     this._page.on('navigatingFrom', (data) => {
       connectivityMonitorSubscription.unsubscribe();
+
+      console.log('scans left & unsubscribed');
     });
 
     this._changeDetectionRef.detectChanges();
@@ -121,7 +124,7 @@ export class ScansComponent implements OnInit, OnChanges {
 
   // ANCHOR *** User-Interaction Methods ***
 
-  onNewScanTap(): void {
+  public onNewScanTap(): void {
     this._codeScanner.scan(this._scanOptions)
       // Handle codeScanner promise.
       .then((result) => {
@@ -212,7 +215,7 @@ export class ScansComponent implements OnInit, OnChanges {
     if (scan.verified) {
       return scan.rewarded ? 'Guthaben für Becher ausbezahlt' : 'Offenes Guthaben';
     } else {
-      return scan.status === StatusType.reserved ? 'Becher Gescannt' : 'Von anderer Person überscannt';
+      return scan.status === StatusType.reserved ? 'Becher gescannt' : 'Von anderer Person überscannt';
     }
   }
 
@@ -224,7 +227,7 @@ export class ScansComponent implements OnInit, OnChanges {
         return 'b';
       case 'Offenes Guthaben':
         return 'c';
-      case 'Becher Gescannt':
+      case 'Becher gescannt':
         return 'd';
     }
   }

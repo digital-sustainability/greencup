@@ -1,9 +1,18 @@
 <ScrollView>
     <StackLayout class="modal-view-style payout-modal">
-        <Label class="h3" text="Auszahlung an der Kasse." textWrap="true"></Label>
-        <Label text="Diesen Bildschirm an der Kasse zeigen. Nicht vorher bestätigen." textWrap="true"></Label>
-        <Label class="h1" [text]="getDepositValue()" horizontalAlignment="center"></Label>
-        <Button text="Auszahlung bestätigen" class="btn btn-primary" (tap)="onConfirmPayout()"></Button>
-        <Button text="Abbrechen" class="btn btn-flat" (tap)="onCancel()"></Button>
+        <Label *ngIf="!_payoutConfirmed" class="h3" text="Auszahlung an der Kasse." textWrap="true"></Label>
+        <Label *ngIf="!_payoutConfirmed" text="Diesen Bildschirm an der Kasse zeigen. Nicht vorher bestätigen." textWrap="true"></Label>
+        <ActivityIndicator *ngIf="_loading" color="red" busy="true"></ActivityIndicator>
+        <Label *ngIf="_payoutConfirmed" class="h3" text="Bestätigt." color="green" textWrap="true"></Label>
+        <Label *ngIf="_payoutConfirmed" text="Die Auszahlung wurde bestätigt. An der Kasse zeigen." textWrap="true"></Label>
+        <Label horizontalAlignment="center">
+            <FormattedString>
+                <Span class="h1" [text]="getDepositValue()"></Span>
+                <Span *ngIf="_payoutConfirmed" class="fa icon" color="green" text="&nbsp;&#xf058;&nbsp;"></Span>
+            </FormattedString>
+        </Label>
+        <Button *ngIf="!_payoutConfirmed && !_loading" text="Auszahlung bestätigen" class="btn btn-primary" (tap)="onConfirmPayout()"></Button>
+        <Button *ngIf="!_payoutConfirmed && !_loading" text="Abbrechen" class="btn btn-flat" (tap)="onCancel()"></Button>
+        <Button *ngIf="_payoutConfirmed" text="Schliessen" class="btn btn-flat" (tap)="onClose()"></Button>
     </StackLayout>
 </ScrollView>
