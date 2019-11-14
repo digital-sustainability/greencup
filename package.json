@@ -20,7 +20,9 @@
     "android": "tns run android --bundle",
     "ios": "tns run ios --bundle",
     "mobile": "tns run --bundle",
-    "preview": "tns preview --bundle"
+    "preview": "tns preview --bundle",
+    "android.release": "tns build android --bundle --release --aab --env.environment='prod' --key-store-path <Path>  --key-store-password <Password> --key-store-alias <Alias> --key-store-alias-password <Password>",
+    "ios.release": "tns build ios --for-device --release --bundle --provision 'GreenCup Store' --env.environment='prod'"
   },
   "private": true,
   "dependencies": {
