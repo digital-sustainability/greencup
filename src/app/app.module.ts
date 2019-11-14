@@ -17,6 +17,7 @@ import { PasswordChangeComponent } from './password-change/password-change.compo
 <<<<<<< src/app/app.module.ts
 import { PayoutModalComponent } from './payout-modal/payout-modal.component';
 import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-info-modal.component';
+import { HelpComponent } from './shared/components/help/help.component';
 =======
 import { PayoutModalComponent } from './payout-modal/payout-modal.component';
 import { AdminComponent } from './admin/admin.component';
@@ -39,6 +40,7 @@ import { AdminComponent } from './admin/admin.component';
     PayoutModalComponent,
 <<<<<<< src/app/app.module.ts
     CupStatusInfoModalComponent,
+HelpComponent,
 =======
     AdminComponent
 >>>>>>> src/app/app.module.ts
