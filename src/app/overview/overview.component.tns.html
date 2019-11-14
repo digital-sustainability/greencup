@@ -3,122 +3,125 @@
     <ActivityIndicator class="m-t-20" rowSpan="3" busy="true"></ActivityIndicator>
 </StackLayout>
 <StackLayout *ngIf="loaded">
-    <PullToRefresh (refresh)="onPullToRefreshInit($event)">
-        <ScrollView id="scrollView" height="100%">
-            <StackLayout class="p-20">
-                <StackLayout class="section-container">
-                    <Label class="h3 section-main-head" text="Gescannte Becher"></Label>
-                    <GridLayout class="scan-matrix" columns="*, *" rows="auto, auto">
-                            <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('reserved')">
-                                <GridLayout columns="20, *" rows="auto, auto">
-                                    <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gescannt"></Label>
-                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'reserved')"></Label>
-                                </GridLayout>
-                            </CardView>
-                            <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('overbid')">
-                                <GridLayout columns="20, *" rows="auto, auto">
-                                    <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überscannt"></Label>
-                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'overbid')"></Label>
-                                </GridLayout>
-                            </CardView>
-                            <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('verified')">
-                                <GridLayout columns="20, *" rows="auto, auto">
-                                    <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Guthaben"></Label>
-                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getVerifiedCount(scans)"></Label>
-                                </GridLayout>
-                            </CardView>
-                            <CardView col="1" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('rewarded')">
-                                <GridLayout columns="20, *" rows="auto, auto">
-                                    <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
-                                    <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Ausbezahlt"></Label>
-                                    <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getRewardedCount(scans)"></Label>
-                                </GridLayout>
-                            </CardView>
-                    </GridLayout>
-                </StackLayout>
-                
-                <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
-                    <Label class="fa ic-overview" text="&#xf0d6;"></Label>
-                    <Label col="1" class="section-sub-head h3" text="Depot"></Label>
-                    <StackLayout col="2" class="hr-light"></StackLayout>
-                </GridLayout>
-                <StackLayout class="section-container">
-                    <GridLayout columns="auto, *" rows="auto, auto, auto, auto">
-                        <Label col="0" row="0" class="" text="Bezogene Becher:"></Label>
-                        <Label col="1" row="0" class="overview-label" [text]="scans.length + ' Stück'"></Label>
-                        <Label col="0" row="1" class="" text="Offene Gutschrift:" ></Label>
-                        <Label col="1" row="1" class="overview-label" [text]="getDepositValue(scans, 'verified')"></Label>
-                        <Label col="0" row="2" class="" text="Bisher Ausbezahlt:"></Label>
-                        <Label col="1" row="2" class="overview-label" [text]="getDepositValue(scans, 'rewarded')"></Label>
-                    </GridLayout>
-                    <Label textWrap="true" class="body m-t-20">
-                        <FormattedString>
-                            <Span text="Eine offene Gutschrift wird an der Kasse der "></Span>
-                            <Span text="Kantine im SBB Hauptsitz Wankdorf in Bargeld ausbezahlt" class="bold"></Span>
-                            <Span text=". Weise dazu dem Personal an der Kasse den Betrag auf dem Bildschirm vor und wische dann auf der Fläche unter diesem Text, um die "></Span>
-                            <Span text="Auszahlung der Gutschrift zu bestätigen" class="bold"></Span>
-                            <Span text="."></Span>
-                        </FormattedString>
-                    </Label>
-                    <Label class="body m-t-10" textWrap="true">
-                        <FormattedString>
-                            <Span text="Achtung!" class="bold user-warning"></Span>
-                            <Span text=" Die Bestätigung der Auszahlung kann nicht rückgängig gemacht werden!" class="bold"></Span>
-                        </FormattedString>
-                    </Label>
-                    <StackLayout class="m-t-20">
-                        <GridLayout id="slideButton" (touch)="onSlideButtonTouch($event)" columns="*, auto" rows="auto">
-                            <Label text="WISCHEN UM AUSZUZAHLEN" id="slideButtonLabel" verticalAlignment="center" col="0" row="0"></Label>
-                            <Image src="~/assets/images/slidegray.png" id="slideButtonImage" col="1" row="0"></Image>
+    <GridLayout>
+        <PullToRefresh (refresh)="onPullToRefreshInit($event)">
+            <ScrollView id="scrollView" height="100%">
+                <StackLayout class="p-20">
+                    <StackLayout class="section-container">
+                        <Label class="h3 section-main-head" text="Gescannte Becher"></Label>
+                        <GridLayout class="scan-matrix" columns="*, *" rows="auto, auto">
+                                <CardView column="0" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('reserved')">
+                                    <GridLayout columns="20, *" rows="auto, auto">
+                                        <StackLayout col="0" rowspan="3" class="status-reserved"></StackLayout>
+                                        <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Gescannt"></Label>
+                                        <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'reserved')"></Label>
+                                    </GridLayout>
+                                </CardView>
+                                <CardView col="1" row="0" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('overbid')">
+                                    <GridLayout columns="20, *" rows="auto, auto">
+                                        <StackLayout col="0" rowspan="3" class="status-overbid"></StackLayout>
+                                        <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Überscannt"></Label>
+                                        <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getReservedOrOverbidCount(scans, 'overbid')"></Label>
+                                    </GridLayout>
+                                </CardView>
+                                <CardView col="0" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('verified')">
+                                    <GridLayout columns="20, *" rows="auto, auto">
+                                        <StackLayout col="0" rowspan="3" class="status-verified"></StackLayout>
+                                        <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Guthaben"></Label>
+                                        <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getVerifiedCount(scans)"></Label>
+                                    </GridLayout>
+                                </CardView>
+                                <CardView col="1" row="1" class="card" margin="5" elevation="10" radius="10" ios:shadowRadius="3" android:elevation="3" (tap)="onShowCupStatusInfoModal('rewarded')">
+                                    <GridLayout columns="20, *" rows="auto, auto">
+                                        <StackLayout col="0" rowspan="3" class="status-rewarded"></StackLayout>
+                                        <Label col="1" row="0" class="card-title" horizontalAlignment="center" text="Ausbezahlt"></Label>
+                                        <Label col="1" row="1" class="scan-sum" horizontalAlignment="center" [text]="getRewardedCount(scans)"></Label>
+                                    </GridLayout>
+                                </CardView>
                         </GridLayout>
                     </StackLayout>
-                </StackLayout>
-
-
-                <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
-                    <Label class="fa ic-overview" text="&#xf05a;"></Label>
-                    <Label col="1" class="section-sub-head h3" text="Informationen"></Label>
-                    <StackLayout col="2" class="hr-light"></StackLayout>
-                </GridLayout>
-                <StackLayout class="section-container">
-                    <Label textWrap="true" class="body">
-                        <FormattedString>
-                            <Span text="SBB GreenCup" class="bold"></Span>
-                            <Span text=" ist eine Mobile App programmiert in NativeScript, welche von der"></Span>
-                            <Span text=" Forschungsstelle Digitale Nachhaltigkeit" class="bold"></Span>
-                            <Span text=" der Universität Bern für die"></Span>
-                            <Span text=" SBB" class="bold"></Span>
-                            <Span text=" entwickelt wurde. Die Hauptfunktion der App besteht darin, dass Nutzer wiederverwendbare Kaffee-Becher über einen"></Span>
-                            <Span text=" aufgedruckten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
-                        </FormattedString>
-                    </Label>
-                    <Button text="Info" class="btn btn-primary m-t-30" (tap)="onNavigateTo('info')"></Button>
-                    <Button text="Support" class="btn btn-primary m-t-30" (tap)="onNavigateTo('help')"></Button>
-                </StackLayout>
-
-                <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
-                    <Label class="fa ic-overview" text="&#xf406;"></Label>
-                    <Label col="1" class="section-sub-head h3" text="Benutzerangaben"></Label>
-                    <StackLayout col="2" class="hr-light"></StackLayout>
-                </GridLayout>
-                <StackLayout class="section-container">
-                    <GridLayout columns="auto, *" rows="auto, auto, auto">
-                        <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
-                        <Label col="1" row="0" class="email" [text]="getAuthenticatedUser().email" textWrap="true"></Label>
-                        <Label col="0" row="1" class="overview-label" text="Vorname: "></Label>
-                        <Label col="1" row="1" [text]="getAuthenticatedUser().first_name"></Label>
-                        <Label col="0" row="2" class="overview-label" text="Nachname: "></Label>
-                        <Label col="1" row="2" [text]="getAuthenticatedUser().last_name"></Label>
+                    
+                    <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
+                        <Label class="fa ic-overview" text="&#xf0d6;"></Label>
+                        <Label col="1" class="section-sub-head h3" text="Depot"></Label>
+                        <StackLayout col="2" class="hr-light"></StackLayout>
                     </GridLayout>
-                    <StackLayout class="m-t-20">
-                        <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
-                        <Button text="Ausloggen" class="btn btn-primary" (tap)="onLogout()"></Button>
+                    <StackLayout class="section-container">
+                        <GridLayout columns="auto, *" rows="auto, auto, auto, auto">
+                            <Label col="0" row="0" class="" text="Bezogene Becher:"></Label>
+                            <Label col="1" row="0" class="overview-label" [text]="scans.length + ' Stück'"></Label>
+                            <Label col="0" row="1" class="" text="Offene Gutschrift:" ></Label>
+                            <Label col="1" row="1" class="overview-label" [text]="getDepositValue(scans, 'verified')"></Label>
+                            <Label col="0" row="2" class="" text="Bisher Ausbezahlt:"></Label>
+                            <Label col="1" row="2" class="overview-label" [text]="getDepositValue(scans, 'rewarded')"></Label>
+                        </GridLayout>
+                        <Label textWrap="true" class="body m-t-20">
+                            <FormattedString>
+                                <Span text="Eine offene Gutschrift wird an der Kasse der "></Span>
+                                <Span text="Kantine im SBB Hauptsitz Wankdorf in Bargeld ausbezahlt" class="bold"></Span>
+                                <Span text=". Weise dazu dem Personal an der Kasse den Betrag auf dem Bildschirm vor und wische dann auf der Fläche unter diesem Text, um die "></Span>
+                                <Span text="Auszahlung der Gutschrift zu bestätigen" class="bold"></Span>
+                                <Span text="."></Span>
+                            </FormattedString>
+                        </Label>
+                        <Label class="body m-t-10" textWrap="true">
+                            <FormattedString>
+                                <Span text="Achtung!" class="bold user-warning"></Span>
+                                <Span text=" Die Bestätigung der Auszahlung kann nicht rückgängig gemacht werden!" class="bold"></Span>
+                            </FormattedString>
+                        </Label>
+                        <StackLayout class="m-t-20">
+                            <GridLayout id="slideButton" (touch)="onSlideButtonTouch($event)" columns="*, auto" rows="auto">
+                                <Label text="WISCHEN UM AUSZUZAHLEN" id="slideButtonLabel" verticalAlignment="center" col="0" row="0"></Label>
+                                <Image src="~/assets/images/slidegray.png" id="slideButtonImage" col="1" row="0"></Image>
+                            </GridLayout>
+                        </StackLayout>
+                    </StackLayout>
+
+
+                    <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
+                        <Label class="fa ic-overview" text="&#xf05a;"></Label>
+                        <Label col="1" class="section-sub-head h3" text="Informationen"></Label>
+                        <StackLayout col="2" class="hr-light"></StackLayout>
+                    </GridLayout>
+                    <StackLayout class="section-container">
+                        <Label textWrap="true" class="body">
+                            <FormattedString>
+                                <Span text="SBB GreenCup" class="bold"></Span>
+                                <Span text=" ist eine Mobile App programmiert in NativeScript, welche von der"></Span>
+                                <Span text=" Forschungsstelle Digitale Nachhaltigkeit" class="bold"></Span>
+                                <Span text=" der Universität Bern für die"></Span>
+                                <Span text=" SBB" class="bold"></Span>
+                                <Span text=" entwickelt wurde. Die Hauptfunktion der App besteht darin, dass Nutzer wiederverwendbare Kaffee-Becher über einen"></Span>
+                                <Span text=" aufgedruckten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
+                            </FormattedString>
+                        </Label>
+                        <Button text="Info" class="btn btn-primary m-t-30" (tap)="onNavigateTo('info')"></Button>
+                        <Button text="Support" class="btn btn-primary m-t-30" (tap)="onNavigateTo('help')"></Button>
+                    </StackLayout>
+
+                    <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">
+                        <Label class="fa ic-overview" text="&#xf406;"></Label>
+                        <Label col="1" class="section-sub-head h3" text="Benutzerangaben"></Label>
+                        <StackLayout col="2" class="hr-light"></StackLayout>
+                    </GridLayout>
+                    <StackLayout class="section-container">
+                        <GridLayout columns="auto, *" rows="auto, auto, auto">
+                            <Label col="0" row="0" class="overview-label" text="Account:" ></Label>
+                            <Label col="1" row="0" class="email" [text]="getAuthenticatedUser().email" textWrap="true"></Label>
+                            <Label col="0" row="1" class="overview-label" text="Vorname: "></Label>
+                            <Label col="1" row="1" [text]="getAuthenticatedUser().first_name"></Label>
+                            <Label col="0" row="2" class="overview-label" text="Nachname: "></Label>
+                            <Label col="1" row="2" [text]="getAuthenticatedUser().last_name"></Label>
+                        </GridLayout>
+                        <StackLayout class="m-t-20">
+                            <Button text="Passwort ändern" class="btn btn-primary" (tap)="onChangePassword()"></Button>
+                            <Button text="Ausloggen" class="btn btn-primary" (tap)="onLogout()"></Button>
+                        </StackLayout>
                     </StackLayout>
                 </StackLayout>
-            </StackLayout>
-        </ScrollView>
-    </PullToRefresh>
+            </ScrollView>
+        </PullToRefresh>
+        <Fab (tap)="onNewScanTap($event)" icon="~/assets/images/scan01_white.png" rippleColor="#f1f1f1" class="fab-button"></Fab>
+    </GridLayout>
 </StackLayout>

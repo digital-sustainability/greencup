@@ -14,9 +14,9 @@ import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ScanModalComponent } from './scan-modal/scan-modal.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
-import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-info-modal.component';
 import { HelpComponent } from './shared/components/help/help.component';
 import { PayoutModalComponent } from './payout-modal/payout-modal.component';
+import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-info-modal.component';
 import { AdminComponent } from './admin/admin.component';
 
 @NgModule({

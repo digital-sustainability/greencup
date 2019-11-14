@@ -18,7 +18,8 @@ import { DefaultHttpResponseHandlerService } from '../shared/services/default-ht
 })
 export class LoginSplashComponent implements OnInit {
 
-  private _hasInternetConnection: boolean;
+  _hasInternetConnection: boolean;
+  _working = false;
 
   constructor(
     private _navigationService: NavigationService,
@@ -34,13 +35,16 @@ export class LoginSplashComponent implements OnInit {
 
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
+    this._working = true;
+
     const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
       (newConnectionType: connectionType) => {
-        this._hasInternetConnection = newConnectionType !== connectionType.none;
+        console.log('login splash subscribed')
+        const newConnection = newConnectionType !== connectionType.none;
 
-        if (!this._hasInternetConnection) {
-          // If offline navigate the user to login screen where a 'No Connection' message is displayed
-          this._navigationService.navigateTo('login');
+        if (!this._hasInternetConnection && newConnection) {
+          // freshly connected to the internet
+          this.login();
         }
       }
     );
@@ -63,6 +67,7 @@ export class LoginSplashComponent implements OnInit {
           this.login();
         } else {
           this._feedbackService.show(FeedbackType.Error, 'Push Benachrichtigungen konnten nicht initialisiert werden', '');
+          this._working = false;
         }
       });
   }
@@ -91,6 +96,7 @@ export class LoginSplashComponent implements OnInit {
         },
         err => {
           console.log('|===> Error', err);
+          this._working = false;
           if (!this._defaultHttpResponseHandlerService.checkIfDefaultError(err, false)) {
             if (err.status === 400) {
               this._navigationService.navigateTo('email-confirm', true);
