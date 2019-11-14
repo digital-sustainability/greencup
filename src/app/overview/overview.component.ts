@@ -45,7 +45,7 @@ export class OverviewComponent implements OnInit, OnChanges {
   private _sliding = false;
 
   @Input() selectedTab: number;
-  @Output() selectedTabEvent = new EventEmitter<number>();
+  @Output() newScanTap = new EventEmitter<number>();
 
   actionBarTitle = 'SBB GreenCup ☕';
   backRoute = '/home';
@@ -212,9 +212,7 @@ export class OverviewComponent implements OnInit, OnChanges {
   }
 
   onNewScanTap(): void {
-    this.selectedTabEvent.emit(1);
-
-    this._scansComponent.onNewScanTap();
+    this.newScanTap.emit(1);
   }
 
   // ANCHOR *** Accessor Methods ***

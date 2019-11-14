@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationService } from '../shared/services/navigation.service';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
+import { ScansComponent } from '../scans/scans.component.tns';
 
 @Component({
   selector: 'app-tabs',
@@ -9,6 +10,8 @@ import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 })
 export class TabsComponent implements OnInit {
   selectedTabIndex: number;
+
+  @ViewChild('scans', {static: false}) scanComponent: ScansComponent;
 
   constructor(
     private _navigationService: NavigationService
@@ -24,6 +27,11 @@ export class TabsComponent implements OnInit {
 
   onSelectedIndexChanged(newIndex: number): void {
     this.selectedTabIndex = newIndex;
+  }
+
+  openScanComponent() {
+    this.selectedTabIndex = 1;
+    this.scanComponent.onNewScanTap();
   }
 
 }

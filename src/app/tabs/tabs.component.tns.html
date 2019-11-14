@@ -5,9 +5,9 @@
 <TabView #tabview class="tab-view" (selectedIndexChanged)="onSelectedIndexChanged($event.newIndex)" tabTextFontSize="14" [selectedIndex]="selectedTabIndex" androidTabsPosition="bottom">
 <!-- <TabView #tabview class="tab-view" tabTextFontSize="14" selectedIndex="1" androidTabsPosition="bottom"> -->
     <StackLayout *tabItem="{ title: 'Übersicht' }" textWrap="true">
-        <app-overview [selectedTab]="selectedTabIndex" (selectedTabEvent)="onSelectedIndexChanged($event)"></app-overview>
+        <app-overview [selectedTab]="selectedTabIndex" (newScanTap)="openScanComponent()"></app-overview>
     </StackLayout>
     <StackLayout *tabItem="{ title: 'Meine Scans'}" textWrap="true">
-        <app-scans [selectedTab]="selectedTabIndex"></app-scans>
+        <app-scans #scans [selectedTab]="selectedTabIndex"></app-scans>
     </StackLayout>
 </TabView>
