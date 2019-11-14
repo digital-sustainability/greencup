@@ -29,6 +29,7 @@ import { InfoComponent } from './info/info.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import { PayoutModalComponent } from './payout-modal/payout-modal.component';
 import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-info-modal.component';
+import { HelpComponent } from './shared/components/help/help.component';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -53,6 +54,7 @@ import { CupStatusInfoModalComponent } from './cup-status-info-modal/cup-status-
     PasswordChangeComponent,
     PayoutModalComponent,
     CupStatusInfoModalComponent,
+    HelpComponent,
   ],
   imports: [
     NativeScriptModule,

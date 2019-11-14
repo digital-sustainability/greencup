@@ -262,6 +262,10 @@ export class LoginComponent implements OnInit {
     this._navigationService.navigateTo(route);
   }
 
+  onHelp(): void {
+    this._navigationService.navigateTo('help');
+  }
+
   onTogglePeekPassword(): void {
     // Save the current password peek mode
     this.showPassword = !this.showPassword;

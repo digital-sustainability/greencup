@@ -9,6 +9,7 @@ import { EmailConfirmComponent } from './email-confirm/email-confirm.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { InfoComponent } from './info/info.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
+import { HelpComponent } from './shared/components/help/help.component';
 
 export const routes: Routes = [
   {
@@ -55,5 +56,9 @@ export const routes: Routes = [
   {
     path: 'info',
     component: InfoComponent
+  },
+    {
+    path: 'help',
+    component: HelpComponent
   }
 ];

@@ -96,7 +96,8 @@
                                 <Span text=" aufgedruckten QR-Code scannen und an eine Rückgabestelle bringen können, um das Depot dafür zu erhalten."></Span>
                             </FormattedString>
                         </Label>
-                        <Button text="Info" class="btn btn-primary m-t-30" (tap)="onNavigateToInfo()"></Button>
+                        <Button text="Info" class="btn btn-primary m-t-30" (tap)="onNavigateTo('info')"></Button>
+                        <Button text="Support" class="btn btn-primary m-t-30" (tap)="onNavigateTo('help')"></Button>
                     </StackLayout>
 
                     <GridLayout columns="auto, auto, *" rows="auto" class="section-separator">

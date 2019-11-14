@@ -4,7 +4,7 @@
   flex-direction: column;
 }
 .form {
-  margin: 30;
+  margin: 0 30 30 30;
   flex-grow: 2;
   vertical-align: middle;
 }
@@ -59,4 +59,12 @@
 .call-to-action-text {
   color: #eb0000;
   font-weight: bold;
+}
+.help-button {
+  horizontal-align: right;
+  vertical-align: bottom;
+  margin: 15 10 0 0;
+  padding: 0;
+  color: #A8A8A8;
+  font-size: 25;
 }
