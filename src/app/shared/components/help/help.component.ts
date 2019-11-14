@@ -10,13 +10,14 @@ import * as utils from 'tns-core-modules/utils/utils';
 export class HelpComponent implements OnInit {
 
   actionBarTitle = 'Support';
+  supportEmail = 'greencup@list.inf.unibe.ch';
 
   constructor() { }
 
   ngOnInit(): void { }
 
   onContact(): void {
-    utils.openUrl('mailto:al.kraeuchi@gmail.com');
+    utils.openUrl(`mailto:${this.supportEmail}`);
   }
 
 }

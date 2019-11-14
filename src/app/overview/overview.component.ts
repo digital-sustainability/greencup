@@ -169,8 +169,8 @@ export class OverviewComponent implements OnInit, OnChanges {
   }
 
 
-  onNavigateToInfo(): void {
-    this._navigationService.navigateTo('info');
+  onNavigateTo(route: string): void {
+    this._navigationService.navigateTo(route);
   }
 
   onLogout(): void {
