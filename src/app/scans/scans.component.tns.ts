@@ -121,7 +121,7 @@ export class ScansComponent implements OnInit, OnChanges {
 
   // ANCHOR *** User-Interaction Methods ***
 
-  onNewScanTap(): void {
+  public onNewScanTap(): void {
     this._codeScanner.scan(this._scanOptions)
       // Handle codeScanner promise.
       .then((result) => {

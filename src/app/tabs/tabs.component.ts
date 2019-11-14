@@ -11,7 +11,7 @@ export class TabsComponent implements OnInit {
   selectedTabIndex: number;
 
   constructor(
-    private _navigationService: NavigationService,
+    private _navigationService: NavigationService
   ) { }
 
   ngOnInit() {
@@ -22,8 +22,8 @@ export class TabsComponent implements OnInit {
     this._navigationService.navigateBack();
   }
 
-  onSelectedIndexChanged(args: SelectedIndexChangedEventData): void {
-    this.selectedTabIndex = args.newIndex;
+  onSelectedIndexChanged(newIndex: number): void {
+    this.selectedTabIndex = newIndex;
   }
 
 }
