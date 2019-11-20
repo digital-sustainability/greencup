@@ -1,6 +1,6 @@
 <FlexboxLayout alignItems="center" justifyContent="center" flexDirection="column" width="100%" height="100%" class="splash">
     <ActivityIndicator color="white" busy="true" *ngIf="_hasInternetConnection || _working"></ActivityIndicator>
-    <Label color="white" class="h1 p-15" text="GreenCup ☕" *ngIf="_hasInternetConnection || _working"></Label>
+    <Label color="white" class="h1 p-15" text="SmartCup ☕" *ngIf="_hasInternetConnection || _working"></Label>
     <Label color="white" text="Keine Internetverbindung." *ngIf="!_hasInternetConnection && !_working"></Label>
     <Button text="Erneut versuchen" class="btn btn-flat" (tap)="login()" *ngIf="!_hasInternetConnection && !_working"></Button>
 </FlexboxLayout>
