@@ -1,6 +1,6 @@
-# SBB GreenCup
+# GreenCup
 
-*SBB GreenCup* (formerly named project *Rail Coffee*) is a [NativeScript](https://docs.nativescript.org/) mobile application created by [Research Center for Digital Sustainability](https://www.digitale-nachhaltigkeit.unibe.ch/) of the University of Bern as part of a proof of concept. The app has the purpose to scan and manage QR-codes on reusable beverage cups for the Swiss Federal Railway company [SBB](https://www.sbb.ch/de/).
+*GreenCup* (formerly named project *Rail Coffee*) is a [NativeScript](https://docs.nativescript.org/) mobile application created by [Research Center for Digital Sustainability](https://www.digitale-nachhaltigkeit.unibe.ch/) of the University of Bern as part of a proof of concept. The app has the purpose to scan and manage QR-codes on reusable beverage cups for the Swiss Federal Railway company [SBB](https://www.sbb.ch/de/).
 
 ## NativeScript Code-Sharing
 
