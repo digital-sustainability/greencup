@@ -31,7 +31,7 @@ export class AdminComponent implements OnInit {
   @ViewChild('cupRoundListView', { read: RadListViewComponent, static: false }) cupRoundListViewComponent: RadListViewComponent;
   private _player: TNSPlayer;
 
-  actionBarTitle = 'SBB GreenCup ☕ - Cleaner';
+  actionBarTitle = 'GreenCup ☕ - Cleaner';
 
   private _cupRounds: ObservableArray<CupRound>;
   private _throttle = false;
@@ -104,7 +104,7 @@ export class AdminComponent implements OnInit {
                 this.sendScan(result.text);
               }
             } else {
-              const toast = new Toasty({ text: 'Der gescannte Code ist kein SBB GreenCup-Code!' });
+              const toast = new Toasty({ text: 'Der gescannte Code ist kein GreenCup-Code!' });
               toast.show();
             }
           } else {

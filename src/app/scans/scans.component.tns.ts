@@ -5,7 +5,7 @@ registerElement('CardView', () => CardView);
 import { Fab } from '@nstudio/nativescript-floatingactionbutton';
 registerElement('Fab', () => require('@nstudio/nativescript-floatingactionbutton').Fab);
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
+import { connectionType } from 'tns-core-modules/connectivity';
 import { RadListViewComponent } from 'nativescript-ui-listview/angular';
 
 import { HttpService } from '../shared/services/http.service';
@@ -13,17 +13,12 @@ import { ConnectivityMonitorService } from '../shared/services/connectivity-moni
 import { DefaultHttpResponseHandlerService } from '../shared/services/default-http-response-handler.service';
 import { FeedbackService } from '../shared/services/feedback.service';
 import { AuthService } from '../shared/services/auth.service';
-// https://github.com/EddyVerbruggen/nativescript-barcodescanner
-import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { BarcodeScanner } from 'nativescript-barcodescanner'; // https://github.com/EddyVerbruggen/nativescript-barcodescanner
 import { FeedbackType } from 'nativescript-feedback';
 import { ScanModalComponent } from '../scan-modal/scan-modal.component';
 
 import { Scan, StatusType } from '../shared/models/scan';
 import { Cup } from '../shared/models/cup';
-import { TestScan } from '../shared/models/test-scan';
-
-import { interval } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { has } from 'lodash';
 import * as dayjs from 'dayjs';
 import { RadListView } from 'nativescript-ui-listview';
@@ -40,13 +35,11 @@ import * as connectivity from 'tns-core-modules/connectivity';
 export class ScansComponent implements OnInit, OnChanges {
 
   @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
-  actionBarTitle = 'SBB GreenCup ☕';
+  actionBarTitle = 'GreenCup ☕';
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
   }];
-  // @ViewChild('fab', { static: false }) btn: Fab;
-  // button: Fab;
   @Input() selectedTab: number;
 
   sortASC = String.fromCharCode(0xf106);
