@@ -45,7 +45,7 @@ export class OverviewComponent implements OnInit, OnChanges {
   @Input() selectedTab: number;
   @Output() newScanTap = new EventEmitter<number>();
 
-  actionBarTitle = 'SBB GreenCup ☕';
+  actionBarTitle = 'GreenCup ☕';
   backRoute = '/home';
   lastScan = '...';
   obs: any;

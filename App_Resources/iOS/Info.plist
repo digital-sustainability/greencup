@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>SBB GreenCup</string>
+	<string>GreenCup</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -44,7 +44,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>SBB GreenCup braucht die Kamera-Berechtigung, damit Sie QR-Codes scannen können.</string>
+	<string>GreenCup braucht die Kamera-Berechtigung, damit Sie QR-Codes scannen können.</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 	<key>UIBackgroundModes</key>
