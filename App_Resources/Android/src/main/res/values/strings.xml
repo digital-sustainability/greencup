@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GreenCup</string>
-    <string name="title_activity_kimera">GreenCup</string>
+    <string name="app_name">SmartCup</string>
+    <string name="title_activity_kimera">SmartCup</string>
 </resources>

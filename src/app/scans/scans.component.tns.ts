@@ -35,7 +35,7 @@ import * as connectivity from 'tns-core-modules/connectivity';
 export class ScansComponent implements OnInit, OnChanges {
 
   @ViewChild('scanListView', { read: RadListViewComponent, static: false }) scanListViewComponent: RadListViewComponent;
-  actionBarTitle = 'GreenCup ☕';
+  actionBarTitle = 'SmartCup ☕';
   defaultItems = [{
     message: 'Keine Scans vorhanden...',
     action: 'Drücke den Scan-Button um den QR-Code eines Bechers zu scannen!'
@@ -126,7 +126,7 @@ export class ScansComponent implements OnInit, OnChanges {
             // In case the QR-Code matches all requirements, send it to the server.
             this.saveScan(result.text);
           } else {
-            const msg = 'Der gescannte Code ist kein GreenCup Code!';
+            const msg = 'Der gescannte Code ist kein SmartCup Code!';
             this._feedbackService.show(FeedbackType.Warning, 'QR-Code ungültig', msg);
           }
         } else {

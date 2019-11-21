@@ -15,19 +15,19 @@
 }
 
 .status-reserved {
-    background-color: #ffff4d;
+    background-color: #F6F6F6;
 }
 
 .status-verified {
-    background-color: #C8EC85;
+    background-color: #2d327d;
 }
 
 .status-rewarded {
-    background-color: #92DB00;
+    background-color: #444444;
 }
 
 .status-overbid {
-    background-color: #EB6A00;
+    background-color: #A20013;
 }
 
 .status-empty {
