@@ -20,6 +20,7 @@ export class LoginSplashComponent implements OnInit {
 
   _hasInternetConnection: boolean;
   _working = false;
+  _triedToLogIn = false;
 
   constructor(
     private _navigationService: NavigationService,
@@ -36,13 +37,14 @@ export class LoginSplashComponent implements OnInit {
   ngOnInit(): void {
     // Monitor the users internet connection. Change connection status if the user is offline
     this._working = true;
+    this._triedToLogIn = false;
 
     const connectivityMonitorSubscription = this._connectivityMonitorService.getMonitoringState().subscribe(
       (newConnectionType: connectionType) => {
-        console.log('login splash subscribed')
+        console.log('login splash connection change detected');
         const newConnection = newConnectionType !== connectionType.none;
 
-        if (!this._hasInternetConnection && newConnection) {
+        if (!this._hasInternetConnection && newConnection && this._triedToLogIn) {
           // freshly connected to the internet
           this.login();
         }
@@ -60,11 +62,13 @@ export class LoginSplashComponent implements OnInit {
       .subscribe((complete) => {
         if (complete) {
           this.login();
+          this._triedToLogIn = true;
         }
       }, (err) => {
         console.log('[Firebase]', err);
         if (err === 'Firebase already initialized') {
           this.login();
+          this._triedToLogIn = true;
         } else {
           this._feedbackService.show(FeedbackType.Error, 'Push Benachrichtigungen konnten nicht initialisiert werden', '');
           this._working = false;
@@ -76,6 +80,7 @@ export class LoginSplashComponent implements OnInit {
     const email = this._authService.getStorageItem('email');
     const token = this._authService.getStorageItem('usertoken');
     const deviceToken = this._authService.getStorageItem('deviceToken');
+    console.log('login called');
     if (email && token && deviceToken) {
       this._authService.tokenLogin({
         email: email,
