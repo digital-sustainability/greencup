@@ -41,7 +41,7 @@
     "@nstudio/nativescript-snackbar": "^1.0.0",
     "core-js": "^2.5.4",
     "dayjs": "^1.8.15",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "nativescript-angular": "^8.20.0",
     "nativescript-audio": "^5.0.5",
     "nativescript-barcodescanner": "^3.4.0",
