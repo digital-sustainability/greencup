@@ -60,7 +60,7 @@
     "zone.js": "^0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.12.4",
+    "@angular-devkit/build-angular": "^15.0.4",
     "@angular/cli": "~8.2.0",
     "@angular/compiler-cli": "8.2.0",
     "@nativescript/schematics": "~0.4.0",
